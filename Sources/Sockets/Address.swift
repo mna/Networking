@@ -1,76 +1,39 @@
-import Libc
+import LowSockets
 
-public struct Family {
-  public let value: Int32
+public enum Network {
+  case tcp
+  case udp
+  case unix
+  case unixgram
+}
 
-  init(value: Int32) {
-    self.value = value
-  }
+public protocol AddressProtocol {
+  // network defines the protocol and socket type:
+  // - tcp: stream
+  // - udp: datagram
+  // - unix: stream
+  // - unixgram: datagram
+  //
+  // The Family is easy to infer from the Address.
+  var network: Network { get }
+}
 
-  public static let ip4 = Family(value: AF_INET)
-  public static let ip6 = Family(value: AF_INET6)
-  public static let unix = Family(value: AF_LOCAL)
-  public static let unknown = Family(value: -1)
-
-  static func make(_ v: Int32) -> Family {
-    switch v {
-    case Family.ip4.value:
-      return .ip4
-    case Family.ip6.value:
-      return .ip6
-    case Family.unix.value:
-      return .unix
-    default:
-      return .unknown
-    }
+public struct TCPAddress: AddressProtocol {
+  public var network: Network {
+    return .tcp
   }
 }
 
-public struct SocketType {
-  public let value: Int32
-
-  init(value: Int32) {
-    self.value = value
-  }
-
-  public static let stream = SocketType(value: SOCK_STREAM)
-  public static let datagram = SocketType(value: SOCK_DGRAM)
-  public static let unknown = SocketType(value: -1)
-
-  static func make(_ v: Int32) -> SocketType {
-    switch v {
-    case SocketType.stream.value:
-      return .stream
-    case SocketType.datagram.value:
-      return .datagram
-    default:
-      return .unknown
-    }
+public struct UDPAddress: AddressProtocol {
+  public var network: Network {
+    return .udp
   }
 }
 
-public struct SocketProtocol {
-  public let value: Int32
+public struct UnixAddress: AddressProtocol {
+  private let isDatagram: Bool
 
-  init(value: Int32) {
-    self.value = value
-  }
-
-  public static let tcp = SocketProtocol(value: IPPROTO_TCP)
-  public static let udp = SocketProtocol(value: IPPROTO_UDP)
-  public static let unix = SocketProtocol(value: 0)
-  public static let unknown = SocketProtocol(value: -1)
-
-  static func make(_ v: Int32) -> SocketProtocol {
-    switch v {
-    case SocketProtocol.tcp.value:
-      return .tcp
-    case SocketProtocol.udp.value:
-      return .udp
-    case SocketProtocol.unix.value:
-      return .unix
-    default:
-      return .unknown
-    }
+  public var network: Network {
+    return isDatagram ? .unixgram : .unix
   }
 }

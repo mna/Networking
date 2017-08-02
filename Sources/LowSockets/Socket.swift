@@ -1,10 +1,10 @@
 import Libc
 
-// to avoid ambiguity in _Socket.close (where close refers to the _Socket method
+// to avoid ambiguity in Socket.close (where close refers to the Socket method
 // instead of the libc/darwin system call).
 private var cclose = close
 
-class _Socket {
+class Socket {
   private static func getOption(fd: Int32, option: Int32) throws -> Int32 {
     var v: Int32 = 0
     var len = socklen_t(MemoryLayout<Int32>.size)
@@ -33,14 +33,14 @@ class _Socket {
     self.fd = fd
 
     #if os(Linux)
-    self.family = Family.make(try _Socket.getOption(fd: fd, option: SO_DOMAIN))
-    self.proto = SocketProtocol.make(try _Socket.getOption(fd: fd, option: SO_PROTOCOL))
+    self.family = Family.make(try Socket.getOption(fd: fd, option: SO_DOMAIN))
+    self.proto = SocketProtocol.make(try Socket.getOption(fd: fd, option: SO_PROTOCOL))
     #else
     self.family = .unknown
     self.proto = .unknown
     #endif
 
-    self.type = SocketType.make(try _Socket.getOption(fd: fd, option: SO_TYPE))
+    self.type = SocketType.make(try Socket.getOption(fd: fd, option: SO_TYPE))
   }
 
   func close() throws {
