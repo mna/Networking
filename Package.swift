@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "Sockets",
+    name: "Networking",
     targets: [
       Target(name: "Libc"),
       Target(name: "LowSockets", dependencies: ["Libc"]),
