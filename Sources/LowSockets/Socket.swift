@@ -43,6 +43,26 @@ class Socket {
     try Error.makeAndThrow(fromReturnCode: ret)
   }
 
+  private static func setLingerOption(fd: Int32, on: Bool, t: TimeInterval) throws {
+    var val = linger()
+
+    val.l_onoff = on ? 1 : 0
+    val.l_linger = 0
+    if on && t > 0 {
+      let secs = Int32(t)
+      val.l_linger = secs
+    }
+
+    #if os(Linux)
+      let option = SO_LINGER
+    #else
+      let option = SO_LINGER_SEC
+    #endif
+
+		let ret = setsockopt(fd, SOL_SOCKET, option, &val, socklen_t(MemoryLayout<linger>.stride))
+    try Error.makeAndThrow(fromReturnCode: ret)
+  }
+
   private static func setFcntl(fd: Int32, flag: Int32) throws {
     let flags = fcntl(fd, F_GETFL)
     try Error.makeAndThrow(fromReturnCode: flags)
@@ -115,19 +135,32 @@ class Socket {
     return Int(try Socket.getOption(fd: fd, option: option))
   }
 
-  // TODO: getRead/WriteTimeout, getBlocking? Read from system call, could be
-  // changed via FD outside this class.
-
   func setReadTimeout(_ t: TimeInterval) throws {
     try Socket.setTimevalOption(fd: fd, option: SO_RCVTIMEO, t: t)
+  }
+
+  func getReadTimeout() throws -> TimeInterval {
+
   }
 
   func setWriteTimeout(_ t: TimeInterval) throws {
     try Socket.setTimevalOption(fd: fd, option: SO_SNDTIMEO, t: t)
   }
 
-  func setLinger() throws {
-    // TODO: implement...
+  func getWriteTimeout() throws -> TimeInterval {
+
+  }
+
+  func setLinger(timeout: TimeInterval) throws {
+    try Socket.setLingerOption(fd: fd, on: true, t: timeout)
+  }
+
+  func setNoLinger() throws {
+    try Socket.setLingerOption(fd: fd, on: false, t: 0)
+  }
+
+  func getLinger() throws -> TimeInterval? {
+
   }
 
   func setBlocking() throws {
@@ -136,6 +169,10 @@ class Socket {
 
   func setNonBlocking() throws {
     try Socket.setFcntl(fd: fd, flag: O_NONBLOCK)
+  }
+
+  func isBlocking() throws -> Bool {
+
   }
 
   func listen(backlog: Int) throws {
