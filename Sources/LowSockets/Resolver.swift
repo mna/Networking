@@ -1,6 +1,9 @@
 import Libc
 
+// MARK: - Resolver
+
 struct Resolver {
+  /// Get the port number for the specified service.
   static func lookupPort(forService service: String, family: Family = .unknown, proto: SocketProtocol = .tcp) throws -> Int {
     if let port = Int(service) {
       if port < 0 || port > 65535 {
@@ -41,8 +44,22 @@ struct Resolver {
 
       let ret = getaddrinfo(nil, service, &hints, &info)
       try CError.makeAndThrow(fromGAICode: ret)
+
+      while true {
+        guard let addr = info else {
+          break
+        }
+        switch addr.pointee.ai_family {
+        case Family.ip4.value:
+          print("ip4")
+        case Family.ip6.value:
+          print("ip6")
+        default:
+          break
+        }
+      }
     }
 
-    return 0
+    throw MessageError("unkown service", context: ["service": service])
   }
 }
