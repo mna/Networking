@@ -9,6 +9,9 @@ private var cshutdown = shutdown
 // MARK: - Socket
 
 class Socket {
+
+  // MARK: - Static Methods
+
   private static func getOption(fd: Int32, option: Int32) throws -> Int32 {
     var v: Int32 = 0
     var len = socklen_t(MemoryLayout<Int32>.size)
@@ -16,6 +19,39 @@ class Socket {
     let ret = getsockopt(fd, SOL_SOCKET, option, &v, &len)
     try Error.makeAndThrow(fromReturnCode: ret)
     return v
+  }
+
+  private static func getTimevalOption(fd: Int32, option: Int32) throws -> TimeInterval {
+    var val = timeval()
+    var len = socklen_t(MemoryLayout<timeval>.stride)
+
+    let ret = getsockopt(fd, SOL_SOCKET, option, &val, &len)
+    try Error.makeAndThrow(fromReturnCode: ret)
+
+    let secs = Int(val.tv_sec)
+    let us = Int(val.tv_usec)
+    let t = TimeInterval(Double(secs) + (Double(us) / 1_000_000))
+
+    return t
+  }
+
+  private static func getLingerOption(fd: Int32) throws -> TimeInterval? {
+    var val = linger()
+    var len = socklen_t(MemoryLayout<linger>.stride)
+
+    #if os(Linux)
+      let option = SO_LINGER
+    #else
+      let option = SO_LINGER_SEC
+    #endif
+
+    let ret = getsockopt(fd, SOL_SOCKET, option, &val, &len)
+    try Error.makeAndThrow(fromReturnCode: ret)
+
+    if val.l_onoff == 0 {
+      return nil
+    }
+    return TimeInterval(val.l_linger)
   }
 
   private static func setOption(fd: Int32, option: Int32, value: Int32) throws {
@@ -43,12 +79,12 @@ class Socket {
     try Error.makeAndThrow(fromReturnCode: ret)
   }
 
-  private static func setLingerOption(fd: Int32, on: Bool, t: TimeInterval) throws {
+  private static func setLingerOption(fd: Int32, t: TimeInterval?) throws {
     var val = linger()
 
-    val.l_onoff = on ? 1 : 0
+    val.l_onoff = t == nil ? 0 : 1
     val.l_linger = 0
-    if on && t > 0 {
+    if let t = t, t > 0 {
       let secs = Int32(t)
       val.l_linger = secs
     }
@@ -63,9 +99,14 @@ class Socket {
     try Error.makeAndThrow(fromReturnCode: ret)
   }
 
-  private static func setFcntl(fd: Int32, flag: Int32) throws {
+  private static func getFcntl(fd: Int32) throws -> Int32 {
     let flags = fcntl(fd, F_GETFL)
     try Error.makeAndThrow(fromReturnCode: flags)
+    return flags
+  }
+
+  private static func setFcntl(fd: Int32, flag: Int32) throws {
+    let flags = try getFcntl(fd: fd)
 
     // if flag is negative, unset the flag
     let new = flag >= 0 ? (flags | flag) : (flags & ~(-flag))
@@ -140,7 +181,7 @@ class Socket {
   }
 
   func getReadTimeout() throws -> TimeInterval {
-
+    return try Socket.getTimevalOption(fd: fd, option: SO_RCVTIMEO)
   }
 
   func setWriteTimeout(_ t: TimeInterval) throws {
@@ -148,19 +189,15 @@ class Socket {
   }
 
   func getWriteTimeout() throws -> TimeInterval {
-
+    return try Socket.getTimevalOption(fd: fd, option: SO_SNDTIMEO)
   }
 
-  func setLinger(timeout: TimeInterval) throws {
-    try Socket.setLingerOption(fd: fd, on: true, t: timeout)
-  }
-
-  func setNoLinger() throws {
-    try Socket.setLingerOption(fd: fd, on: false, t: 0)
+  func setLinger(timeout: TimeInterval?) throws {
+    try Socket.setLingerOption(fd: fd, t: timeout)
   }
 
   func getLinger() throws -> TimeInterval? {
-
+    return try Socket.getLingerOption(fd: fd)
   }
 
   func setBlocking() throws {
@@ -172,7 +209,8 @@ class Socket {
   }
 
   func isBlocking() throws -> Bool {
-
+    let flags = try Socket.getFcntl(fd: fd)
+    return (flags & O_NONBLOCK) == 0
   }
 
   func listen(backlog: Int) throws {
