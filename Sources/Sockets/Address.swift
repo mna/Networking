@@ -1,10 +1,21 @@
 import LowSockets
 
+public enum IPVersion {
+  case any
+  case v4
+  case v6
+}
+
+public enum UnixType {
+  case stream
+  case datagram
+  // TODO: case packet?
+}
+
 public enum Network {
-  case tcp
-  case udp
-  case unix
-  case unixgram
+  case tcp(IPVersion)
+  case udp(IPVersion)
+  case unix(UnixType)
 }
 
 public protocol AddressProtocol {
@@ -20,13 +31,13 @@ public protocol AddressProtocol {
 
 public struct TCPAddress: AddressProtocol {
   public var network: Network {
-    return .tcp
+    return .tcp(.any)
   }
 }
 
 public struct UDPAddress: AddressProtocol {
   public var network: Network {
-    return .udp
+    return .udp(.any)
   }
 }
 
@@ -34,6 +45,6 @@ public struct UnixAddress: AddressProtocol {
   private let isDatagram: Bool
 
   public var network: Network {
-    return isDatagram ? .unixgram : .unix
+    return isDatagram ? .unix(.datagram) : .unix(.stream)
   }
 }
