@@ -1,8 +1,8 @@
 import Libc
 
-// MARK: - Error
+// MARK: - CError
 
-struct Error: Swift.Error {
+struct CError: Swift.Error {
   let code: Int32
   let message: String
 
@@ -16,15 +16,15 @@ struct Error: Swift.Error {
   }
 
   static func makeAndThrow(fromReturnCode code: Int32, errorValue: Int32 = -1) throws {
-    if let err = Error(fromReturnCode: code, errorValue: errorValue) {
+    if let err = CError(fromReturnCode: code, errorValue: errorValue) {
       throw err
     }
   }
 }
 
-// MARK: - Error+CustomStringConvertible
+// MARK: - CError+CustomStringConvertible
 
-extension Error: CustomStringConvertible {
+extension CError: CustomStringConvertible {
   var description: String {
     return "error \(code): \(message)"
   }

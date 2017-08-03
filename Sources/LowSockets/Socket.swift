@@ -17,7 +17,7 @@ class Socket {
     var len = socklen_t(MemoryLayout<Int32>.size)
 
     let ret = getsockopt(fd, SOL_SOCKET, option, &v, &len)
-    try Error.makeAndThrow(fromReturnCode: ret)
+    try CError.makeAndThrow(fromReturnCode: ret)
     return v
   }
 
@@ -26,7 +26,7 @@ class Socket {
     var len = socklen_t(MemoryLayout<timeval>.stride)
 
     let ret = getsockopt(fd, SOL_SOCKET, option, &val, &len)
-    try Error.makeAndThrow(fromReturnCode: ret)
+    try CError.makeAndThrow(fromReturnCode: ret)
 
     let secs = Int(val.tv_sec)
     let us = Int(val.tv_usec)
@@ -46,7 +46,7 @@ class Socket {
     #endif
 
     let ret = getsockopt(fd, SOL_SOCKET, option, &val, &len)
-    try Error.makeAndThrow(fromReturnCode: ret)
+    try CError.makeAndThrow(fromReturnCode: ret)
 
     if val.l_onoff == 0 {
       return nil
@@ -57,7 +57,7 @@ class Socket {
   private static func setOption(fd: Int32, option: Int32, value: Int32) throws {
     var v = value
     let ret = setsockopt(fd, SOL_SOCKET, option, &v, socklen_t(MemoryLayout<Int32>.size))
-    try Error.makeAndThrow(fromReturnCode: ret)
+    try CError.makeAndThrow(fromReturnCode: ret)
   }
 
   private static func setTimevalOption(fd: Int32, option: Int32, t: TimeInterval) throws {
@@ -76,7 +76,7 @@ class Socket {
     }
 
 		let ret = setsockopt(fd, SOL_SOCKET, option, &val, socklen_t(MemoryLayout<timeval>.stride))
-    try Error.makeAndThrow(fromReturnCode: ret)
+    try CError.makeAndThrow(fromReturnCode: ret)
   }
 
   private static func setLingerOption(fd: Int32, t: TimeInterval?) throws {
@@ -96,12 +96,12 @@ class Socket {
     #endif
 
 		let ret = setsockopt(fd, SOL_SOCKET, option, &val, socklen_t(MemoryLayout<linger>.stride))
-    try Error.makeAndThrow(fromReturnCode: ret)
+    try CError.makeAndThrow(fromReturnCode: ret)
   }
 
   private static func getFcntl(fd: Int32) throws -> Int32 {
     let flags = fcntl(fd, F_GETFL)
-    try Error.makeAndThrow(fromReturnCode: flags)
+    try CError.makeAndThrow(fromReturnCode: flags)
     return flags
   }
 
@@ -112,7 +112,7 @@ class Socket {
     let new = flag >= 0 ? (flags | flag) : (flags & ~(-flag))
 
     let ret = fcntl(fd, F_SETFL, new)
-    try Error.makeAndThrow(fromReturnCode: ret)
+    try CError.makeAndThrow(fromReturnCode: ret)
   }
 
   // MARK: - ShutdownMode
@@ -140,7 +140,7 @@ class Socket {
 
   init(family: Family = .ip4, type: SocketType = .stream, proto: SocketProtocol = .tcp) throws {
     let fd = socket(family.value, type.value, proto.value)
-    try Error.makeAndThrow(fromReturnCode: fd)
+    try CError.makeAndThrow(fromReturnCode: fd)
 
     self.fd = fd
     self.family = family
@@ -215,16 +215,16 @@ class Socket {
 
   func listen(backlog: Int) throws {
     let ret = clisten(fd, Int32(backlog))
-    try Error.makeAndThrow(fromReturnCode: ret)
+    try CError.makeAndThrow(fromReturnCode: ret)
   }
 
   func shutdown(mode: ShutdownMode = .readWrite) throws {
     let ret = cshutdown(fd, mode.value)
-    try Error.makeAndThrow(fromReturnCode: ret)
+    try CError.makeAndThrow(fromReturnCode: ret)
   }
 
   func close() throws {
     let ret = cclose(fd)
-    try Error.makeAndThrow(fromReturnCode: ret)
+    try CError.makeAndThrow(fromReturnCode: ret)
   }
 }
