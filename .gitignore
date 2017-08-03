@@ -1,4 +1,13 @@
+# Apple desktop files
 .DS_Store
+
+# package manager directories
 /.build
 /Packages
+
+# Xcode projects
 /*.xcodeproj
+
+# Vim temporary files
+*.sw?
+

@@ -2,7 +2,7 @@ import Libc
 
 // MARK: - Family
 
-struct Family {
+struct Family: Equatable {
   let value: Int32
 
   init(value: Int32) {
@@ -26,11 +26,15 @@ struct Family {
       return .unknown
     }
   }
+
+  static func ==(lhs: Family, rhs: Family) -> Bool {
+    return lhs.value == rhs.value
+  }
 }
 
 // MARK: - SocketType
 
-struct SocketType {
+struct SocketType: Equatable {
   let value: Int32
 
   init(value: Int32) {
@@ -51,11 +55,15 @@ struct SocketType {
       return .unknown
     }
   }
+
+  static func ==(lhs: SocketType, rhs: SocketType) -> Bool {
+    return lhs.value == rhs.value
+  }
 }
 
 // MARK: - SocketProtocol
 
-struct SocketProtocol {
+struct SocketProtocol: Equatable {
   let value: Int32
 
   init(value: Int32) {
@@ -79,4 +87,9 @@ struct SocketProtocol {
       return .unknown
     }
   }
+
+  static func ==(lhs: SocketProtocol, rhs: SocketProtocol) -> Bool {
+    return lhs.value == rhs.value
+  }
 }
+
