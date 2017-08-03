@@ -4,6 +4,8 @@ import Libc
 // instead of the libc/darwin system call).
 private var cclose = close
 
+// MARK: - Socket
+
 class Socket {
   private static func getOption(fd: Int32, option: Int32) throws -> Int32 {
     var v: Int32 = 0
@@ -14,10 +16,26 @@ class Socket {
     return v
   }
 
-  private let fd: Int32
-  private let family: Family
-  private let type: SocketType
-  private let proto: SocketProtocol
+  private static func setFcntl(fd: Int32, flag: Int32) throws {
+    let flags = fcntl(fd, F_GETFL)
+    try Error.makeAndThrow(fromReturnCode: flags)
+
+    // if flag is negative, unset the flag
+    let new = flag >= 0 ? (flags | flag) : (flags & ~(-flag))
+
+    let ret = fcntl(fd, F_SETFL, new)
+    try Error.makeAndThrow(fromReturnCode: ret)
+  }
+
+  // MARK: - Properties
+
+  let fd: Int32
+  let family: Family
+  let type: SocketType
+  let proto: SocketProtocol
+  private(set) var isBlocking: Bool = true // blocking by default
+
+  // MARK: - Constructors
 
   init(family: Family = .ip4, type: SocketType = .stream, proto: SocketProtocol = .tcp) throws {
     let fd = socket(family.value, type.value, proto.value)
@@ -43,13 +61,23 @@ class Socket {
     self.type = SocketType.make(try Socket.getOption(fd: fd, option: SO_TYPE))
   }
 
+  deinit {
+    try? close()
+  }
+
+  // MARK: - Methods
+
+  func setBlocking() throws {
+    try Socket.setFcntl(fd: fd, flag: -O_NONBLOCK)
+  }
+
+  func setNonBlocking() throws {
+    try Socket.setFcntl(fd: fd, flag: O_NONBLOCK)
+  }
+
   func close() throws {
     let ret = cclose(fd)
     try Error.makeAndThrow(fromReturnCode: ret)
-  }
-
-  deinit {
-    try? close()
   }
 }
 
