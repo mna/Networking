@@ -1,16 +1,18 @@
 import Libc
 
-public struct Family {
-  public let value: Int32
+// MARK: - Family
+
+struct Family {
+  let value: Int32
 
   init(value: Int32) {
     self.value = value
   }
 
-  public static let ip4 = Family(value: AF_INET)
-  public static let ip6 = Family(value: AF_INET6)
-  public static let unix = Family(value: AF_LOCAL)
-  public static let unknown = Family(value: -1)
+  static let ip4 = Family(value: AF_INET)
+  static let ip6 = Family(value: AF_INET6)
+  static let unix = Family(value: AF_LOCAL)
+  static let unknown = Family(value: -1)
 
   static func make(_ v: Int32) -> Family {
     switch v {
@@ -26,16 +28,18 @@ public struct Family {
   }
 }
 
-public struct SocketType {
-  public let value: Int32
+// MARK: - SocketType
+
+struct SocketType {
+  let value: Int32
 
   init(value: Int32) {
     self.value = value
   }
 
-  public static let stream = SocketType(value: SOCK_STREAM)
-  public static let datagram = SocketType(value: SOCK_DGRAM)
-  public static let unknown = SocketType(value: -1)
+  static let stream = SocketType(value: SOCK_STREAM)
+  static let datagram = SocketType(value: SOCK_DGRAM)
+  static let unknown = SocketType(value: -1)
 
   static func make(_ v: Int32) -> SocketType {
     switch v {
@@ -49,17 +53,19 @@ public struct SocketType {
   }
 }
 
-public struct SocketProtocol {
-  public let value: Int32
+// MARK: - SocketProtocol
+
+struct SocketProtocol {
+  let value: Int32
 
   init(value: Int32) {
     self.value = value
   }
 
-  public static let tcp = SocketProtocol(value: IPPROTO_TCP)
-  public static let udp = SocketProtocol(value: IPPROTO_UDP)
-  public static let unix = SocketProtocol(value: 0)
-  public static let unknown = SocketProtocol(value: -1)
+  static let tcp = SocketProtocol(value: IPPROTO_TCP)
+  static let udp = SocketProtocol(value: IPPROTO_UDP)
+  static let unix = SocketProtocol(value: 0)
+  static let unknown = SocketProtocol(value: -1)
 
   static func make(_ v: Int32) -> SocketProtocol {
     switch v {
