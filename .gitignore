@@ -11,3 +11,8 @@
 # Vim temporary files
 *.sw?
 
+# sourcekitten/jazzy files and directories
+LowSockets.json
+Sockets.json
+/docs
+

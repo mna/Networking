@@ -3,7 +3,22 @@ import Libc
 // MARK: - Resolver
 
 struct Resolver {
-  /// Get the port number for the specified service.
+  private init() { }
+
+  // Combines host and port into a network address of the form
+  // "host:port" or "[host]:port" if the host contains a colon
+  // or a percent sign.
+  static func join(host: String, port: String) -> String {
+    if host.contains(":") || host.contains("%") {
+      return "[\(host)]:\(port)"
+    }
+    return "\(host):\(port)"
+  }
+
+  static func split(hostPort: String) throws -> (String, String) {
+    return ("", "")
+  }
+
   static func lookupPort(forService service: String, family: Family = .unknown, proto: SocketProtocol = .tcp) throws -> Int {
     if let port = Int(service) {
       if port < 0 || port > 65535 {

@@ -4,6 +4,7 @@ enum Endianness {
   case little
   case big
 
+  // Endianness of the host where the executable is running.
   static private(set) var host: Endianness = {
     let number: UInt32 = 0x12345678
     let converted = number.bigEndian
@@ -14,7 +15,7 @@ enum Endianness {
     }
   }()
 
-  // BUG: why isn't byteSwapped defined on Integer protocol?
+  // TODO: replace those with a FixedWidthInteger-based generic one (Swift 4)
 
   static func ntoh(_ n: Int) -> Int {
     if host == .big {
