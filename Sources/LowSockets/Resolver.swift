@@ -42,21 +42,31 @@ struct Resolver {
         if info != nil { freeaddrinfo(info) }
       }
 
-      let ret = getaddrinfo(nil, service, &hints, &info)
+      let ret = getaddrinfo(nil, service.lowercased(), &hints, &info)
       try CError.makeAndThrow(fromGAICode: ret)
 
+      var list = info
       while true {
-        guard let addr = info else {
+        guard let addr = list else {
           break
         }
         switch addr.pointee.ai_family {
         case Family.ip4.value:
-          print("ip4")
+          let port = addr.pointee.ai_addr.withMemoryRebound(to: sockaddr_in.self, capacity: 1) { ptr in
+            return Endianness.ntoh(ptr.pointee.sin_port)
+          }
+          return Int(port)
+
         case Family.ip6.value:
-          print("ip6")
+          let port = addr.pointee.ai_addr.withMemoryRebound(to: sockaddr_in6.self, capacity: 1) { ptr in
+            return Endianness.ntoh(ptr.pointee.sin6_port)
+          }
+          return Int(port)
+
         default:
           break
         }
+        list = addr.pointee.ai_next
       }
     }
 
