@@ -77,15 +77,73 @@ struct Resolver {
     return (host, port)
   }
 
-  static func lookupIP() throws -> [IPAddress] {
-    return []
+  static func lookupIP(forHost host: String) throws -> [IPAddress] {
+    var hints = addrinfo()
+
+    hints.ai_socktype = SocketType.stream.value
+
+    var addrs: [IPAddress] = []
+    do {
+      var info: UnsafeMutablePointer<addrinfo>?
+      defer {
+        if info != nil { freeaddrinfo(info) }
+      }
+
+      let ret = getaddrinfo(host, nil, &hints, &info)
+      try CError.makeAndThrow(fromGAICode: ret)
+
+      var list = info
+      while true {
+        guard let addr = list else {
+          break
+        }
+
+        switch addr.pointee.ai_family {
+        case Family.ip4.value:
+          let bytes: [UInt8] = addr.pointee.ai_addr.withMemoryRebound(to: sockaddr_in.self, capacity: 1) { sai in
+            let count = MemoryLayout.stride(ofValue: sai.pointee.sin_addr)
+            return withUnsafePointer(to: &sai.pointee.sin_addr) { sad in
+              return sad.withMemoryRebound(to: UInt8.self, capacity: count) {
+                Array(UnsafeBufferPointer(start: $0, count: count))
+              }
+            }
+          }
+          if let ip = IPAddress(bytes: bytes) {
+            addrs.append(ip)
+          }
+
+        case Family.ip6.value:
+          let bytes: [UInt8] = addr.pointee.ai_addr.withMemoryRebound(to: sockaddr_in6.self, capacity: 1) { sai in
+            let count = MemoryLayout.stride(ofValue: sai.pointee.sin6_addr)
+            return withUnsafePointer(to: &sai.pointee.sin6_addr) { sad in
+              return sad.withMemoryRebound(to: UInt8.self, capacity: count) {
+                Array(UnsafeBufferPointer(start: $0, count: count))
+              }
+            }
+          }
+          if let ip = IPAddress(bytes: bytes) {
+            addrs.append(ip)
+          }
+
+        default:
+          break
+        }
+        list = addr.pointee.ai_next
+      }
+    }
+
+    return addrs
   }
 
   static func lookupPort(forService service: String, family: Family = .unknown, proto: SocketProtocol = .tcp) throws -> Int {
-    if let port = Int(service) {
+    let checkValidRange = { (port: Int) throws in
       if port < 0 || port > 65535 {
         throw MessageError("invalid port", context: ["service": service])
       }
+    }
+
+    if let port = Int(service) {
+      try checkValidRange(port)
       return port
     }
 
@@ -127,18 +185,21 @@ struct Resolver {
         guard let addr = list else {
           break
         }
+
         switch addr.pointee.ai_family {
         case Family.ip4.value:
           let port = addr.pointee.ai_addr.withMemoryRebound(to: sockaddr_in.self, capacity: 1) { ptr in
-            return Endianness.ntoh(ptr.pointee.sin_port)
+            return Int(Endianness.ntoh(ptr.pointee.sin_port))
           }
-          return Int(port)
+          try checkValidRange(port) // can still be out of range, apparently
+          return port
 
         case Family.ip6.value:
           let port = addr.pointee.ai_addr.withMemoryRebound(to: sockaddr_in6.self, capacity: 1) { ptr in
-            return Endianness.ntoh(ptr.pointee.sin6_port)
+            return Int(Endianness.ntoh(ptr.pointee.sin6_port))
           }
-          return Int(port)
+          try checkValidRange(port) // can still be out of range, apparently
+          return port
 
         default:
           break

@@ -68,11 +68,12 @@ class IPAddressTests: XCTestCase {
     let casesIP6: [([UInt16], [UInt8])] = [
       ([0, 0, 0, 0, 0, 0, 0, 1], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]),
       ([0xFFFF, 0, 0, 0, 0, 0, 0, 0], [0xff, 0xff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
-      ([0x2001, 0x0db8, 0, 0x0042, 0, 0x8a2e, 0x0370, 0x7334], [0x20, 0x01, 0x0d, 0xb8, 0, 0, 0, 0x42, 0, 0, 0x81, 0x2e, 0x03, 0x70, 0x73, 0x34]),
+      ([0x2001, 0x0db8, 0, 0x0042, 0, 0x8a2e, 0x0370, 0x7334], [0x20, 0x01, 0x0d, 0xb8, 0, 0, 0, 0x42, 0, 0, 0x8a, 0x2e, 0x03, 0x70, 0x73, 0x34]),
     ]
 
     for c in casesIP6 {
       let ip = IPAddress(c.0[0], c.0[1], c.0[2], c.0[3], c.0[4], c.0[5], c.0[6], c.0[7])
+      _ = ip
       XCTAssertEqual(c.1, ip.bytes)
       XCTAssertEqual(Family.ip6, ip.family)
     }

@@ -1,6 +1,13 @@
 import XCTest
 @testable import LowSockets
 
+extension IPAddress: Hashable {
+  public var hashValue: Int {
+    // stupid implementation just for tests
+    return "\(bytes)".hashValue
+  }
+}
+
 class ResolverTests: XCTestCase {
   // Test cases from Go net/ip_test.go
   let splitJoinCases: [(host: String, port: String, join: String)] = [
@@ -82,6 +89,26 @@ class ResolverTests: XCTestCase {
         if !msg.contains(c.err) {
           XCTFail("expected \(c.err), got \(msg)")
         }
+      }
+    }
+  }
+
+  func testLookupIP() {
+    let cases: [String: [IPAddress]] = [
+      "localhost": [IPAddress(127, 0, 0, 1), IPAddress(0, 0, 0, 0, 0, 0, 0, 1)], // loopback addresses
+      "broadcasthost": [IPAddress(255, 255, 255, 255)],
+    ]
+
+    for c in cases {
+      do {
+        let got = try Resolver.lookupIP(forHost: c.key)
+        let gotSet = Set<IPAddress>(got)
+        let wantSet = Set<IPAddress>(c.value)
+        if gotSet != wantSet {
+          XCTFail("want \(wantSet), got \(gotSet)")
+        }
+      } catch {
+        XCTFail("\(c.key): failed with \(error)")
       }
     }
   }
