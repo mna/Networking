@@ -92,4 +92,3 @@ struct SocketProtocol: Equatable {
     return lhs.value == rhs.value
   }
 }
-

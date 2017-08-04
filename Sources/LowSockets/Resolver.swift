@@ -77,6 +77,10 @@ struct Resolver {
     return (host, port)
   }
 
+  static func lookupIP() throws -> [IPAddress] {
+    return []
+  }
+
   static func lookupPort(forService service: String, family: Family = .unknown, proto: SocketProtocol = .tcp) throws -> Int {
     if let port = Int(service) {
       if port < 0 || port > 65535 {
