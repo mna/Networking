@@ -77,5 +77,21 @@ class IPAddressTests: XCTestCase {
       XCTAssertEqual(c.1, ip.bytes)
       XCTAssertEqual(Family.ip6, ip.family)
     }
+
+    let casesSeq = casesIP4 + casesIP6.map({ $0.1 })
+    for c in casesSeq {
+      guard let ip = IPAddress(bytes: c) else {
+        XCTFail("\(c): failed to create address")
+        continue
+      }
+      XCTAssertEqual(c, ip.bytes)
+    }
+
+    let invalidSeq: [[UInt8]] = [[], [0], [1, 2], [1, 2, 3, 4, 5]]
+    for c in invalidSeq {
+      if IPAddress(bytes: c) != nil {
+        XCTFail("\(c): returned valid address")
+      }
+    }
   }
 }

@@ -5,11 +5,15 @@ import Libc
 /// IPAddress represents an IP (v4 or v6) address.
 struct IPAddress: Equatable {
 
+  // MARK: - IPAddress+Equatable
+
   static func ==(lhs: IPAddress, rhs: IPAddress) -> Bool {
     return lhs.bytes.elementsEqual(rhs.bytes)
   }
 
   let bytes: [UInt8]
+
+  // MARK: - Constructors
 
   /// Creates an IPAddress by parsing the string which must be in "1.2.3.4" or
   /// "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff" formats (IPv4 or IPv6).
@@ -77,6 +81,8 @@ struct IPAddress: Equatable {
       UInt8(truncatingBitPattern: bb7 >> 8), UInt8(bb7 & 0xFF),
     ]
   }
+
+  // MARK: - Properties
 
   /// Indicates the address family (ip4 or ip6).
   var family: Family {

@@ -1,12 +1,16 @@
 import XCTest
 @testable import LowSockets
 
+// MARK: - IPAddress+Hashable
+
 extension IPAddress: Hashable {
   public var hashValue: Int {
     // stupid implementation just for tests
     return "\(bytes)".hashValue
   }
 }
+
+// MARK: - ResolverTests
 
 class ResolverTests: XCTestCase {
   // Test cases from Go net/ip_test.go
