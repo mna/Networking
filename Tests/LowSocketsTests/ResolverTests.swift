@@ -134,6 +134,8 @@ class ResolverTests: XCTestCase {
   }
 
   func testLookupCNAME() {
+    // TODO: works only if connected to internet, maybe find something else or
+    // skip if no connection.
     do {
       let cname = try Resolver.lookupCNAME(forHost: "www.twitter.com")
       XCTAssertEqual("twitter.com.", cname)
