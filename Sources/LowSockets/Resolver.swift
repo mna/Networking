@@ -2,6 +2,7 @@ import Libc
 
 // MARK: - Resolver
 
+/// Resolver performs various host, address and port parsing and DNS resolutions.
 struct Resolver {
   private init() { }
 
@@ -77,6 +78,39 @@ struct Resolver {
     return (host, port)
   }
 
+  /// Returns the canonical name for host.
+  static func lookupCNAME(forHost host: String) throws -> String {
+    #if os(Linux)
+      let flags = AI_CANONNAME | AI_V4MAPPED | AI_ALL
+    #else
+      let flags = AI_CANONNAME
+    #endif
+
+    var hints = addrinfo()
+    hints.ai_flags = flags
+    hints.ai_socktype = SocketType.stream.value
+
+    do {
+      var info: UnsafeMutablePointer<addrinfo>?
+      defer {
+        if info != nil { freeaddrinfo(info) }
+      }
+
+      let ret = getaddrinfo(host, nil, &hints, &info)
+      try CError.makeAndThrow(fromGAICode: ret)
+
+      if let info = info {
+        var cname = String(validatingUTF8: info.pointee.ai_canonname) ?? ""
+        if let last = cname.characters.last, last != "." {
+          cname.append(".")
+        }
+        return cname
+      }
+    }
+    return "" // TODO: throw or return empty string?
+  }
+
+  /// Returns a list of IP addresses for the specified host name.
   static func lookupIP(forHost host: String) throws -> [IPAddress] {
     var hints = addrinfo()
 
@@ -135,6 +169,7 @@ struct Resolver {
     return addrs
   }
 
+  /// Returns the port number corresponding to the service name and network family and protocol.
   static func lookupPort(forService service: String, family: Family = .unknown, proto: SocketProtocol = .tcp) throws -> Int {
     let checkValidRange = { (port: Int) throws in
       if port < 0 || port > 65535 {

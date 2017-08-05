@@ -128,4 +128,13 @@ class ResolverTests: XCTestCase {
       }
     }
   }
+
+  func testLookupCNAME() {
+    do {
+      let cname = try Resolver.lookupCNAME(forHost: "www.twitter.com")
+      XCTAssertEqual("twitter.com.", cname)
+    } catch {
+      XCTFail("\(error)")
+    }
+  }
 }
