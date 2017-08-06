@@ -8,7 +8,7 @@ class SocketTests: XCTestCase {
     XCTAssertEqual(sock.family, Family.ip4)
     XCTAssertEqual(sock.type, SocketType.stream)
     XCTAssertEqual(sock.proto, SocketProtocol.tcp)
-    XCTAssertTrue(sock.fd > 0)
+    XCTAssertTrue(sock.fileDescriptor > 0)
     XCTAssertTrue(try sock.isBlocking())
   }
 
@@ -26,7 +26,7 @@ class SocketTests: XCTestCase {
       XCTAssertEqual(sock.proto, SocketProtocol.unknown)
     #endif
     XCTAssertEqual(sock.type, SocketType.datagram)
-    XCTAssertEqual(sock.fd, fd)
+    XCTAssertEqual(sock.fileDescriptor, fd)
   }
 
   func testSetNonBlocking() throws {

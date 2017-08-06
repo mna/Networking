@@ -8,7 +8,7 @@ private var cshutdown = shutdown
 
 // MARK: - Socket
 
-class Socket {
+class Socket: FileDescriptorRepresentable {
 
   // MARK: - Static Methods
 
@@ -131,7 +131,7 @@ class Socket {
 
   // MARK: - Properties
 
-  let fd: Int32
+  let fileDescriptor: Int32
   let family: Family
   let type: SocketType
   let proto: SocketProtocol
@@ -142,24 +142,24 @@ class Socket {
     let fd = socket(family.value, type.value, proto.value)
     try CError.makeAndThrow(fromReturnCode: fd)
 
-    self.fd = fd
+    self.fileDescriptor = fd
     self.family = family
     self.type = type
     self.proto = proto
   }
 
   init(fd: Int32) throws {
-    self.fd = fd
+    self.fileDescriptor = fd
 
     #if os(Linux)
-      self.family = Family.make(try Socket.getOption(fd: fd, option: SO_DOMAIN))
-      self.proto = SocketProtocol.make(try Socket.getOption(fd: fd, option: SO_PROTOCOL))
+      self.family = Family.make(try Socket.getOption(fd: fileDescriptor, option: SO_DOMAIN))
+      self.proto = SocketProtocol.make(try Socket.getOption(fd: fileDescriptor, option: SO_PROTOCOL))
     #else
       self.family = .unknown
       self.proto = .unknown
     #endif
 
-    self.type = SocketType.make(try Socket.getOption(fd: fd, option: SO_TYPE))
+    self.type = SocketType.make(try Socket.getOption(fd: fileDescriptor, option: SO_TYPE))
   }
 
   deinit {
@@ -169,62 +169,62 @@ class Socket {
   // MARK: - Methods
 
   func setOption(_ option: Int32, to value: Int) throws {
-    try Socket.setOption(fd: fd, option: option, value: Int32(value))
+    try Socket.setOption(fd: fileDescriptor, option: option, value: Int32(value))
   }
 
   func getOption(_ option: Int32) throws -> Int {
-    return Int(try Socket.getOption(fd: fd, option: option))
+    return Int(try Socket.getOption(fd: fileDescriptor, option: option))
   }
 
   func setReadTimeout(_ t: TimeInterval) throws {
-    try Socket.setTimevalOption(fd: fd, option: SO_RCVTIMEO, t: t)
+    try Socket.setTimevalOption(fd: fileDescriptor, option: SO_RCVTIMEO, t: t)
   }
 
   func getReadTimeout() throws -> TimeInterval {
-    return try Socket.getTimevalOption(fd: fd, option: SO_RCVTIMEO)
+    return try Socket.getTimevalOption(fd: fileDescriptor, option: SO_RCVTIMEO)
   }
 
   func setWriteTimeout(_ t: TimeInterval) throws {
-    try Socket.setTimevalOption(fd: fd, option: SO_SNDTIMEO, t: t)
+    try Socket.setTimevalOption(fd: fileDescriptor, option: SO_SNDTIMEO, t: t)
   }
 
   func getWriteTimeout() throws -> TimeInterval {
-    return try Socket.getTimevalOption(fd: fd, option: SO_SNDTIMEO)
+    return try Socket.getTimevalOption(fd: fileDescriptor, option: SO_SNDTIMEO)
   }
 
   func setLinger(timeout: TimeInterval?) throws {
-    try Socket.setLingerOption(fd: fd, t: timeout)
+    try Socket.setLingerOption(fd: fileDescriptor, t: timeout)
   }
 
   func getLinger() throws -> TimeInterval? {
-    return try Socket.getLingerOption(fd: fd)
+    return try Socket.getLingerOption(fd: fileDescriptor)
   }
 
   func setBlocking() throws {
-    try Socket.setFcntl(fd: fd, flag: -O_NONBLOCK)
+    try Socket.setFcntl(fd: fileDescriptor, flag: -O_NONBLOCK)
   }
 
   func setNonBlocking() throws {
-    try Socket.setFcntl(fd: fd, flag: O_NONBLOCK)
+    try Socket.setFcntl(fd: fileDescriptor, flag: O_NONBLOCK)
   }
 
   func isBlocking() throws -> Bool {
-    let flags = try Socket.getFcntl(fd: fd)
+    let flags = try Socket.getFcntl(fd: fileDescriptor)
     return (flags & O_NONBLOCK) == 0
   }
 
   func listen(backlog: Int) throws {
-    let ret = clisten(fd, Int32(backlog))
+    let ret = clisten(fileDescriptor, Int32(backlog))
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
   func shutdown(mode: ShutdownMode = .readWrite) throws {
-    let ret = cshutdown(fd, mode.value)
+    let ret = cshutdown(fileDescriptor, mode.value)
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
   func close() throws {
-    let ret = cclose(fd)
+    let ret = cclose(fileDescriptor)
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 }
