@@ -138,6 +138,8 @@ class Socket: FileDescriptorRepresentable {
 
   // MARK: - Constructors
 
+  /// Creates an unconnected socket with the specified family, type and
+  /// protocol properties.
   init(family: Family = .ip4, type: SocketType = .stream, proto: SocketProtocol = .tcp) throws {
     let fd = socket(family.value, type.value, proto.value)
     try CError.makeAndThrow(fromReturnCode: fd)
@@ -148,6 +150,7 @@ class Socket: FileDescriptorRepresentable {
     self.proto = proto
   }
 
+  /// Creates a socket using an already existing socket's file descriptor.
   init(fd: Int32) throws {
     self.fileDescriptor = fd
 
@@ -211,6 +214,36 @@ class Socket: FileDescriptorRepresentable {
   func isBlocking() throws -> Bool {
     let flags = try Socket.getFcntl(fd: fileDescriptor)
     return (flags & O_NONBLOCK) == 0
+  }
+
+  // TODO: API bug, need to create socket before knowing
+  // the family it will connect to...
+
+  func connect(to addr: String, family: Family = .unknown, type: SocketType = .stream) throws {
+    if addr.contains("/") {
+      try connect(toPath: addr, type: type)
+    } else {
+      try connect(toHostPort: addr, family: family, type: type)
+    }
+  }
+
+  func connect(toPath path: String, type: SocketType = .stream) throws {
+    fatalError("not implemented")
+  }
+
+  func connect(toHostPort hostPort: String, family: Family = .unknown, type: SocketType = .stream) throws {
+    let (host, service) = try Resolver.split(hostPort: hostPort)
+    try connect(toHost: host, service: service, family: family, type: type)
+  }
+
+  func connect(toHost host: String, service: String, family: Family = .unknown, type: SocketType = .stream) throws {
+    let proto: SocketProtocol = type == .stream ? .tcp : .udp
+    let port = try Resolver.lookupPort(forService: service, family: family, proto: proto)
+    try connect(toHost: host, port: port, family: family, type: type)
+  }
+
+  func connect(toHost host: String, port: Int, family: Family = .unknown, type: SocketType = .stream) throws {
+    fatalError("not implemented")
   }
 
   func listen(backlog: Int) throws {
