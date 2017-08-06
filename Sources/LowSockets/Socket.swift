@@ -216,33 +216,29 @@ class Socket: FileDescriptorRepresentable {
     return (flags & O_NONBLOCK) == 0
   }
 
-  // TODO: API bug, need to create socket before knowing
-  // the family it will connect to...
-
-  func connect(to addr: String, family: Family = .unknown, type: SocketType = .stream) throws {
+  func connect(to addr: String) throws {
     if addr.contains("/") {
-      try connect(toPath: addr, type: type)
+      try connect(toPath: addr)
     } else {
-      try connect(toHostPort: addr, family: family, type: type)
+      try connect(toHostPort: addr)
     }
   }
 
-  func connect(toPath path: String, type: SocketType = .stream) throws {
+  func connect(toPath path: String) throws {
     fatalError("not implemented")
   }
 
-  func connect(toHostPort hostPort: String, family: Family = .unknown, type: SocketType = .stream) throws {
+  func connect(toHostPort hostPort: String) throws {
     let (host, service) = try Resolver.split(hostPort: hostPort)
-    try connect(toHost: host, service: service, family: family, type: type)
+    try connect(toHost: host, service: service)
   }
 
-  func connect(toHost host: String, service: String, family: Family = .unknown, type: SocketType = .stream) throws {
-    let proto: SocketProtocol = type == .stream ? .tcp : .udp
+  func connect(toHost host: String, service: String) throws {
     let port = try Resolver.lookupPort(forService: service, family: family, proto: proto)
-    try connect(toHost: host, port: port, family: family, type: type)
+    try connect(toHost: host, port: port)
   }
 
-  func connect(toHost host: String, port: Int, family: Family = .unknown, type: SocketType = .stream) throws {
+  func connect(toHost host: String, port: Int) throws {
     fatalError("not implemented")
   }
 

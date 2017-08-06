@@ -1,5 +1,7 @@
 import Libc
 
+// TODO: move to Sockets, create something closer to getaddrinfo in LowSockets.
+
 // MARK: - Resolver
 
 /// Resolver performs various host, address and port parsing and DNS resolutions.

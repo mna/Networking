@@ -31,10 +31,26 @@ class SocketTests: XCTestCase {
 
   func testSetNonBlocking() throws {
     let sock = try Socket()
+
+    // non-blocking works
     try sock.setNonBlocking()
     XCTAssertFalse(try sock.isBlocking())
+
+    // idempotent operation
+    try sock.setNonBlocking()
+    XCTAssertFalse(try sock.isBlocking())
+
+    // blocking reverts
     try sock.setBlocking()
     XCTAssertTrue(try sock.isBlocking())
+
+    // idempotent too
+    try sock.setBlocking()
+    XCTAssertTrue(try sock.isBlocking())
+
+    // non-blocking still works
+    try sock.setNonBlocking()
+    XCTAssertFalse(try sock.isBlocking())
   }
 
   func testSetLinger() throws {
