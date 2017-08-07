@@ -2,17 +2,18 @@ import Libc
 
 // MARK: - Family
 
-struct Family: Equatable {
+public struct Family: Equatable {
   let value: Int32
 
   init(value: Int32) {
     self.value = value
   }
 
-  static let ip4 = Family(value: AF_INET)
-  static let ip6 = Family(value: AF_INET6)
-  static let unix = Family(value: AF_LOCAL)
-  static let unknown = Family(value: -1)
+  public static let ip4 = Family(value: AF_INET)
+  public static let ip6 = Family(value: AF_INET6)
+  public static let unix = Family(value: AF_LOCAL)
+  public static let unspec = Family(value: AF_UNSPEC)
+  public static let unknown = Family(value: -1)
 
   static func make(_ v: Int32) -> Family {
     switch v {
@@ -20,6 +21,8 @@ struct Family: Equatable {
       return .ip4
     case Family.ip6.value:
       return .ip6
+    case Family.unspec.value:
+      return .unspec
     case Family.unix.value:
       return .unix
     default:
@@ -27,23 +30,23 @@ struct Family: Equatable {
     }
   }
 
-  static func ==(lhs: Family, rhs: Family) -> Bool {
+  public static func ==(lhs: Family, rhs: Family) -> Bool {
     return lhs.value == rhs.value
   }
 }
 
 // MARK: - SocketType
 
-struct SocketType: Equatable {
+public struct SocketType: Equatable {
   let value: Int32
 
   init(value: Int32) {
     self.value = value
   }
 
-  static let stream = SocketType(value: SOCK_STREAM)
-  static let datagram = SocketType(value: SOCK_DGRAM)
-  static let unknown = SocketType(value: -1)
+  public static let stream = SocketType(value: SOCK_STREAM)
+  public static let datagram = SocketType(value: SOCK_DGRAM)
+  public static let unknown = SocketType(value: -1)
 
   static func make(_ v: Int32) -> SocketType {
     switch v {
@@ -56,26 +59,26 @@ struct SocketType: Equatable {
     }
   }
 
-  static func ==(lhs: SocketType, rhs: SocketType) -> Bool {
+  public static func ==(lhs: SocketType, rhs: SocketType) -> Bool {
     return lhs.value == rhs.value
   }
 }
 
 // MARK: - SocketProtocol
 
-struct SocketProtocol: Equatable {
+public struct SocketProtocol: Equatable {
   let value: Int32
 
   init(value: Int32) {
     self.value = value
   }
 
-  static let tcp = SocketProtocol(value: IPPROTO_TCP)
-  static let udp = SocketProtocol(value: IPPROTO_UDP)
-  static let unix = SocketProtocol(value: 0)
-  static let unknown = SocketProtocol(value: -1)
+  public static let tcp = SocketProtocol(value: IPPROTO_TCP)
+  public static let udp = SocketProtocol(value: IPPROTO_UDP)
+  public static let unix = SocketProtocol(value: 0)
+  public static let unknown = SocketProtocol(value: -1)
 
-  static func make(_ v: Int32) -> SocketProtocol {
+  public static func make(_ v: Int32) -> SocketProtocol {
     switch v {
     case SocketProtocol.tcp.value:
       return .tcp
@@ -88,7 +91,7 @@ struct SocketProtocol: Equatable {
     }
   }
 
-  static func ==(lhs: SocketProtocol, rhs: SocketProtocol) -> Bool {
+  public static func ==(lhs: SocketProtocol, rhs: SocketProtocol) -> Bool {
     return lhs.value == rhs.value
   }
 }

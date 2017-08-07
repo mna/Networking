@@ -1,18 +1,7 @@
 import XCTest
 @testable import LowSockets
 
-// MARK: - IPAddress+Hashable
-
-extension IPAddress: Hashable {
-  public var hashValue: Int {
-    // stupid implementation just for tests
-    return "\(bytes)".hashValue
-  }
-}
-
-// MARK: - ResolverTests
-
-class ResolverTests: XCTestCase {
+class AddressTests: XCTestCase {
   // Test cases from Go net/ip_test.go
   let splitJoinCases: [(host: String, port: String, join: String)] = [
     ("www.google.com", "80", "www.google.com:80"),
@@ -67,7 +56,7 @@ class ResolverTests: XCTestCase {
     ]
 
     for c in cases + splitJoinCases {
-      let got = Resolver.join(host: c.host, port: c.port)
+      let got = Address.join(host: c.host, port: c.port)
       XCTAssertEqual(c.join, got)
     }
   }
@@ -75,7 +64,7 @@ class ResolverTests: XCTestCase {
   func testSplitHostPort() {
     for c in splitJoinCases {
       do {
-        let got = try Resolver.split(hostPort: c.join)
+        let got = try Address.split(hostPort: c.join)
 
         XCTAssertEqual(c.host, got.0)
         XCTAssertEqual(c.port, got.1)
@@ -86,7 +75,7 @@ class ResolverTests: XCTestCase {
 
     for c in splitFailureCases {
       do {
-        _ = try Resolver.split(hostPort: c.hostPort)
+        _ = try Address.split(hostPort: c.hostPort)
         XCTFail("expected error: \(c.hostPort)")
       } catch {
         let msg = "\(error)"
@@ -94,53 +83,6 @@ class ResolverTests: XCTestCase {
           XCTFail("expected \(c.err), got \(msg)")
         }
       }
-    }
-  }
-
-  func testLookupIP() {
-    let cases: [String: [IPAddress]] = [
-      "localhost": [IPAddress(127, 0, 0, 1), IPAddress(0, 0, 0, 0, 0, 0, 0, 1)], // loopback addresses
-      "broadcasthost": [IPAddress(255, 255, 255, 255)],
-    ]
-
-    for c in cases {
-      do {
-        let got = try Resolver.lookupIP(forHost: c.key)
-        let gotSet = Set<IPAddress>(got)
-        let wantSet = Set<IPAddress>(c.value)
-        if gotSet != wantSet {
-          XCTFail("want \(wantSet), got \(gotSet)")
-        }
-      } catch {
-        XCTFail("\(c.key): failed with \(error)")
-      }
-    }
-  }
-
-  func testLookupPort() {
-    let cases: [(String, Int)] = [
-      ("http", 80),
-      ("https", 443),
-    ]
-
-    for c in cases {
-      do {
-        let port = try Resolver.lookupPort(forService: c.0)
-        XCTAssertEqual(c.1, port)
-      } catch {
-        XCTFail("\(error)")
-      }
-    }
-  }
-
-  func testLookupCNAME() {
-    // TODO: works only if connected to internet, maybe find something else or
-    // skip if no connection.
-    do {
-      let cname = try Resolver.lookupCNAME(forHost: "www.twitter.com")
-      XCTAssertEqual("twitter.com.", cname)
-    } catch {
-      XCTFail("\(error)")
     }
   }
 }

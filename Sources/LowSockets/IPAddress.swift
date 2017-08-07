@@ -3,11 +3,11 @@ import Libc
 // MARK: - IPAddress
 
 /// IPAddress represents an IP (v4 or v6) address.
-struct IPAddress: Equatable {
+public struct IPAddress: Equatable {
 
   // MARK: - IPAddress+Equatable
 
-  static func ==(lhs: IPAddress, rhs: IPAddress) -> Bool {
+  static public func ==(lhs: IPAddress, rhs: IPAddress) -> Bool {
     return lhs.bytes.elementsEqual(rhs.bytes)
   }
 

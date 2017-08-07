@@ -165,6 +165,35 @@ class Socket: FileDescriptorRepresentable {
     self.type = SocketType.make(try Socket.getOption(fd: fileDescriptor, option: SO_TYPE))
   }
 
+  convenience init(connectTo host: String, type: SocketType = .stream) throws {
+    if host.contains("/") {
+      try self.init(connectToPath: host, type: type)
+    } else {
+      let (host, service) = try Address.split(hostPort: host)
+      let proto: SocketProtocol = type == .stream ? .tcp : .udp
+      try self.init(connectTo: host, service: service, type: type, proto: proto)
+    }
+  }
+
+  init(connectToPath path: String, type: SocketType = .stream) throws {
+    guard type != .unknown else {
+      throw MessageError("invalid socket type")
+    }
+  }
+
+  init(connectTo host: String, service: String, type: SocketType = .stream, proto: SocketProtocol = .tcp) throws {
+    guard type != .unknown else {
+      throw MessageError("invalid socket type")
+    }
+    guard proto == .tcp || proto == .udp else {
+      throw MessageError("invalid protocol")
+    }
+  }
+
+  convenience init(connectTo host: String, port: Int, type: SocketType = .stream, proto: SocketProtocol = .tcp) throws {
+    try self.init(connectTo: host, service: String(port), type: type, proto: proto)
+  }
+
   deinit {
     try? close()
   }
@@ -229,13 +258,12 @@ class Socket: FileDescriptorRepresentable {
   }
 
   func connect(toHostPort hostPort: String) throws {
-    let (host, service) = try Resolver.split(hostPort: hostPort)
+    let (host, service) = try Address.split(hostPort: hostPort)
     try connect(toHost: host, service: service)
   }
 
   func connect(toHost host: String, service: String) throws {
-    let port = try Resolver.lookupPort(forService: service, family: family, proto: proto)
-    try connect(toHost: host, port: port)
+    fatalError("not implemented")
   }
 
   func connect(toHost host: String, port: Int) throws {
