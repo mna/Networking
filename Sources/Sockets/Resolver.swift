@@ -19,7 +19,7 @@ struct Resolver {
   }
 
   /// Returns the port number corresponding to the service name and network family and protocol.
-  static func lookupPort(forService service: String, family: Family = .unknown, proto: SocketProtocol = .tcp) throws -> Int {
+  static func lookupPort(forService service: String, family: Family = .unspec, proto: SocketProtocol = .tcp) throws -> Int {
     let checkValidRange = { (port: Int) throws in
       if port < 0 || port > 65535 {
         throw MessageError("invalid port", context: ["service": service])

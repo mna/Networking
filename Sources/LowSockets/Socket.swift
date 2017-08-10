@@ -117,24 +117,41 @@ class Socket: FileDescriptorRepresentable {
 
   // MARK: - ShutdownMode
 
-  struct ShutdownMode {
-    let value: Int32
+  enum ShutdownMode {
+    case read
+    case write
+    case readWrite
 
-    private init(value: Int32) {
-      self.value = value
+    var value: Int32 {
+      guard let v = ShutdownMode.toValues[self] else {
+        fatalError("unknown ShutdownMode enum: \(self)")
+      }
+      return v
     }
 
-    static let read = ShutdownMode(value: SHUT_RD)
-    static let write = ShutdownMode(value: SHUT_WR)
-    static let readWrite = ShutdownMode(value: SHUT_RDWR)
+    static func make(_ value: Int32) -> ShutdownMode? {
+      return fromValues[value]
+    }
+
+    private static let toValues: [ShutdownMode: Int32] = [
+      .read: SHUT_RD,
+      .write: SHUT_WR,
+      .readWrite: SHUT_RDWR,
+    ]
+
+    private static let fromValues: [Int32: ShutdownMode] = [
+      SHUT_RD: .read,
+      SHUT_WR: .write,
+      SHUT_RDWR: .readWrite,
+    ]
   }
 
   // MARK: - Properties
 
   let fileDescriptor: Int32
-  let family: Family
+  let family: Family?
   let type: SocketType
-  let proto: SocketProtocol
+  let proto: SocketProtocol?
 
   // MARK: - Constructors
 
@@ -158,40 +175,15 @@ class Socket: FileDescriptorRepresentable {
       self.family = Family.make(try Socket.getOption(fd: fileDescriptor, option: SO_DOMAIN))
       self.proto = SocketProtocol.make(try Socket.getOption(fd: fileDescriptor, option: SO_PROTOCOL))
     #else
-      self.family = .unknown
-      self.proto = .unknown
+      self.family = nil
+      self.proto = nil
     #endif
 
-    self.type = SocketType.make(try Socket.getOption(fd: fileDescriptor, option: SO_TYPE))
-  }
-
-  convenience init(connectTo host: String, type: SocketType = .stream) throws {
-    if host.contains("/") {
-      try self.init(connectToPath: host, type: type)
-    } else {
-      let (host, service) = try Address.split(hostPort: host)
-      let proto: SocketProtocol = type == .stream ? .tcp : .udp
-      try self.init(connectTo: host, service: service, type: type, proto: proto)
+    let sockType = try Socket.getOption(fd: fileDescriptor, option: SO_TYPE)
+    guard let type = SocketType.make(sockType) else {
+      throw MessageError("unsupported socket type \(sockType)")
     }
-  }
-
-  init(connectToPath path: String, type: SocketType = .stream) throws {
-    guard type != .unknown else {
-      throw MessageError("invalid socket type")
-    }
-  }
-
-  init(connectTo host: String, service: String, type: SocketType = .stream, proto: SocketProtocol = .tcp) throws {
-    guard type != .unknown else {
-      throw MessageError("invalid socket type")
-    }
-    guard proto == .tcp || proto == .udp else {
-      throw MessageError("invalid protocol")
-    }
-  }
-
-  convenience init(connectTo host: String, port: Int, type: SocketType = .stream, proto: SocketProtocol = .tcp) throws {
-    try self.init(connectTo: host, service: String(port), type: type, proto: proto)
+    self.type = type
   }
 
   deinit {
