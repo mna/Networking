@@ -2,8 +2,7 @@ import Libc
 
 // MARK: - AddrInfo
 
-public struct AddrInfo {
-  private init() {}
+public enum AddrInfo {
 
   // MARK: - Flags
 
