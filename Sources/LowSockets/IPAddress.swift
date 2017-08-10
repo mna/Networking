@@ -28,7 +28,7 @@ public struct IPAddress: Equatable {
     if i4 < i6 {
       // parse as IPv4 address
       var addr = in_addr()
-      guard inet_pton(Family.ip4.value, s, &addr) == 1 else {
+      guard inet_pton(Family.inet.value, s, &addr) == 1 else {
         return nil
       }
       self.bytes = withUnsafePointer(to: &addr) {
@@ -41,7 +41,7 @@ public struct IPAddress: Equatable {
 
     // parse as IPv6 address
     var addr = in6_addr()
-    guard inet_pton(Family.ip6.value, s, &addr) == 1 else {
+    guard inet_pton(Family.inet6.value, s, &addr) == 1 else {
       return nil
     }
     self.bytes = withUnsafePointer(to: &addr) {
@@ -88,11 +88,11 @@ public struct IPAddress: Equatable {
   var family: Family {
     switch bytes.count {
     case 4:
-      return .ip4
+      return .inet
     case 16:
-      return .ip6
+      return .inet6
     default:
-      return .unknown
+      fatalError("unknown family for byte count \(bytes.count)")
     }
   }
 }

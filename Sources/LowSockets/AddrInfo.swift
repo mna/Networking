@@ -31,18 +31,17 @@ public enum AddrInfo {
 
   // MARK: - Static Methods
 
-  public static func `get`(host: String? = nil, service: String? = nil, flags: Flags = .default, family: Family = .unknown, type: SocketType = .unknown, proto: SocketProtocol = .unknown) throws -> (String, [Address]) {
-
+  public static func `get`(host: String? = nil, service: String? = nil, flags: Flags = .default, family: Family? = nil, type: SocketType? = nil, proto: SocketProtocol? = nil) throws -> (String, [Address]) {
     var hints = addrinfo()
     hints.ai_flags = flags.rawValue
 
-    if family != .unknown {
+    if let family = family {
       hints.ai_family = family.value
     }
-    if type != .unknown {
+    if let type = type {
       hints.ai_socktype = type.value
     }
-    if proto != .unknown {
+    if let proto = proto {
       hints.ai_protocol = proto.value
     }
 
@@ -88,7 +87,7 @@ public enum AddrInfo {
       }
 
       switch addr.pointee.ai_family {
-      case Family.ip4.value:
+      case Family.inet.value:
         var port = 0
 
         let bytes: [UInt8] = addr.pointee.ai_addr.withMemoryRebound(to: sockaddr_in.self, capacity: 1) { sai in
@@ -104,7 +103,7 @@ public enum AddrInfo {
           addrs.append(Address(ip: ip, port: port))
         }
 
-      case Family.ip6.value:
+      case Family.inet6.value:
         var port = 0
         var scopeID = 0
 

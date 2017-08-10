@@ -15,7 +15,7 @@ public enum Family {
     return v
   }
 
-  func make(_ value: Int32) -> Family? {
+  static func make(_ value: Int32) -> Family? {
     return fromValues[value]
   }
 
@@ -37,61 +37,59 @@ public enum Family {
 
 // MARK: - SocketType
 
-public struct SocketType: Equatable {
-  let value: Int32
+public enum SocketType {
+  case stream
+  case datagram
 
-  init(value: Int32) {
-    self.value = value
-  }
-
-  public static let stream = SocketType(value: SOCK_STREAM)
-  public static let datagram = SocketType(value: SOCK_DGRAM)
-  public static let unknown = SocketType(value: -1)
-
-  static func make(_ v: Int32) -> SocketType {
-    switch v {
-    case SocketType.stream.value:
-      return .stream
-    case SocketType.datagram.value:
-      return .datagram
-    default:
-      return .unknown
+  var value: Int32 {
+    guard let v = SocketType.toValues[self] else {
+      fatalError("unknown SocketType enum: \(self)")
     }
+    return v
   }
 
-  public static func ==(lhs: SocketType, rhs: SocketType) -> Bool {
-    return lhs.value == rhs.value
+  static func make(_ value: Int32) -> SocketType? {
+    return fromValues[value]
   }
+
+  private static let toValues: [SocketType: Int32] = [
+    .stream: SOCK_STREAM,
+    .datagram: SOCK_DGRAM,
+  ]
+
+  private static let fromValues: [Int32: SocketType] = [
+    SOCK_STREAM: .stream,
+    SOCK_DGRAM: .datagram,
+  ]
 }
 
 // MARK: - SocketProtocol
 
-public struct SocketProtocol: Equatable {
-  let value: Int32
+public enum SocketProtocol {
+  case tcp
+  case udp
+  case unix
 
-  init(value: Int32) {
-    self.value = value
-  }
-
-  public static let tcp = SocketProtocol(value: IPPROTO_TCP)
-  public static let udp = SocketProtocol(value: IPPROTO_UDP)
-  public static let unix = SocketProtocol(value: 0)
-  public static let unknown = SocketProtocol(value: -1)
-
-  public static func make(_ v: Int32) -> SocketProtocol {
-    switch v {
-    case SocketProtocol.tcp.value:
-      return .tcp
-    case SocketProtocol.udp.value:
-      return .udp
-    case SocketProtocol.unix.value:
-      return .unix
-    default:
-      return .unknown
+  var value: Int32 {
+    guard let v = SocketProtocol.toValues[self] else {
+      fatalError("unknown SocketProtocol enum: \(self)")
     }
+    return v
   }
 
-  public static func ==(lhs: SocketProtocol, rhs: SocketProtocol) -> Bool {
-    return lhs.value == rhs.value
+  static func make(_ value: Int32) -> SocketProtocol? {
+    return fromValues[value]
   }
+
+  private static let toValues: [SocketProtocol: Int32] = [
+    .tcp: IPPROTO_TCP,
+    .udp: IPPROTO_UDP,
+    .unix: 0,
+  ]
+
+  private static let fromValues: [Int32: SocketProtocol] = [
+    IPPROTO_TCP: .tcp,
+    IPPROTO_UDP: .udp,
+    0: .unix,
+  ]
 }

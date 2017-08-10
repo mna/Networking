@@ -140,7 +140,7 @@ class Socket: FileDescriptorRepresentable {
 
   /// Creates an unconnected socket with the specified family, type and
   /// protocol properties.
-  init(family: Family = .ip4, type: SocketType = .stream, proto: SocketProtocol = .tcp) throws {
+  init(family: Family = .inet, type: SocketType = .stream, proto: SocketProtocol = .tcp) throws {
     let fd = socket(family.value, type.value, proto.value)
     try CError.makeAndThrow(fromReturnCode: fd)
 
