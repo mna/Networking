@@ -263,6 +263,10 @@ class Socket: FileDescriptorRepresentable {
       throw MessageError("path too long", context: ["path": path])
     }
 
+    #if !os(Linux)
+      addr.sun_len = UInt8(addrLen)
+    #endif
+
     // if the socket has no family, leave it to 0 and let connect fail
     if let family = family {
       #if os(Linux)
@@ -271,14 +275,23 @@ class Socket: FileDescriptorRepresentable {
         addr.sun_family = UInt8(family.value)
       #endif
     }
+
+    // set the path
     var chars = path.utf8.map({ CChar($0) })
-    for i in 0..<maxLen {
-      if i < chars.count {
-        addr.sun_path[i] = chars[i]
-      } else {
-        addr.sun_path[i] = CChar(0)
+    withUnsafeMutablePointer(to: &addr.sun_path) { pathPtr in
+      pathPtr.withMemoryRebound(to: CChar.self, capacity: maxLen) { arPtr in
+        let buf = UnsafeMutableBufferPointer<CChar>(start: arPtr, count: maxLen)
+        for i in 0..<maxLen {
+          if i < chars.count {
+            buf[i] = chars[i]
+          } else {
+            buf[i] = CChar(0)
+          }
+        }
       }
     }
+
+    // call connect
     let ret: Int32 = withUnsafePointer(to: &addr) { addrPtr in
       return addrPtr.withMemoryRebound(to: sockaddr.self, capacity: 1) { (saPtr: UnsafePointer<sockaddr>) in
         return cconnect(fileDescriptor, saPtr, socklen_t(addrLen))
