@@ -36,6 +36,18 @@
             "kind": "test",
             "isDefault": true
           },
+          "problemMatcher": {
+            "owner": "swift",
+            "fileLocation": "absolute",
+            "pattern": {
+              "regexp": "^(.*):(\\d+):(?:(\\d+):)?\\s+(warning|error|note):\\s+(.*)$",
+              "file": 1,
+              "line": 2,
+              "column": 3,
+              "severity": 4,
+              "message": 5
+            }
+          },
           "presentation": {
               "echo": true,
               "reveal": "always",

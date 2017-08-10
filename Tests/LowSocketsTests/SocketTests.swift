@@ -5,7 +5,7 @@ import Libc
 class SocketTests: XCTestCase {
   func testDefaultSocket() throws {
     let sock = try Socket()
-    XCTAssertEqual(sock.family, Family.ip4)
+    XCTAssertEqual(sock.family, Family.inet)
     XCTAssertEqual(sock.type, SocketType.stream)
     XCTAssertEqual(sock.proto, SocketProtocol.tcp)
     XCTAssertTrue(sock.fileDescriptor > 0)
@@ -14,16 +14,16 @@ class SocketTests: XCTestCase {
 
   func testCreateFromFD() throws {
     // create a socket
-    let fd = socket(Family.ip6.value, SocketType.datagram.value, SocketProtocol.udp.value)
+    let fd = socket(Family.inet6.value, SocketType.datagram.value, SocketProtocol.udp.value)
     try CError.makeAndThrow(fromReturnCode: fd)
 
     let sock = try Socket(fd: fd)
     #if os(Linux)
-      XCTAssertEqual(sock.family, Family.ip6)
+      XCTAssertEqual(sock.family, Family.inet6)
       XCTAssertEqual(sock.proto, SocketProtocol.udp)
     #else
-      XCTAssertEqual(sock.family, Family.unknown)
-      XCTAssertEqual(sock.proto, SocketProtocol.unknown)
+      XCTAssertNil(sock.family)
+      XCTAssertNil(sock.proto)
     #endif
     XCTAssertEqual(sock.type, SocketType.datagram)
     XCTAssertEqual(sock.fileDescriptor, fd)
