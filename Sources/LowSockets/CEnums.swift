@@ -2,37 +2,37 @@ import Libc
 
 // MARK: - Family
 
-public struct Family: Equatable {
-  let value: Int32
+public enum Family {
+  case inet
+  case inet6
+  case unix
+  case unspec
 
-  init(value: Int32) {
-    self.value = value
-  }
-
-  public static let ip4 = Family(value: AF_INET)
-  public static let ip6 = Family(value: AF_INET6)
-  public static let unix = Family(value: AF_LOCAL)
-  public static let unspec = Family(value: AF_UNSPEC)
-  public static let unknown = Family(value: -1)
-
-  static func make(_ v: Int32) -> Family {
-    switch v {
-    case Family.ip4.value:
-      return .ip4
-    case Family.ip6.value:
-      return .ip6
-    case Family.unspec.value:
-      return .unspec
-    case Family.unix.value:
-      return .unix
-    default:
-      return .unknown
+  var value: Int32 {
+    guard let v = Family.toValues[self] else {
+      fatalError("unknown Family enum: \(self)")
     }
+    return v
   }
 
-  public static func ==(lhs: Family, rhs: Family) -> Bool {
-    return lhs.value == rhs.value
+  func make(_ value: Int32) -> Family? {
+    return fromValues[value]
   }
+
+  private static let toValues: [Family: Int32] = [
+    .inet: AF_INET,
+    .inet6: AF_INET6,
+    .unix: AF_LOCAL,
+    .unspec: AF_UNSPEC,
+  ]
+
+  private static let fromValues: [Int32: Family] = [
+    AF_INET: .inet,
+    AF_INET6: .inet6,
+    AF_LOCAL: .unix,
+    AF_UNIX: .unix,
+    AF_UNSPEC: .unspec,
+  ]
 }
 
 // MARK: - SocketType
