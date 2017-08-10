@@ -3,4 +3,3 @@
 protocol FileDescriptorRepresentable {
   var fileDescriptor: Int32 { get }
 }
-

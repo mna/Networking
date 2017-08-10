@@ -1,9 +1,10 @@
 import Libc
 import Foundation
 
-// to avoid ambiguity between the Socket methods and the libc/darwin system calls.
+// to avoid ambiguity between the Socket methods and the system calls.
 private var cclose = close
 private var clisten = listen
+private var cconnect = connect
 private var cshutdown = shutdown
 
 // MARK: - Socket
@@ -149,9 +150,9 @@ class Socket: FileDescriptorRepresentable {
   // MARK: - Properties
 
   let fileDescriptor: Int32
-  let family: Family?
+  let family: Family?        // can be nil if created from existing FD and can't lookup family
+  let proto: SocketProtocol? // idem
   let type: SocketType
-  let proto: SocketProtocol?
 
   // MARK: - Constructors
 
@@ -246,7 +247,44 @@ class Socket: FileDescriptorRepresentable {
   }
 
   func connect(toPath path: String) throws {
-    fatalError("not implemented")
+    // connect to a unix path, do some early checks that this has a
+    // remote chance to work.
+    if let family = family, family != .unix {
+      throw MessageError("invalid socket family to connect to unix path", context: ["path": path])
+    }
+    if let proto = proto, proto != .unix {
+      throw MessageError("invalid socket protocol to connect to unix path", context: ["path": path])
+    }
+
+    var addr = sockaddr_un()
+    let maxLen = MemoryLayout.size(ofValue: addr.sun_path)
+    let addrLen = MemoryLayout.stride(ofValue: addr)
+    if path.utf8.count > maxLen {
+      throw MessageError("path too long", context: ["path": path])
+    }
+
+    // if the socket has no family, leave it to 0 and let connect fail
+    if let family = family {
+      #if os(Linux)
+        addr.sun_family = UInt16(family.value)
+      #else
+        addr.sun_family = UInt8(family.value)
+      #endif
+    }
+    var chars = path.utf8.map({ CChar($0) })
+    for i in 0..<maxLen {
+      if i < chars.count {
+        addr.sun_path[i] = chars[i]
+      } else {
+        addr.sun_path[i] = CChar(0)
+      }
+    }
+    let ret: Int32 = withUnsafePointer(to: &addr) { addrPtr in
+      return addrPtr.withMemoryRebound(to: sockaddr.self, capacity: 1) { (saPtr: UnsafePointer<sockaddr>) in
+        return cconnect(fileDescriptor, saPtr, socklen_t(addrLen))
+      }
+    }
+    try CError.makeAndThrow(fromReturnCode: ret)
   }
 
   func connect(toHostPort hostPort: String) throws {
