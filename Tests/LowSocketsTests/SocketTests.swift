@@ -95,20 +95,22 @@ class SocketTests: XCTestCase {
 
   func testConnectUnix() throws {
     let server = Server(path: "/tmp/test.sock")
+    defer { unlink("/tmp/test.sock") }
 
     // run server in background and close it after a connection
     let expect = expectation(description: "server stops after a connection")
     DispatchQueue.global(qos: .background).async {
       do {
         try server.run { s in
-          expect.fulfill()
           throw MessageError("done")
         }
       } catch {
         XCTFail("server.run failed with \(error)")
       }
+      expect.fulfill()
     }
 
+    sleep(1)
     do {
       let sock = try Socket(family: .unix, proto: .unix)
       try sock.connect(toPath: "/tmp/test.sock")

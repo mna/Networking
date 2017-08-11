@@ -2,10 +2,12 @@ import Libc
 import Foundation
 
 // to avoid ambiguity between the Socket methods and the system calls.
-private var cclose = close
-private var clisten = listen
-private var cconnect = connect
-private var cshutdown = shutdown
+private let caccept = accept
+private let cbind = bind
+private let cclose = close
+private let cconnect = connect
+private let clisten = listen
+private let cshutdown = shutdown
 
 // MARK: - Socket
 
@@ -169,14 +171,15 @@ class Socket: FileDescriptorRepresentable {
   }
 
   /// Creates a socket using an already existing socket's file descriptor.
-  init(fd: Int32) throws {
+  init(fd: Int32, family: Family? = nil) throws {
     self.fileDescriptor = fd
 
+    // TODO: get protocol from family and socket type?
     #if os(Linux)
-      self.family = Family.make(try Socket.getOption(fd: fileDescriptor, option: SO_DOMAIN))
+      self.family = family ?? Family.make(try Socket.getOption(fd: fileDescriptor, option: SO_DOMAIN))
       self.proto = SocketProtocol.make(try Socket.getOption(fd: fileDescriptor, option: SO_PROTOCOL))
     #else
-      self.family = nil
+      self.family = family
       self.proto = nil
     #endif
 
@@ -236,6 +239,42 @@ class Socket: FileDescriptorRepresentable {
   func isBlocking() throws -> Bool {
     let flags = try Socket.getFcntl(fd: fileDescriptor)
     return (flags & O_NONBLOCK) == 0
+  }
+
+  func bind(to addr: Address) throws {
+    // no need to call getaddrinfo, address already resolved
+    fatalError("not implemented")
+  }
+
+  func bind(to addr: String) throws {
+    if addr.contains("/") {
+      try bind(toPath: addr)
+    } else {
+      try bind(toHostPort: addr)
+    }
+  }
+
+  func bind(toPath path: String) throws {
+    fatalError("not implemented")
+  }
+
+  func bind(toHostPort hostPort: String) throws {
+    let (host, service) = try Address.split(hostPort: hostPort)
+    try bind(toHost: host, service: service)
+  }
+
+  func bind(toHost host: String, service: String) throws {
+    // needs to resolve address, calling getaddrinfo
+    fatalError("not implemented")
+  }
+
+  func bind(toHost host: String, port: Int) throws {
+    try bind(toHost: host, service: String(port))
+  }
+
+  func connect(to addr: Address) throws {
+    // no need to call getaddrinfo, address already resolved
+    fatalError("not implemented")
   }
 
   func connect(to addr: String) throws {
@@ -306,16 +345,56 @@ class Socket: FileDescriptorRepresentable {
   }
 
   func connect(toHost host: String, service: String) throws {
+    // needs to call getaddrinfo to resolve address
     fatalError("not implemented")
   }
 
   func connect(toHost host: String, port: Int) throws {
-    fatalError("not implemented")
+    try connect(toHost: host, service: String(port))
   }
 
   func listen(backlog: Int) throws {
     let ret = clisten(fileDescriptor, Int32(backlog))
     try CError.makeAndThrow(fromReturnCode: ret)
+  }
+
+  func accept() throws -> Socket {
+    var addr = sockaddr()
+    var addrLen = socklen_t()
+
+    let ret = caccept(fileDescriptor, &addr, &addrLen)
+    try CError.makeAndThrow(fromReturnCode: ret)
+
+    guard let family = Family.make(Int32(addr.sa_family)) else {
+      throw MessageError("unsupported address family \(addr.sa_family)")
+    }
+
+    let remoteAddr: Address?
+    switch family {
+    case .inet:
+      remoteAddr = withUnsafePointer(to: &addr) { ptrAddr in
+        ptrAddr.withMemoryRebound(to: sockaddr_in.self, capacity: 1) { sa in
+          Address(sockaddr: sa.pointee)
+        }
+      }
+
+    case .inet6:
+      remoteAddr = withUnsafePointer(to: &addr) { ptrAddr in
+        ptrAddr.withMemoryRebound(to: sockaddr_in6.self, capacity: 1) { sa in
+          Address(sockaddr: sa.pointee)
+        }
+      }
+
+    case .unix:
+      // TODO: an Address for unix path?
+      fatalError("unexpected family type: \(family)")
+
+    case .unspec:
+      fatalError("unexpected family type: \(family)")
+    }
+
+    // TODO: store connected address on socket
+    return try Socket(fd: ret, family: family)
   }
 
   func shutdown(mode: ShutdownMode = .readWrite) throws {

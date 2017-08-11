@@ -1,5 +1,9 @@
+import Libc
+
 // MARK: - Address
 
+/// Address is a resolved network address, consisting of an IP address
+/// and a port, and if it is an IPv6 address, possibly a scope ID (zone).
 public struct Address: Equatable {
   /// Combines host and port into a network address of the form
   /// "host:port" or "[host]:port" if the host contains a colon
@@ -89,5 +93,40 @@ public struct Address: Equatable {
     self.ip = ip
     self.port = port
     self.scopeID = scopeID
+  }
+
+  init?(sockaddr sa: sockaddr_in) {
+    let port = Int(Endianness.ntoh(sa.sin_port))
+    var sa = sa
+
+    let count = MemoryLayout.stride(ofValue: sa.sin_addr)
+    let bytes = withUnsafePointer(to: &sa.sin_addr) { sad in
+      return sad.withMemoryRebound(to: UInt8.self, capacity: count) {
+        return Array(UnsafeBufferPointer(start: $0, count: count))
+      }
+    }
+
+    guard let ip = IPAddress(bytes: bytes) else {
+      return nil
+    }
+    self.init(ip: ip, port: port)
+  }
+
+  init?(sockaddr sa: sockaddr_in6) {
+    let port = Int(Endianness.ntoh(sa.sin6_port))
+    let scopeID = Int(sa.sin6_scope_id)
+    var sa = sa
+
+    let count = MemoryLayout.stride(ofValue: sa.sin6_addr)
+    let bytes = withUnsafePointer(to: &sa.sin6_addr) { sad in
+      return sad.withMemoryRebound(to: UInt8.self, capacity: count) {
+        return Array(UnsafeBufferPointer(start: $0, count: count))
+      }
+    }
+
+    guard let ip = IPAddress(bytes: bytes) else {
+      return nil
+    }
+    self.init(ip: ip, port: port, scopeID: scopeID)
   }
 }

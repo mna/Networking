@@ -88,38 +88,19 @@ public enum AddrInfo {
 
       switch addr.pointee.ai_family {
       case Family.inet.value:
-        var port = 0
-
-        let bytes: [UInt8] = addr.pointee.ai_addr.withMemoryRebound(to: sockaddr_in.self, capacity: 1) { sai in
-          let count = MemoryLayout.stride(ofValue: sai.pointee.sin_addr)
-          port = Int(Endianness.ntoh(sai.pointee.sin_port))
-          return withUnsafePointer(to: &sai.pointee.sin_addr) { sad in
-            return sad.withMemoryRebound(to: UInt8.self, capacity: count) {
-              return Array(UnsafeBufferPointer(start: $0, count: count))
-            }
-          }
+        let addr: Address? = addr.pointee.ai_addr.withMemoryRebound(to: sockaddr_in.self, capacity: 1) { sai in
+          Address(sockaddr: sai.pointee)
         }
-        if let ip = IPAddress(bytes: bytes) {
-          addrs.append(Address(ip: ip, port: port))
+        if let addr = addr {
+          addrs.append(addr)
         }
 
       case Family.inet6.value:
-        var port = 0
-        var scopeID = 0
-
-        let bytes: [UInt8] = addr.pointee.ai_addr.withMemoryRebound(to: sockaddr_in6.self, capacity: 1) { sai in
-          port = Int(Endianness.ntoh(sai.pointee.sin6_port))
-          scopeID = Int(sai.pointee.sin6_scope_id)
-
-          let count = MemoryLayout.stride(ofValue: sai.pointee.sin6_addr)
-          return withUnsafePointer(to: &sai.pointee.sin6_addr) { sad in
-            return sad.withMemoryRebound(to: UInt8.self, capacity: count) {
-              return Array(UnsafeBufferPointer(start: $0, count: count))
-            }
-          }
+        let addr: Address? = addr.pointee.ai_addr.withMemoryRebound(to: sockaddr_in6.self, capacity: 1) { sai in
+          Address(sockaddr: sai.pointee)
         }
-        if let ip = IPAddress(bytes: bytes) {
-          addrs.append(Address(ip: ip, port: port, scopeID: scopeID))
+        if let addr = addr {
+          addrs.append(addr)
         }
 
       default:
