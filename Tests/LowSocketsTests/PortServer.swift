@@ -6,9 +6,12 @@ import LowSockets
 class PortServer {
   let port: Int
   let host: String
+  let family: Family
+
   private var sock: Socket? = nil
 
-  init(_ host: String, _ port: Int) {
+  init(_ host: String, _ port: Int, family: Family = .inet) {
+    self.family = family
     self.host = host
     self.port = port
   }
@@ -18,7 +21,7 @@ class PortServer {
   }
 
   func listen() throws {
-    let sock = try Socket(family: .inet)
+    let sock = try Socket(family: family)
     self.sock = sock
 
     try sock.bind(toHost: host, port: port)

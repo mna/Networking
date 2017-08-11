@@ -238,8 +238,37 @@ public enum Address {
       }
       return ret
 
-    default:
-      fatalError("not implemented")
+    case .ip6(let ip, let port, let scope):
+      var sa = sockaddr_in6()
+      let len = MemoryLayout.stride(ofValue: sa)
+
+      #if os(Linux)
+        sa.sin6_family = UInt16(ip.family.value)
+      #else
+        sa.sin6_len = UInt8(len)
+        sa.sin6_family = UInt8(ip.family.value)
+      #endif
+
+      sa.sin6_port = UInt16(port).bigEndian
+      sa.sin6_flowinfo = 0
+      sa.sin6_scope_id = UInt32(scope)
+
+      let count = MemoryLayout.stride(ofValue: sa.sin6_addr)
+      withUnsafeMutablePointer(to: &sa.sin6_addr) { sad in
+        sad.withMemoryRebound(to: UInt8.self, capacity: count) { ar in
+          let buf = UnsafeMutableBufferPointer(start: ar, count: count)
+          for i in 0..<buf.count {
+            buf[i] = ip.bytes[i]
+          }
+        }
+      }
+
+      let ret = try withUnsafePointer(to: &sa) { ptr in
+        try ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { (saPtr: UnsafePointer<sockaddr>) in
+          try body(saPtr, socklen_t(len))
+        }
+      }
+      return ret
     }
   }
 }
