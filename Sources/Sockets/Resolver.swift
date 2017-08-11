@@ -2,6 +2,7 @@ import LowSockets
 
 // MARK: - Resolver
 
+/*
 /// Resolver performs various host, address and port parsing and DNS resolutions.
 struct Resolver {
   private init() { }
@@ -41,3 +42,5 @@ struct Resolver {
     throw MessageError("unkown service", context: ["service": service])
   }
 }
+
+*/

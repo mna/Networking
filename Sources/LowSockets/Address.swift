@@ -2,9 +2,8 @@ import Libc
 
 // MARK: - Address
 
-/// Address is a resolved network address, consisting of an IP address
-/// and a port, and if it is an IPv6 address, possibly a scope ID (zone).
-public struct Address: Equatable {
+/// Address is a resolved network address.
+public enum Address {
   /// Combines host and port into a network address of the form
   /// "host:port" or "[host]:port" if the host contains a colon
   /// or a percent sign.
@@ -77,22 +76,20 @@ public struct Address: Equatable {
     return (host, port)
   }
 
-  // MARK: - Properties
+  // MARK: - Enum Cases
+  case ip4(ip: IPAddress, port: Int)
+  case ip6(ip: IPAddress, port: Int, scopeID: Int)
+  case unix(path: String)
 
-  public let ip: IPAddress
-  public let port: Int
-  public let scopeID: Int
-
-  public static func ==(lhs: Address, rhs: Address) -> Bool {
-    return lhs.ip == rhs.ip &&
-      lhs.port == rhs.port &&
-      lhs.scopeID == rhs.scopeID
-  }
-
-  init(ip: IPAddress, port: Int, scopeID: Int = 0) {
-    self.ip = ip
-    self.port = port
-    self.scopeID = scopeID
+  init?(ip: IPAddress, port: Int, scopeID: Int = 0) {
+    switch ip.family {
+    case .inet:
+      self = .ip4(ip: ip, port: port)
+    case .inet6:
+      self = .ip6(ip: ip, port: port, scopeID: scopeID)
+    default:
+      return nil
+    }
   }
 
   init?(sockaddr sa: sockaddr_in) {
@@ -109,7 +106,7 @@ public struct Address: Equatable {
     guard let ip = IPAddress(bytes: bytes) else {
       return nil
     }
-    self.init(ip: ip, port: port)
+    self = .ip4(ip: ip, port: port)
   }
 
   init?(sockaddr sa: sockaddr_in6) {
@@ -127,6 +124,22 @@ public struct Address: Equatable {
     guard let ip = IPAddress(bytes: bytes) else {
       return nil
     }
-    self.init(ip: ip, port: port, scopeID: scopeID)
+    self = .ip6(ip: ip, port: port, scopeID: scopeID)
+  }
+
+  init?(sockaddr sa: sockaddr_un) {
+    var sa = sa
+    let maxLen = MemoryLayout.size(ofValue: sa.sun_path)
+
+    let maybePath = withUnsafeMutablePointer(to: &sa.sun_path) { pathPtr in
+      pathPtr.withMemoryRebound(to: CChar.self, capacity: maxLen) { arPtr in
+        String(validatingUTF8: arPtr)
+      }
+    }
+
+    guard let path = maybePath else {
+      return nil
+    }
+    self = .unix(path: path)
   }
 }

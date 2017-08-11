@@ -1,5 +1,6 @@
 import LowSockets
 
+/*
 public enum IPVersion {
   case any
   case v4
@@ -48,3 +49,5 @@ public struct UnixAddress: AddressProtocol {
     return isDatagram ? .unix(.datagram) : .unix(.stream)
   }
 }
+
+*/

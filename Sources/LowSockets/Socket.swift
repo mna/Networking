@@ -156,6 +156,8 @@ class Socket: FileDescriptorRepresentable {
   let proto: SocketProtocol? // idem
   let type: SocketType
 
+  private(set) var address: Address? = nil
+
   // MARK: - Constructors
 
   /// Creates an unconnected socket with the specified family, type and
@@ -171,23 +173,23 @@ class Socket: FileDescriptorRepresentable {
   }
 
   /// Creates a socket using an already existing socket's file descriptor.
-  init(fd: Int32, family: Family? = nil) throws {
+  init(fd: Int32, connectedTo address: Address? = nil, family: Family? = nil) throws {
     self.fileDescriptor = fd
-
-    // TODO: get protocol from family and socket type?
-    #if os(Linux)
-      self.family = family ?? Family.make(try Socket.getOption(fd: fileDescriptor, option: SO_DOMAIN))
-      self.proto = SocketProtocol.make(try Socket.getOption(fd: fileDescriptor, option: SO_PROTOCOL))
-    #else
-      self.family = family
-      self.proto = nil
-    #endif
+    self.address = address
 
     let sockType = try Socket.getOption(fd: fileDescriptor, option: SO_TYPE)
     guard let type = SocketType.make(sockType) else {
       throw MessageError("unsupported socket type \(sockType)")
     }
     self.type = type
+
+    #if os(Linux)
+      self.family = family ?? Family.make(try Socket.getOption(fd: fileDescriptor, option: SO_DOMAIN))
+      self.proto = SocketProtocol.make(try Socket.getOption(fd: fileDescriptor, option: SO_PROTOCOL))
+    #else
+      self.family = family
+      self.proto = family == .unix ? .unix : (type == .stream ? .tcp : .udp)
+    #endif
   }
 
   deinit {
@@ -386,15 +388,17 @@ class Socket: FileDescriptorRepresentable {
       }
 
     case .unix:
-      // TODO: an Address for unix path?
-      fatalError("unexpected family type: \(family)")
+      remoteAddr = withUnsafePointer(to: &addr) { ptrAddr in
+        ptrAddr.withMemoryRebound(to: sockaddr_un.self, capacity: 1) { sa in
+          Address(sockaddr: sa.pointee)
+        }
+      }
 
     case .unspec:
       fatalError("unexpected family type: \(family)")
     }
 
-    // TODO: store connected address on socket
-    return try Socket(fd: ret, family: family)
+    return try Socket(fd: ret, connectedTo: remoteAddr, family: family)
   }
 
   func shutdown(mode: ShutdownMode = .readWrite) throws {
@@ -403,6 +407,7 @@ class Socket: FileDescriptorRepresentable {
   }
 
   func close() throws {
+    self.address = nil
     let ret = cclose(fileDescriptor)
     try CError.makeAndThrow(fromReturnCode: ret)
   }
