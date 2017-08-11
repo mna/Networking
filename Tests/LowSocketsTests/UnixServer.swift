@@ -5,7 +5,7 @@ import LowSockets
 
 class UnixServer {
   let path: String
-  private var sock: Socket? = nil
+  private(set) var sock: Socket? = nil
 
   init(_ path: String) {
     self.path = path

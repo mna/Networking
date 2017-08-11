@@ -8,7 +8,7 @@ class PortServer {
   let host: String
   let family: Family
 
-  private var sock: Socket? = nil
+  private(set) var sock: Socket? = nil
 
   init(_ host: String, _ port: Int, family: Family = .inet) {
     self.family = family
