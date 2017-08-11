@@ -20,11 +20,10 @@ class SocketTests: XCTestCase {
     let sock = try Socket(fd: fd)
     #if os(Linux)
       XCTAssertEqual(sock.family, Family.inet6)
-      XCTAssertEqual(sock.proto, SocketProtocol.udp)
     #else
       XCTAssertNil(sock.family)
-      XCTAssertNil(sock.proto)
     #endif
+    XCTAssertEqual(sock.proto, SocketProtocol.udp)
     XCTAssertEqual(sock.type, SocketType.datagram)
     XCTAssertEqual(sock.fileDescriptor, fd)
   }

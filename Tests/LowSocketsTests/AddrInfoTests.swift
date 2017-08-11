@@ -21,7 +21,14 @@ class AddrInfoTests: XCTestCase {
       do {
         let (_, addrs) = try AddrInfo.get(service: c.0, proto: .tcp)
         for addr in addrs {
-          XCTAssertEqual(addr.port, c.1)
+          switch addr {
+          case .ip4(_, let port):
+            XCTAssertEqual(port, c.1)
+          case .ip6(_, let port, _):
+            XCTAssertEqual(port, c.1)
+          default:
+            XCTFail("unexpected address type: \(addr)")
+          }
         }
       } catch {
         XCTFail("\(c.0) failed with \(error)")
@@ -38,7 +45,17 @@ class AddrInfoTests: XCTestCase {
     for c in cases {
       do {
         let (_, got) = try AddrInfo.get(host: c.key, type: .stream)
-        let gotSet = Set<IPAddress>(got.map({ $0.ip }))
+        let gotSet = Set<IPAddress>(got.flatMap({
+          switch $0 {
+          case .ip4(let ip, _):
+            return ip
+          case .ip6(let ip, _, _):
+            return ip
+          default:
+            XCTFail("unexpected address type \($0)")
+            return nil
+          }
+        }))
         let wantSet = Set<IPAddress>(c.value)
         if gotSet != wantSet {
           XCTFail("want \(wantSet), got \(gotSet)")

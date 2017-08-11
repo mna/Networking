@@ -8,8 +8,5 @@ let package = Package(
       Target(name: "Libc"),
       Target(name: "LowSockets", dependencies: ["Libc"]),
       Target(name: "Sockets", dependencies: ["LowSockets"]),
-    ],
-    dependencies: [
-      .Package(url: "https://github.com/IBM-Swift/BlueSocket.git", majorVersion: 0),
     ]
 )

@@ -244,14 +244,8 @@ class Socket: FileDescriptorRepresentable {
   }
 
   func bind(to addr: Address) throws {
-    let ret: Int32
-    switch addr {
-    case .unix:
-      ret = addr.withUnsafeSockaddrPointer { (ptr, size) in
-        cbind(fileDescriptor, ptr, size)
-      }
-    default:
-      fatalError("not implemented")
+    let ret = addr.withUnsafeSockaddrPointer { (ptr, size) in
+      cbind(fileDescriptor, ptr, size)
     }
     try CError.makeAndThrow(fromReturnCode: ret)
   }
@@ -286,8 +280,10 @@ class Socket: FileDescriptorRepresentable {
   }
 
   func connect(to addr: Address) throws {
-    // no need to call getaddrinfo, address already resolved
-    fatalError("not implemented")
+    let ret = addr.withUnsafeSockaddrPointer { (ptr, size) in
+      cconnect(fileDescriptor, ptr, size)
+    }
+    try CError.makeAndThrow(fromReturnCode: ret)
   }
 
   func connect(to addr: String) throws {
@@ -299,59 +295,10 @@ class Socket: FileDescriptorRepresentable {
   }
 
   func connect(toPath path: String) throws {
-    // TODO: move that to connect(to: Address), and call it with an Address
-
-    // connect to a unix path, do some early checks that this has a
-    // remote chance to work.
-    if let family = family, family != .unix {
-      throw MessageError("invalid socket family to connect to unix path", context: ["path": path])
-    }
-    if let proto = proto, proto != .unix {
-      throw MessageError("invalid socket protocol to connect to unix path", context: ["path": path])
-    }
-
-    var addr = sockaddr_un()
-    let maxLen = MemoryLayout.size(ofValue: addr.sun_path)
-    let addrLen = MemoryLayout.stride(ofValue: addr)
-    if path.utf8.count >= maxLen { // >= because NULL-terminated
+    guard let addr = Address(path: path) else {
       throw MessageError("path too long", context: ["path": path])
     }
-
-    #if !os(Linux)
-      addr.sun_len = UInt8(addrLen)
-    #endif
-
-    // if the socket has no family, leave it to 0 and let connect fail
-    if let family = family {
-      #if os(Linux)
-        addr.sun_family = UInt16(family.value)
-      #else
-        addr.sun_family = UInt8(family.value)
-      #endif
-    }
-
-    // set the path
-    var chars = path.utf8.map({ CChar($0) })
-    withUnsafeMutablePointer(to: &addr.sun_path) { pathPtr in
-      pathPtr.withMemoryRebound(to: CChar.self, capacity: maxLen) { arPtr in
-        let buf = UnsafeMutableBufferPointer<CChar>(start: arPtr, count: maxLen)
-        for i in 0..<maxLen {
-          if i < chars.count {
-            buf[i] = chars[i]
-          } else {
-            buf[i] = CChar(0)
-          }
-        }
-      }
-    }
-
-    // call connect
-    let ret: Int32 = withUnsafePointer(to: &addr) { addrPtr in
-      return addrPtr.withMemoryRebound(to: sockaddr.self, capacity: 1) { (saPtr: UnsafePointer<sockaddr>) in
-        return cconnect(fileDescriptor, saPtr, socklen_t(addrLen))
-      }
-    }
-    try CError.makeAndThrow(fromReturnCode: ret)
+    try connect(to: addr)
   }
 
   func connect(toHostPort hostPort: String) throws {
@@ -368,7 +315,7 @@ class Socket: FileDescriptorRepresentable {
     try connect(toHost: host, service: String(port))
   }
 
-  func listen(backlog: Int) throws {
+  func listen(backlog: Int = 128) throws {
     let ret = clisten(fileDescriptor, Int32(backlog))
     try CError.makeAndThrow(fromReturnCode: ret)
   }
