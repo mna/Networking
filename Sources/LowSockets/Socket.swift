@@ -11,7 +11,7 @@ private let cshutdown = shutdown
 
 // MARK: - Socket
 
-class Socket: FileDescriptorRepresentable {
+public class Socket: FileDescriptorRepresentable {
 
   // MARK: - Static Methods
 
@@ -120,7 +120,7 @@ class Socket: FileDescriptorRepresentable {
 
   // MARK: - ShutdownMode
 
-  enum ShutdownMode {
+  public enum ShutdownMode {
     case read
     case write
     case readWrite
@@ -151,29 +151,29 @@ class Socket: FileDescriptorRepresentable {
 
   // MARK: - Properties
 
-  let fileDescriptor: Int32
-  let family: Family?        // can be nil if created from existing FD and can't lookup family
-  let proto: SocketProtocol? // idem
-  let type: SocketType
+  public let fileDescriptor: Int32
+  public let family: Family?        // can be nil if created from existing FD and can't lookup family
+  public let proto: SocketProtocol
+  public let type: SocketType
 
-  private(set) var address: Address? = nil
+  public private(set) var address: Address? = nil
 
   // MARK: - Constructors
 
-  /// Creates an unconnected socket with the specified family, type and
-  /// protocol properties.
-  init(family: Family = .inet, type: SocketType = .stream, proto: SocketProtocol = .tcp) throws {
-    let fd = socket(family.value, type.value, proto.value)
-    try CError.makeAndThrow(fromReturnCode: fd)
-
-    self.fileDescriptor = fd
+  /// Creates an unconnected socket with the specified family and type,
+  /// automatically deducing the protocol.
+  public init(family: Family = .inet, type: SocketType = .stream) throws {
     self.family = family
     self.type = type
-    self.proto = proto
+    self.proto = family == .unix ? .unix : (type == .stream ? .tcp : .udp)
+
+    let fd = socket(family.value, type.value, proto.value)
+    try CError.makeAndThrow(fromReturnCode: fd)
+    self.fileDescriptor = fd
   }
 
   /// Creates a socket using an already existing socket's file descriptor.
-  init(fd: Int32, connectedTo address: Address? = nil, family: Family? = nil) throws {
+  public init(fd: Int32, connectedTo address: Address? = nil, family: Family? = nil) throws {
     self.fileDescriptor = fd
     self.address = address
 
@@ -198,59 +198,59 @@ class Socket: FileDescriptorRepresentable {
 
   // MARK: - Methods
 
-  func setOption(_ option: Int32, to value: Int) throws {
+  public func setOption(_ option: Int32, to value: Int) throws {
     try Socket.setOption(fd: fileDescriptor, option: option, value: Int32(value))
   }
 
-  func getOption(_ option: Int32) throws -> Int {
+  public func getOption(_ option: Int32) throws -> Int {
     return Int(try Socket.getOption(fd: fileDescriptor, option: option))
   }
 
-  func setReadTimeout(_ t: TimeInterval) throws {
+  public func setReadTimeout(_ t: TimeInterval) throws {
     try Socket.setTimevalOption(fd: fileDescriptor, option: SO_RCVTIMEO, t: t)
   }
 
-  func getReadTimeout() throws -> TimeInterval {
+  public func getReadTimeout() throws -> TimeInterval {
     return try Socket.getTimevalOption(fd: fileDescriptor, option: SO_RCVTIMEO)
   }
 
-  func setWriteTimeout(_ t: TimeInterval) throws {
+  public func setWriteTimeout(_ t: TimeInterval) throws {
     try Socket.setTimevalOption(fd: fileDescriptor, option: SO_SNDTIMEO, t: t)
   }
 
-  func getWriteTimeout() throws -> TimeInterval {
+  public func getWriteTimeout() throws -> TimeInterval {
     return try Socket.getTimevalOption(fd: fileDescriptor, option: SO_SNDTIMEO)
   }
 
-  func setLinger(timeout: TimeInterval?) throws {
+  public func setLinger(timeout: TimeInterval?) throws {
     try Socket.setLingerOption(fd: fileDescriptor, t: timeout)
   }
 
-  func getLinger() throws -> TimeInterval? {
+  public func getLinger() throws -> TimeInterval? {
     return try Socket.getLingerOption(fd: fileDescriptor)
   }
 
-  func setBlocking() throws {
+  public func setBlocking() throws {
     try Socket.setFcntl(fd: fileDescriptor, flag: -O_NONBLOCK)
   }
 
-  func setNonBlocking() throws {
+  public func setNonBlocking() throws {
     try Socket.setFcntl(fd: fileDescriptor, flag: O_NONBLOCK)
   }
 
-  func isBlocking() throws -> Bool {
+  public func isBlocking() throws -> Bool {
     let flags = try Socket.getFcntl(fd: fileDescriptor)
     return (flags & O_NONBLOCK) == 0
   }
 
-  func bind(to addr: Address) throws {
+  public func bind(to addr: Address) throws {
     let ret = addr.withUnsafeSockaddrPointer { (ptr, size) in
       cbind(fileDescriptor, ptr, size)
     }
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
-  func bind(to addr: String) throws {
+  public func bind(to addr: String) throws {
     if addr.contains("/") {
       try bind(toPath: addr)
     } else {
@@ -258,35 +258,35 @@ class Socket: FileDescriptorRepresentable {
     }
   }
 
-  func bind(toPath path: String) throws {
+  public func bind(toPath path: String) throws {
     guard let addr = Address(path: path) else {
       throw MessageError("path too long", context: ["path": path])
     }
     try bind(to: addr)
   }
 
-  func bind(toHostPort hostPort: String) throws {
+  public func bind(toHostPort hostPort: String) throws {
     let (host, service) = try Address.split(hostPort: hostPort)
     try bind(toHost: host, service: service)
   }
 
-  func bind(toHost host: String, service: String) throws {
+  public func bind(toHost host: String, service: String) throws {
     // needs to resolve address, calling getaddrinfo
     fatalError("not implemented")
   }
 
-  func bind(toHost host: String, port: Int) throws {
+  public func bind(toHost host: String, port: Int) throws {
     try bind(toHost: host, service: String(port))
   }
 
-  func connect(to addr: Address) throws {
+  public func connect(to addr: Address) throws {
     let ret = addr.withUnsafeSockaddrPointer { (ptr, size) in
       cconnect(fileDescriptor, ptr, size)
     }
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
-  func connect(to addr: String) throws {
+  public func connect(to addr: String) throws {
     if addr.contains("/") {
       try connect(toPath: addr)
     } else {
@@ -294,33 +294,33 @@ class Socket: FileDescriptorRepresentable {
     }
   }
 
-  func connect(toPath path: String) throws {
+  public func connect(toPath path: String) throws {
     guard let addr = Address(path: path) else {
       throw MessageError("path too long", context: ["path": path])
     }
     try connect(to: addr)
   }
 
-  func connect(toHostPort hostPort: String) throws {
+  public func connect(toHostPort hostPort: String) throws {
     let (host, service) = try Address.split(hostPort: hostPort)
     try connect(toHost: host, service: service)
   }
 
-  func connect(toHost host: String, service: String) throws {
+  public func connect(toHost host: String, service: String) throws {
     // needs to call getaddrinfo to resolve address
     fatalError("not implemented")
   }
 
-  func connect(toHost host: String, port: Int) throws {
+  public func connect(toHost host: String, port: Int) throws {
     try connect(toHost: host, service: String(port))
   }
 
-  func listen(backlog: Int = 128) throws {
+  public func listen(backlog: Int = 128) throws {
     let ret = clisten(fileDescriptor, Int32(backlog))
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
-  func accept() throws -> Socket {
+  public func accept() throws -> Socket {
     var addr = sockaddr()
     var addrLen = socklen_t()
 
@@ -347,26 +347,25 @@ class Socket: FileDescriptorRepresentable {
         }
       }
 
-    case .unix:
+    // the returned address' family may be set to 0 / .unspec when connecting via
+    // UNIX domain sockets.
+    case .unix, .unspec:
       remoteAddr = withUnsafePointer(to: &addr) { ptrAddr in
         ptrAddr.withMemoryRebound(to: sockaddr_un.self, capacity: 1) { sa in
           Address(sockaddr: sa.pointee)
         }
       }
-
-    case .unspec:
-      fatalError("unexpected family type: \(family)")
     }
 
     return try Socket(fd: ret, connectedTo: remoteAddr, family: family)
   }
 
-  func shutdown(mode: ShutdownMode = .readWrite) throws {
+  public func shutdown(mode: ShutdownMode = .readWrite) throws {
     let ret = cshutdown(fileDescriptor, mode.value)
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
-  func close() throws {
+  public func close() throws {
     self.address = nil
     let ret = cclose(fileDescriptor)
     try CError.makeAndThrow(fromReturnCode: ret)

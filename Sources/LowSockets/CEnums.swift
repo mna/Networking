@@ -30,7 +30,6 @@ public enum Family {
     AF_INET: .inet,
     AF_INET6: .inet6,
     AF_LOCAL: .unix,
-    AF_UNIX: .unix,
     AF_UNSPEC: .unspec,
   ]
 }

@@ -1,36 +1,36 @@
-import Socket
+import Libc
+import LowSockets
 
-class Server {
-  let port: Int
+class UnixServer {
   let path: String
+  private var sock: Socket? = nil
 
-  init(port: Int) {
-    self.port = port
-    self.path = ""
-  }
-
-  init(path: String) {
+  init(_ path: String) {
     self.path = path
-    self.port = 0
   }
 
-  func run(_ fn: (_ s: Socket) throws -> Void) throws {
-    let sock = path.isEmpty ? try Socket.create() : try Socket.create(family: .unix, proto: .unix)
+  deinit {
+    unlink(path)
+  }
 
-    if path.isEmpty {
-      try sock.listen(on: port)
-    } else {
-      try sock.listen(on: path)
+  func listen() throws {
+    let sock = try Socket(family: .unix)
+    self.sock = sock
+
+    try sock.bind(to: path)
+    try sock.listen()
+  }
+
+  func serve(_ handler: (Socket) throws -> Bool) throws {
+    guard let sock = sock else {
+      throw MessageError("no listening socket")
     }
-
     while true {
-      let client = try sock.acceptClientConnection()
-      do {
-        defer { client.close() }
-        try fn(client)
-      } catch {
-        // if fn throws, close the server
-        sock.close()
+      let remote = try sock.accept()
+      defer { try? remote.close() }
+
+      if !(try handler(remote)) {
+        try sock.close()
         return
       }
     }

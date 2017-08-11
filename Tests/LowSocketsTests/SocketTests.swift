@@ -93,25 +93,24 @@ class SocketTests: XCTestCase {
   }
 
   func testConnectUnix() throws {
-    let server = Server(path: "/tmp/test.sock")
-    defer { unlink("/tmp/test.sock") }
+    let server = UnixServer("/tmp/test.sock")
+    try server.listen()
 
     // run server in background and close it after a connection
     let expect = expectation(description: "server stops after a connection")
     DispatchQueue.global(qos: .background).async {
       do {
-        try server.run { s in
-          throw MessageError("done")
+        try server.serve { s in
+          expect.fulfill()
+          return false
         }
       } catch {
         XCTFail("server.run failed with \(error)")
       }
-      expect.fulfill()
     }
 
-    sleep(1)
     do {
-      let sock = try Socket(family: .unix, proto: .unix)
+      let sock = try Socket(family: .unix)
       try sock.connect(toPath: "/tmp/test.sock")
     } catch {
       XCTFail("client socket failed with \(error)")
