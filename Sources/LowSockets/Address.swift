@@ -76,10 +76,18 @@ public enum Address {
     return (host, port)
   }
 
+  private static var maxUnixPathLen: Int = {
+    let sa = sockaddr_un()
+    return MemoryLayout.size(ofValue: sa.sun_path)
+  }()
+
   // MARK: - Enum Cases
+
   case ip4(ip: IPAddress, port: Int)
   case ip6(ip: IPAddress, port: Int, scopeID: Int)
   case unix(path: String)
+
+  // MARK: - Constructors
 
   init?(ip: IPAddress, port: Int, scopeID: Int = 0) {
     switch ip.family {
@@ -90,6 +98,13 @@ public enum Address {
     default:
       return nil
     }
+  }
+
+  init?(path: String) {
+    if path.utf8.count >= Address.maxUnixPathLen {
+      return nil
+    }
+    self = .unix(path: path)
   }
 
   init?(sockaddr sa: sockaddr_in) {
@@ -129,10 +144,9 @@ public enum Address {
 
   init?(sockaddr sa: sockaddr_un) {
     var sa = sa
-    let maxLen = MemoryLayout.size(ofValue: sa.sun_path)
 
     let maybePath = withUnsafeMutablePointer(to: &sa.sun_path) { pathPtr in
-      pathPtr.withMemoryRebound(to: CChar.self, capacity: maxLen) { arPtr in
+      pathPtr.withMemoryRebound(to: CChar.self, capacity: Address.maxUnixPathLen) { arPtr in
         String(validatingUTF8: arPtr)
       }
     }
@@ -141,5 +155,62 @@ public enum Address {
       return nil
     }
     self = .unix(path: path)
+  }
+
+  // MARK: - Properties
+
+  var family: Family {
+    switch self {
+    case .ip4(let ip, _):
+      return ip.family
+    case .ip6(let ip, _, _):
+      return ip.family
+    case .unix:
+      return .unix
+    }
+  }
+
+  // MARK: - Methods
+
+  func withUnsafeSockaddrPointer<Result>(_ body: (UnsafePointer<sockaddr>, socklen_t) throws -> Result) rethrows -> Result {
+    switch self {
+    case .unix(let path):
+      var sa = sockaddr_un()
+      let len = MemoryLayout.stride(ofValue: sa)
+
+      #if !os(Linux)
+        sa.sun_len = UInt8(len)
+      #endif
+
+      #if os(Linux)
+        sa.sun_family = UInt16(family.value)
+      #else
+        sa.sun_family = UInt8(family.value)
+      #endif
+
+      // set the path
+      var chars = path.utf8.map({ CChar($0) })
+      withUnsafeMutablePointer(to: &sa.sun_path) { pathPtr in
+        pathPtr.withMemoryRebound(to: CChar.self, capacity: Address.maxUnixPathLen) { arPtr in
+          let buf = UnsafeMutableBufferPointer<CChar>(start: arPtr, count: Address.maxUnixPathLen)
+          for i in 0..<buf.count {
+            if i < chars.count {
+              buf[i] = chars[i]
+            } else {
+              buf[i] = CChar(0)
+            }
+          }
+        }
+      }
+      let ret = try withUnsafePointer(to: &sa) { ptr in
+        try ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { (saPtr: UnsafePointer<sockaddr>) in
+          try body(saPtr, socklen_t(len))
+        }
+      }
+      return ret
+
+    default:
+      fatalError("not implemented")
+    }
   }
 }

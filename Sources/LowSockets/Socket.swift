@@ -244,8 +244,16 @@ class Socket: FileDescriptorRepresentable {
   }
 
   func bind(to addr: Address) throws {
-    // no need to call getaddrinfo, address already resolved
-    fatalError("not implemented")
+    let ret: Int32
+    switch addr {
+    case .unix:
+      ret = addr.withUnsafeSockaddrPointer { (ptr, size) in
+        cbind(fileDescriptor, ptr, size)
+      }
+    default:
+      fatalError("not implemented")
+    }
+    try CError.makeAndThrow(fromReturnCode: ret)
   }
 
   func bind(to addr: String) throws {
@@ -257,7 +265,10 @@ class Socket: FileDescriptorRepresentable {
   }
 
   func bind(toPath path: String) throws {
-    fatalError("not implemented")
+    guard let addr = Address(path: path) else {
+      throw MessageError("path too long", context: ["path": path])
+    }
+    try bind(to: addr)
   }
 
   func bind(toHostPort hostPort: String) throws {
@@ -288,6 +299,8 @@ class Socket: FileDescriptorRepresentable {
   }
 
   func connect(toPath path: String) throws {
+    // TODO: move that to connect(to: Address), and call it with an Address
+
     // connect to a unix path, do some early checks that this has a
     // remote chance to work.
     if let family = family, family != .unix {
@@ -300,7 +313,7 @@ class Socket: FileDescriptorRepresentable {
     var addr = sockaddr_un()
     let maxLen = MemoryLayout.size(ofValue: addr.sun_path)
     let addrLen = MemoryLayout.stride(ofValue: addr)
-    if path.utf8.count > maxLen {
+    if path.utf8.count >= maxLen { // >= because NULL-terminated
       throw MessageError("path too long", context: ["path": path])
     }
 
