@@ -156,6 +156,7 @@ public class Socket: FileDescriptorRepresentable {
   public let proto: SocketProtocol
   public let type: SocketType
 
+  // TODO: should have a local and a remote address
   public private(set) var address: Address? = nil
 
   // MARK: - Constructors
@@ -248,6 +249,7 @@ public class Socket: FileDescriptorRepresentable {
       cbind(fileDescriptor, ptr, size)
     }
     try CError.makeAndThrow(fromReturnCode: ret)
+    self.address = addr
   }
 
   public func bind(to addr: String) throws {
@@ -271,8 +273,14 @@ public class Socket: FileDescriptorRepresentable {
   }
 
   public func bind(toHost host: String, service: String) throws {
-    // needs to resolve address, calling getaddrinfo
-    fatalError("not implemented")
+    let host = host.isEmpty ? nil : host
+    let flags: AddrInfo.Flags = host == nil ? [.default, .passive] : .default
+    let (_, addrs) = try AddrInfo.get(host: host, service: service, flags: flags, family: family, type: type, proto: proto)
+
+    guard let first = addrs.first else {
+      throw MessageError("no address found", context: ["host": host ?? "", "service": service])
+    }
+    try bind(to: first)
   }
 
   public func bind(toHost host: String, port: Int) throws {
@@ -284,6 +292,7 @@ public class Socket: FileDescriptorRepresentable {
       cconnect(fileDescriptor, ptr, size)
     }
     try CError.makeAndThrow(fromReturnCode: ret)
+    self.address = addr
   }
 
   public func connect(to addr: String) throws {
@@ -308,7 +317,11 @@ public class Socket: FileDescriptorRepresentable {
 
   public func connect(toHost host: String, service: String) throws {
     // needs to call getaddrinfo to resolve address
-    fatalError("not implemented")
+    let (_, addrs) = try AddrInfo.get(host: host, service: service, family: family, type: type, proto: proto)
+    guard let first = addrs.first else {
+      throw MessageError("no address found", context: ["host": host])
+    }
+    try connect(to: first)
   }
 
   public func connect(toHost host: String, port: Int) throws {

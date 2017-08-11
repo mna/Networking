@@ -92,6 +92,38 @@ class SocketTests: XCTestCase {
     }
   }
 
+  func testConnectTCP() {
+    let server = PortServer("localhost", 8899)
+    do {
+      try server.listen()
+    } catch {
+      XCTFail("server.listen failed: \(error)")
+      return
+    }
+
+    // run server in background and close it after a connection
+    let expect = expectation(description: "server stops after a connection")
+    DispatchQueue.global(qos: .background).async {
+      do {
+        try server.serve { s in
+          expect.fulfill()
+          return false
+        }
+      } catch {
+        XCTFail("server.run failed with \(error)")
+      }
+    }
+
+    do {
+      let sock = try Socket(family: .inet)
+      try sock.connect(to: "localhost:8899")
+    } catch {
+      XCTFail("client socket failed with \(error)")
+    }
+
+    waitForExpectations(timeout: 10)
+  }
+
   func testConnectUnix() throws {
     let server = UnixServer("/tmp/test.sock")
     try server.listen()

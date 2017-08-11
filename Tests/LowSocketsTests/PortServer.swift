@@ -1,23 +1,27 @@
 import Libc
 import LowSockets
 
-class UnixServer {
-  let path: String
+// MARK: - PortServer
+
+class PortServer {
+  let port: Int
+  let host: String
   private var sock: Socket? = nil
 
-  init(_ path: String) {
-    self.path = path
+  init(_ host: String, _ port: Int) {
+    self.host = host
+    self.port = port
   }
 
   deinit {
-    unlink(path)
+    try? sock?.close()
   }
 
   func listen() throws {
-    let sock = try Socket(family: .unix)
+    let sock = try Socket(family: .inet)
     self.sock = sock
 
-    try sock.bind(to: path)
+    try sock.bind(toHost: host, port: port)
     try sock.listen()
   }
 

@@ -209,11 +209,42 @@ public enum Address {
       }
       return ret
 
+    case .ip4(let ip, let port):
+      var sa = sockaddr_in()
+      let len = MemoryLayout.stride(ofValue: sa)
+
+      #if os(Linux)
+        sa.sin_family = UInt16(ip.family.value)
+      #else
+        sa.sin_len = UInt8(len)
+        sa.sin_family = UInt8(ip.family.value)
+      #endif
+      sa.sin_port = UInt16(port).bigEndian
+
+      let count = MemoryLayout.stride(ofValue: sa.sin_addr)
+      withUnsafeMutablePointer(to: &sa.sin_addr) { sad in
+        sad.withMemoryRebound(to: UInt8.self, capacity: count) { ar in
+          let buf = UnsafeMutableBufferPointer(start: ar, count: count)
+          for i in 0..<buf.count {
+            buf[i] = ip.bytes[i]
+          }
+        }
+      }
+
+      let ret = try withUnsafePointer(to: &sa) { ptr in
+        try ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { (saPtr: UnsafePointer<sockaddr>) in
+          try body(saPtr, socklen_t(len))
+        }
+      }
+      return ret
+
     default:
       fatalError("not implemented")
     }
   }
 }
+
+// MARK: - Address+Equatable
 
 extension Address: Equatable {
   public static func ==(lhs: Address, rhs: Address) -> Bool {
