@@ -214,3 +214,18 @@ public enum Address {
     }
   }
 }
+
+extension Address: Equatable {
+  public static func ==(lhs: Address, rhs: Address) -> Bool {
+    switch (lhs, rhs) {
+    case let (.ip4(lip, lport), .ip4(rip, rport)):
+      return lip == rip && lport == rport
+    case let (.ip6(lip, lport, lscope), .ip6(rip, rport, rscope)):
+      return lip == rip && lport == rport && lscope == rscope
+    case let (.unix(lpath), .unix(rpath)):
+      return lpath == rpath
+    default:
+      return false
+    }
+  }
+}

@@ -7,7 +7,7 @@ public struct IPAddress: Equatable {
 
   // MARK: - IPAddress+Equatable
 
-  static public func ==(lhs: IPAddress, rhs: IPAddress) -> Bool {
+  public static func ==(lhs: IPAddress, rhs: IPAddress) -> Bool {
     return lhs.bytes.elementsEqual(rhs.bytes)
   }
 

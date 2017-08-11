@@ -3,7 +3,7 @@
 /// MessageError is a String-based error that can be created with additional
 /// contextual key-value pairs.
 public struct MessageError: Swift.Error {
-  let message: String
+  public let message: String
 
   public init(_ message: String, context: [String: String] = [:]) {
     if context.isEmpty {

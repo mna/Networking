@@ -2,9 +2,9 @@ import Libc
 
 // MARK: - CError
 
-struct CError: Swift.Error {
-  let code: Int32
-  let message: String
+public struct CError: Swift.Error {
+  public let code: Int32
+  public let message: String
 
   private init?(fromReturnCode code: Int32, errorValue: Int32 = -1) {
     guard code == errorValue else {
@@ -41,7 +41,7 @@ struct CError: Swift.Error {
 // MARK: - CError+CustomStringConvertible
 
 extension CError: CustomStringConvertible {
-  var description: String {
+  public var description: String {
     return "error \(code): \(message)"
   }
 }
