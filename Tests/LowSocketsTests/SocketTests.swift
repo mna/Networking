@@ -106,6 +106,12 @@ class SocketTests: XCTestCase {
     DispatchQueue.global(qos: .background).async {
       do {
         try server.serve { s in
+          switch s.address {
+          case .ip4(_, let port)?:
+            XCTAssertTrue(port > 30000, "port is \(port)")
+          default:
+            XCTFail("unexpected address type \(String(describing: s.address))")
+          }
           expect.fulfill()
           return false
         }
@@ -138,6 +144,12 @@ class SocketTests: XCTestCase {
     DispatchQueue.global(qos: .background).async {
       do {
         try server.serve { s in
+          switch s.address {
+          case .ip6(_, let port, _)?:
+            XCTAssertTrue(port > 30000, "port is \(port)")
+          default:
+            XCTFail("unexpected address type \(String(describing: s.address))")
+          }
           expect.fulfill()
           return false
         }
@@ -165,6 +177,12 @@ class SocketTests: XCTestCase {
     DispatchQueue.global(qos: .background).async {
       do {
         try server.serve { s in
+          switch s.address {
+          case .unix?:
+            break
+          default:
+            XCTFail("unexpected address type \(String(describing: s.address))")
+          }
           expect.fulfill()
           return false
         }

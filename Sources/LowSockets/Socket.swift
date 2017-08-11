@@ -334,43 +334,68 @@ public class Socket: FileDescriptorRepresentable {
   }
 
   public func accept() throws -> Socket {
-    var addr = sockaddr()
-    var addrLen = socklen_t()
-
-    let ret = caccept(fileDescriptor, &addr, &addrLen)
-    try CError.makeAndThrow(fromReturnCode: ret)
-
-    guard let family = Family.make(Int32(addr.sa_family)) else {
-      throw MessageError("unsupported address family \(addr.sa_family)")
+    guard let family = family else {
+      throw MessageError("listening socket has no family specified")
     }
 
+    var addrLen = socklen_t()
     let remoteAddr: Address?
+    let remoteFD: Int32
+
     switch family {
     case .inet:
-      remoteAddr = withUnsafePointer(to: &addr) { ptrAddr in
-        ptrAddr.withMemoryRebound(to: sockaddr_in.self, capacity: 1) { sa in
-          Address(sockaddr: sa.pointee)
+      var addr = sockaddr_in()
+      addrLen = UInt32(MemoryLayout<sockaddr_in>.stride)
+
+      remoteFD = withUnsafeMutablePointer(to: &addr) { ptr in
+        ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sa in
+          caccept(fileDescriptor, sa, &addrLen)
         }
       }
+      try CError.makeAndThrow(fromReturnCode: remoteFD)
+
+      guard let remoteFamily = Family.make(Int32(addr.sin_family)), remoteFamily == family else {
+        throw MessageError("unsupported remote address family")
+      }
+      remoteAddr = Address(sockaddr: addr)
 
     case .inet6:
-      remoteAddr = withUnsafePointer(to: &addr) { ptrAddr in
-        ptrAddr.withMemoryRebound(to: sockaddr_in6.self, capacity: 1) { sa in
-          Address(sockaddr: sa.pointee)
-        }
-      }
+      var addr = sockaddr_in6()
+      addrLen = UInt32(MemoryLayout<sockaddr_in6>.stride)
 
-    // the returned address' family may be set to 0 / .unspec when connecting via
-    // UNIX domain sockets.
-    case .unix, .unspec:
-      remoteAddr = withUnsafePointer(to: &addr) { ptrAddr in
-        ptrAddr.withMemoryRebound(to: sockaddr_un.self, capacity: 1) { sa in
-          Address(sockaddr: sa.pointee)
+      remoteFD = withUnsafeMutablePointer(to: &addr) { ptr in
+        ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sa in
+          caccept(fileDescriptor, sa, &addrLen)
         }
       }
+      try CError.makeAndThrow(fromReturnCode: remoteFD)
+
+      guard let remoteFamily = Family.make(Int32(addr.sin6_family)), remoteFamily == family else {
+        throw MessageError("unsupported remote address family")
+      }
+      remoteAddr = Address(sockaddr: addr)
+
+    case .unix:
+      var addr = sockaddr_un()
+      addrLen = UInt32(MemoryLayout<sockaddr_un>.stride)
+
+      remoteFD = withUnsafeMutablePointer(to: &addr) { ptr in
+        ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sa in
+          caccept(fileDescriptor, sa, &addrLen)
+        }
+      }
+      try CError.makeAndThrow(fromReturnCode: remoteFD)
+
+      guard let remoteFamily = Family.make(Int32(addr.sun_family)), remoteFamily == family else {
+        throw MessageError("unsupported remote address family")
+      }
+      remoteAddr = Address(sockaddr: addr)
+
+    case .unspec:
+      throw MessageError("unsupported listening socket family")
     }
 
-    return try Socket(fd: ret, connectedTo: remoteAddr, family: family)
+    return try Socket(fd: remoteFD, connectedTo: remoteAddr, family: family)
   }
 
   public func shutdown(mode: ShutdownMode = .readWrite) throws {
