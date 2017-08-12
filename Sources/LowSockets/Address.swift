@@ -113,8 +113,8 @@ public enum Address {
 
     let count = MemoryLayout.stride(ofValue: sa.sin_addr)
     let bytes = withUnsafePointer(to: &sa.sin_addr) { sad in
-      return sad.withMemoryRebound(to: UInt8.self, capacity: count) {
-        return Array(UnsafeBufferPointer(start: $0, count: count))
+      sad.withMemoryRebound(to: UInt8.self, capacity: count) {
+        Array(UnsafeBufferPointer(start: $0, count: count))
       }
     }
 
@@ -131,8 +131,8 @@ public enum Address {
 
     let count = MemoryLayout.stride(ofValue: sa.sin6_addr)
     let bytes = withUnsafePointer(to: &sa.sin6_addr) { sad in
-      return sad.withMemoryRebound(to: UInt8.self, capacity: count) {
-        return Array(UnsafeBufferPointer(start: $0, count: count))
+      sad.withMemoryRebound(to: UInt8.self, capacity: count) {
+        Array(UnsafeBufferPointer(start: $0, count: count))
       }
     }
 
@@ -189,19 +189,16 @@ public enum Address {
       #endif
 
       // set the path
-      var chars = path.utf8.map({ CChar($0) })
       withUnsafeMutablePointer(to: &sa.sun_path) { pathPtr in
-        pathPtr.withMemoryRebound(to: CChar.self, capacity: Address.maxUnixPathLen) { arPtr in
-          let buf = UnsafeMutableBufferPointer<CChar>(start: arPtr, count: Address.maxUnixPathLen)
-          for i in 0..<buf.count {
-            if i < chars.count {
-              buf[i] = chars[i]
-            } else {
-              buf[i] = CChar(0)
-            }
+        pathPtr.withMemoryRebound(to: UInt8.self, capacity: Address.maxUnixPathLen) { arPtr in
+          let buf = UnsafeMutableBufferPointer(start: arPtr, count: Address.maxUnixPathLen)
+          let (_, last) = buf.initialize(from: path.utf8)
+          for i in last..<buf.count {
+            buf[i] = 0
           }
         }
       }
+
       let ret = try withUnsafePointer(to: &sa) { ptr in
         try ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { (saPtr: UnsafePointer<sockaddr>) in
           try body(saPtr, socklen_t(len))
@@ -225,8 +222,9 @@ public enum Address {
       withUnsafeMutablePointer(to: &sa.sin_addr) { sad in
         sad.withMemoryRebound(to: UInt8.self, capacity: count) { ar in
           let buf = UnsafeMutableBufferPointer(start: ar, count: count)
-          for i in 0..<buf.count {
-            buf[i] = ip.bytes[i]
+          let (_, last) = buf.initialize(from: ip.bytes)
+          for i in last..<buf.count {
+            buf[i] = 0
           }
         }
       }
@@ -257,8 +255,9 @@ public enum Address {
       withUnsafeMutablePointer(to: &sa.sin6_addr) { sad in
         sad.withMemoryRebound(to: UInt8.self, capacity: count) { ar in
           let buf = UnsafeMutableBufferPointer(start: ar, count: count)
-          for i in 0..<buf.count {
-            buf[i] = ip.bytes[i]
+          let (_, last) = buf.initialize(from: ip.bytes)
+          for i in last..<buf.count {
+            buf[i] = 0
           }
         }
       }
