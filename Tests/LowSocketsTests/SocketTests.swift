@@ -1,5 +1,6 @@
 import XCTest
 import Libc
+import Foundation
 @testable import LowSockets
 
 class SocketTests: XCTestCase {
@@ -90,6 +91,50 @@ class SocketTests: XCTestCase {
       }
       XCTAssertEqual(want, try sock.getWriteTimeout())
     }
+  }
+
+  func testSendReceive() throws {
+    let server = PortServer("localhost", 8897)
+    do {
+      try server.listen()
+    } catch {
+      XCTFail("server.listen failed: \(error)")
+      return
+    }
+
+    let data = "hello, world"
+
+    // run server in background and close it after a connection
+    let expect = expectation(description: "server stops after a connection")
+    DispatchQueue.global(qos: .background).async {
+      do {
+        try server.serve { s in
+          var buf = [UInt8](repeating: 0, count: 12)
+          let n = try s.receive(&buf)
+
+          XCTAssertEqual(data.utf8.count, n)
+          XCTAssertEqual(data, String(bytes: buf, encoding: .utf8))
+
+          expect.fulfill()
+          return false
+        }
+      } catch {
+        XCTFail("server.run failed with \(error)")
+      }
+    }
+
+    do {
+      let sock = try Socket(family: .inet)
+      try sock.connect(to: "localhost:8897")
+
+      let bytes: [UInt8] = data.utf8.map({ UInt8($0) })
+      let n = try sock.send(bytes)
+      XCTAssertEqual(data.utf8.count, n)
+    } catch {
+      XCTFail("client socket failed with \(error)")
+    }
+
+    waitForExpectations(timeout: 10)
   }
 
   func testListenTCPUnspecifiedPort() throws {

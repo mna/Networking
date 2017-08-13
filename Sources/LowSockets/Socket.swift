@@ -213,7 +213,7 @@ public class Socket: FileDescriptorRepresentable {
     try connect(toHost: host, service: String(port))
   }
 
-  public func send(_ data: [UInt8], flags: SendFlags) throws -> Int {
+  public func send(_ data: Array<UInt8>, flags: SendFlags = []) throws -> Int {
     let ret = data.withUnsafeBufferPointer { buf in
       csend(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
     }
@@ -221,7 +221,7 @@ public class Socket: FileDescriptorRepresentable {
     return Int(ret)
   }
 
-  public func send(_ data: ArraySlice<UInt8>, flags: SendFlags) throws -> Int {
+  public func send(_ data: ArraySlice<UInt8>, flags: SendFlags = []) throws -> Int {
     let ret = data.withUnsafeBufferPointer { buf in
       csend(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
     }
@@ -229,7 +229,7 @@ public class Socket: FileDescriptorRepresentable {
     return Int(ret)
   }
 
-  public func receive(_ data: inout [UInt8], flags: ReceiveFlags) throws -> Int {
+  public func receive(_ data: inout [UInt8], flags: ReceiveFlags = []) throws -> Int {
     let ret = data.withUnsafeMutableBufferPointer { buf in
       crecv(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
     }
@@ -237,7 +237,7 @@ public class Socket: FileDescriptorRepresentable {
     return Int(ret)
   }
 
-  public func receive(_ data: inout ArraySlice<UInt8>, flags: ReceiveFlags) throws -> Int {
+  public func receive(_ data: inout ArraySlice<UInt8>, flags: ReceiveFlags = []) throws -> Int {
     let ret = data.withUnsafeMutableBufferPointer { buf in
       crecv(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
     }
