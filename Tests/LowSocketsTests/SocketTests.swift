@@ -92,6 +92,31 @@ class SocketTests: XCTestCase {
     }
   }
 
+  func testListenTCPUnspecifiedPort() throws {
+    let server = PortServer("localhost", 0)
+    do {
+      try server.listen()
+    } catch {
+      XCTFail("server.listen failed: \(error)")
+      return
+    }
+
+    XCTAssertEqual(server.sock?.boundAddress, Address.ip4(ip: IPAddress(127, 0, 0, 1), port: 0))
+    guard let bound = try server.sock?.loadBoundAddress() else {
+      XCTFail("no bound address for server")
+      return
+    }
+    switch bound {
+    case .ip4(let ip, let port):
+      XCTAssertEqual(ip, IPAddress(127, 0, 0, 1))
+      XCTAssertTrue(port > 30000)
+    default:
+      XCTFail("unexpected bound address type")
+    }
+
+    XCTAssertNil(server.sock?.peerAddress)
+  }
+
   func testConnectTCP4() throws {
     let server = PortServer("localhost", 8899)
     do {
