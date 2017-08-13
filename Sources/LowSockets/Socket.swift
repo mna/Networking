@@ -8,7 +8,9 @@ private let cclose = close
 private let cconnect = connect
 private let clisten = listen
 private let crecv = recv
+private let crecvfrom = recvfrom
 private let csend = send
+private let csendto = sendto
 private let cshutdown = shutdown
 
 // MARK: - Socket
@@ -218,7 +220,7 @@ public class Socket: FileDescriptorRepresentable {
       csend(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
     }
     try CError.makeAndThrow(fromReturnCode: Int32(ret))
-    return Int(ret)
+    return ret
   }
 
   public func send(_ data: ArraySlice<UInt8>, flags: SendFlags = []) throws -> Int {
@@ -226,10 +228,30 @@ public class Socket: FileDescriptorRepresentable {
       csend(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
     }
     try CError.makeAndThrow(fromReturnCode: Int32(ret))
-    return Int(ret)
+    return ret
   }
 
-  public func receive(_ data: inout [UInt8], flags: ReceiveFlags = []) throws -> Int {
+  public func send(_ data: Array<UInt8>, to addr: Address, flags: SendFlags = []) throws -> Int {
+    let ret = data.withUnsafeBufferPointer { buf in
+      addr.withUnsafeSockaddrPointer { sa, len in
+        csendto(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue, sa, len)
+      }
+    }
+    try CError.makeAndThrow(fromReturnCode: Int32(ret))
+    return ret
+  }
+
+  public func send(_ data: ArraySlice<UInt8>, to addr: Address, flags: SendFlags = []) throws -> Int {
+    let ret = data.withUnsafeBufferPointer { buf in
+      addr.withUnsafeSockaddrPointer { sa, len in
+        csendto(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue, sa, len)
+      }
+    }
+    try CError.makeAndThrow(fromReturnCode: Int32(ret))
+    return ret
+  }
+
+  public func receive(_ data: inout Array<UInt8>, flags: ReceiveFlags = []) throws -> Int {
     let ret = data.withUnsafeMutableBufferPointer { buf in
       crecv(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
     }
@@ -243,6 +265,15 @@ public class Socket: FileDescriptorRepresentable {
     }
     try CError.makeAndThrow(fromReturnCode: Int32(ret))
     return Int(ret)
+  }
+
+  public func receiveFrom(_ data: inout Array<UInt8>, flags: ReceiveFlags = []) throws -> Int {
+    let ret = data.withUnsafeMutableBufferPointer { buf in
+      addr.withUnsafeSockaddrPointer { sa, len in
+        crecvfrom(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
+      }
+    }
+    // TODO: return an address with the int
   }
 
   public func listen(backlog: Int = 128) throws {
