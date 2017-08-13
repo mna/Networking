@@ -7,212 +7,13 @@ private let cbind = bind
 private let cclose = close
 private let cconnect = connect
 private let clisten = listen
+private let crecv = recv
+private let csend = send
 private let cshutdown = shutdown
 
 // MARK: - Socket
 
 public class Socket: FileDescriptorRepresentable {
-
-  // MARK: - Static Methods
-
-  private static func getOption(fd: Int32, option: Int32) throws -> Int32 {
-    var v: Int32 = 0
-    var len = socklen_t(MemoryLayout<Int32>.size)
-
-    let ret = getsockopt(fd, SOL_SOCKET, option, &v, &len)
-    try CError.makeAndThrow(fromReturnCode: ret)
-    return v
-  }
-
-  private static func getTimevalOption(fd: Int32, option: Int32) throws -> TimeInterval {
-    var val = timeval()
-    var len = socklen_t(MemoryLayout<timeval>.stride)
-
-    let ret = getsockopt(fd, SOL_SOCKET, option, &val, &len)
-    try CError.makeAndThrow(fromReturnCode: ret)
-
-    let secs = Int(val.tv_sec)
-    let us = Int(val.tv_usec)
-    let t = TimeInterval(Double(secs) + (Double(us) / 1_000_000))
-
-    return t
-  }
-
-  private static func getLingerOption(fd: Int32) throws -> TimeInterval? {
-    var val = linger()
-    var len = socklen_t(MemoryLayout<linger>.stride)
-
-    #if os(Linux)
-      let option = SO_LINGER
-    #else
-      let option = SO_LINGER_SEC
-    #endif
-
-    let ret = getsockopt(fd, SOL_SOCKET, option, &val, &len)
-    try CError.makeAndThrow(fromReturnCode: ret)
-
-    if val.l_onoff == 0 {
-      return nil
-    }
-    return TimeInterval(val.l_linger)
-  }
-
-  private static func setOption(fd: Int32, option: Int32, value: Int32) throws {
-    var v = value
-    let ret = setsockopt(fd, SOL_SOCKET, option, &v, socklen_t(MemoryLayout<Int32>.size))
-    try CError.makeAndThrow(fromReturnCode: ret)
-  }
-
-  private static func setTimevalOption(fd: Int32, option: Int32, t: TimeInterval) throws {
-    var val = timeval()
-
-    // see https://stackoverflow.com/a/28872601/1094941
-    if t > 0 {
-      val.tv_sec = Int(t)
-
-      let us = Int(t.truncatingRemainder(dividingBy: 1) * 1_000_000)
-      #if os(Linux)
-				val.tv_usec = Int(us)
-			#else
-				val.tv_usec = Int32(us)
-			#endif
-    }
-
-		let ret = setsockopt(fd, SOL_SOCKET, option, &val, socklen_t(MemoryLayout<timeval>.stride))
-    try CError.makeAndThrow(fromReturnCode: ret)
-  }
-
-  private static func setLingerOption(fd: Int32, t: TimeInterval?) throws {
-    var val = linger()
-
-    val.l_onoff = t == nil ? 0 : 1
-    val.l_linger = 0
-    if let t = t, t > 0 {
-      let secs = Int32(t)
-      val.l_linger = secs
-    }
-
-    #if os(Linux)
-      let option = SO_LINGER
-    #else
-      let option = SO_LINGER_SEC
-    #endif
-
-		let ret = setsockopt(fd, SOL_SOCKET, option, &val, socklen_t(MemoryLayout<linger>.stride))
-    try CError.makeAndThrow(fromReturnCode: ret)
-  }
-
-  private static func getFcntl(fd: Int32) throws -> Int32 {
-    let flags = fcntl(fd, F_GETFL)
-    try CError.makeAndThrow(fromReturnCode: flags)
-    return flags
-  }
-
-  private static func setFcntl(fd: Int32, flag: Int32) throws {
-    let flags = try getFcntl(fd: fd)
-
-    // if flag is negative, unset the flag
-    let new = flag >= 0 ? (flags | flag) : (flags & ~(-flag))
-
-    let ret = fcntl(fd, F_SETFL, new)
-    try CError.makeAndThrow(fromReturnCode: ret)
-  }
-
-  // common implementation for accept(), getsockname(), getpeername().
-  private static func getReturnCodeAndAddress(fd: Int32, family: Family,
-    _ body: (Int32, UnsafeMutablePointer<sockaddr>, UnsafeMutablePointer<socklen_t>) throws -> Int32) throws -> (Int32, Address?) {
-
-    var addrLen = socklen_t()
-    let returnAddr: Address?
-    let ret: Int32
-
-    switch family {
-    case .inet:
-      var addr = sockaddr_in()
-      addrLen = UInt32(MemoryLayout<sockaddr_in>.stride)
-
-      ret = try withUnsafeMutablePointer(to: &addr) { ptr in
-        try ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sa in
-          try body(fd, sa, &addrLen)
-        }
-      }
-      try CError.makeAndThrow(fromReturnCode: ret)
-
-      guard let f = Family.make(Int32(addr.sin_family)), f == family else {
-        throw MessageError("unexpected address family")
-      }
-      returnAddr = Address(sockaddr: addr)
-
-    case .inet6:
-      var addr = sockaddr_in6()
-      addrLen = UInt32(MemoryLayout<sockaddr_in6>.stride)
-
-      ret = try withUnsafeMutablePointer(to: &addr) { ptr in
-        try ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sa in
-          try body(fd, sa, &addrLen)
-        }
-      }
-      try CError.makeAndThrow(fromReturnCode: ret)
-
-      guard let f = Family.make(Int32(addr.sin6_family)), f == family else {
-        throw MessageError("unexpected address family")
-      }
-      returnAddr = Address(sockaddr: addr)
-
-    case .unix:
-      var addr = sockaddr_un()
-      addrLen = UInt32(MemoryLayout<sockaddr_un>.stride)
-
-      ret = try withUnsafeMutablePointer(to: &addr) { ptr in
-        try ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sa in
-          try body(fd, sa, &addrLen)
-        }
-      }
-      try CError.makeAndThrow(fromReturnCode: ret)
-
-      guard let f = Family.make(Int32(addr.sun_family)), f == family else {
-        throw MessageError("unexpected address family")
-      }
-      returnAddr = Address(sockaddr: addr)
-
-    case .unspec:
-      throw MessageError("unsupported family")
-    }
-
-    return (ret, returnAddr)
-  }
-
-  // MARK: - ShutdownMode
-
-  public enum ShutdownMode {
-    case read
-    case write
-    case readWrite
-
-    var value: Int32 {
-      guard let v = ShutdownMode.toValues[self] else {
-        fatalError("unknown ShutdownMode enum: \(self)")
-      }
-      return v
-    }
-
-    static func make(_ value: Int32) -> ShutdownMode? {
-      return fromValues[value]
-    }
-
-    private static let toValues: [ShutdownMode: Int32] = [
-      .read: SHUT_RD,
-      .write: SHUT_WR,
-      .readWrite: SHUT_RDWR,
-    ]
-
-    private static let fromValues: [Int32: ShutdownMode] = [
-      SHUT_RD: .read,
-      SHUT_WR: .write,
-      SHUT_RDWR: .readWrite,
-    ]
-  }
-
   // MARK: - Properties
 
   public let fileDescriptor: Int32
@@ -412,6 +213,38 @@ public class Socket: FileDescriptorRepresentable {
     try connect(toHost: host, service: String(port))
   }
 
+  public func send(_ data: [UInt8], flags: SendFlags) throws -> Int {
+    let ret = data.withUnsafeBufferPointer { buf in
+      csend(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
+    }
+    try CError.makeAndThrow(fromReturnCode: Int32(ret))
+    return Int(ret)
+  }
+
+  public func send(_ data: ArraySlice<UInt8>, flags: SendFlags) throws -> Int {
+    let ret = data.withUnsafeBufferPointer { buf in
+      csend(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
+    }
+    try CError.makeAndThrow(fromReturnCode: Int32(ret))
+    return Int(ret)
+  }
+
+  public func receive(_ data: inout [UInt8], flags: ReceiveFlags) throws -> Int {
+    let ret = data.withUnsafeMutableBufferPointer { buf in
+      crecv(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
+    }
+    try CError.makeAndThrow(fromReturnCode: Int32(ret))
+    return Int(ret)
+  }
+
+  public func receive(_ data: inout ArraySlice<UInt8>, flags: ReceiveFlags) throws -> Int {
+    let ret = data.withUnsafeMutableBufferPointer { buf in
+      crecv(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
+    }
+    try CError.makeAndThrow(fromReturnCode: Int32(ret))
+    return Int(ret)
+  }
+
   public func listen(backlog: Int = 128) throws {
     let ret = clisten(fileDescriptor, Int32(backlog))
     try CError.makeAndThrow(fromReturnCode: ret)
@@ -439,5 +272,236 @@ public class Socket: FileDescriptorRepresentable {
     self.peerAddress = nil
     let ret = cclose(fileDescriptor)
     try CError.makeAndThrow(fromReturnCode: ret)
+  }
+}
+
+// MARK: - Socket+SendFlags+ReceiveFlags
+extension Socket {
+  public struct SendFlags: OptionSet {
+    public let rawValue: Int32
+
+    public init(rawValue: Int32) {
+      self.rawValue = rawValue
+    }
+
+    public static let oob = SendFlags(rawValue: MSG_OOB)
+    public static let dontRoute = SendFlags(rawValue: MSG_DONTROUTE)
+    #if os(Linux)
+      public static let noSignal = SendFlags(rawValue: MSG_NOSIGNAL)
+    #endif
+  }
+
+  public struct ReceiveFlags: OptionSet {
+    public let rawValue: Int32
+
+    public init(rawValue: Int32) {
+      self.rawValue = rawValue
+    }
+
+    public static let oob = ReceiveFlags(rawValue: MSG_OOB)
+    public static let peek = ReceiveFlags(rawValue: MSG_PEEK)
+    public static let waitAll = ReceiveFlags(rawValue: MSG_WAITALL)
+  }
+}
+
+// MARK: - Socket+ShutdownMode
+extension Socket {
+  public enum ShutdownMode {
+    case read
+    case write
+    case readWrite
+
+    var value: Int32 {
+      guard let v = ShutdownMode.toValues[self] else {
+        fatalError("unknown ShutdownMode enum: \(self)")
+      }
+      return v
+    }
+
+    static func make(_ value: Int32) -> ShutdownMode? {
+      return fromValues[value]
+    }
+
+    private static let toValues: [ShutdownMode: Int32] = [
+      .read: SHUT_RD,
+      .write: SHUT_WR,
+      .readWrite: SHUT_RDWR,
+    ]
+
+    private static let fromValues: [Int32: ShutdownMode] = [
+      SHUT_RD: .read,
+      SHUT_WR: .write,
+      SHUT_RDWR: .readWrite,
+    ]
+  }
+}
+
+// MARK: - Socket Static Methods
+extension Socket {
+  fileprivate static func getOption(fd: Int32, option: Int32) throws -> Int32 {
+    var v: Int32 = 0
+    var len = socklen_t(MemoryLayout<Int32>.size)
+
+    let ret = getsockopt(fd, SOL_SOCKET, option, &v, &len)
+    try CError.makeAndThrow(fromReturnCode: ret)
+    return v
+  }
+
+  fileprivate static func getTimevalOption(fd: Int32, option: Int32) throws -> TimeInterval {
+    var val = timeval()
+    var len = socklen_t(MemoryLayout<timeval>.stride)
+
+    let ret = getsockopt(fd, SOL_SOCKET, option, &val, &len)
+    try CError.makeAndThrow(fromReturnCode: ret)
+
+    let secs = Int(val.tv_sec)
+    let us = Int(val.tv_usec)
+    let t = TimeInterval(Double(secs) + (Double(us) / 1_000_000))
+
+    return t
+  }
+
+  fileprivate static func getLingerOption(fd: Int32) throws -> TimeInterval? {
+    var val = linger()
+    var len = socklen_t(MemoryLayout<linger>.stride)
+
+    #if os(Linux)
+      let option = SO_LINGER
+    #else
+      let option = SO_LINGER_SEC
+    #endif
+
+    let ret = getsockopt(fd, SOL_SOCKET, option, &val, &len)
+    try CError.makeAndThrow(fromReturnCode: ret)
+
+    if val.l_onoff == 0 {
+      return nil
+    }
+    return TimeInterval(val.l_linger)
+  }
+
+  fileprivate static func setOption(fd: Int32, option: Int32, value: Int32) throws {
+    var v = value
+    let ret = setsockopt(fd, SOL_SOCKET, option, &v, socklen_t(MemoryLayout<Int32>.size))
+    try CError.makeAndThrow(fromReturnCode: ret)
+  }
+
+  fileprivate static func setTimevalOption(fd: Int32, option: Int32, t: TimeInterval) throws {
+    var val = timeval()
+
+    // see https://stackoverflow.com/a/28872601/1094941
+    if t > 0 {
+      val.tv_sec = Int(t)
+
+      let us = Int(t.truncatingRemainder(dividingBy: 1) * 1_000_000)
+      #if os(Linux)
+				val.tv_usec = Int(us)
+			#else
+				val.tv_usec = Int32(us)
+			#endif
+    }
+
+		let ret = setsockopt(fd, SOL_SOCKET, option, &val, socklen_t(MemoryLayout<timeval>.stride))
+    try CError.makeAndThrow(fromReturnCode: ret)
+  }
+
+  fileprivate static func setLingerOption(fd: Int32, t: TimeInterval?) throws {
+    var val = linger()
+
+    val.l_onoff = t == nil ? 0 : 1
+    val.l_linger = 0
+    if let t = t, t > 0 {
+      let secs = Int32(t)
+      val.l_linger = secs
+    }
+
+    #if os(Linux)
+      let option = SO_LINGER
+    #else
+      let option = SO_LINGER_SEC
+    #endif
+
+		let ret = setsockopt(fd, SOL_SOCKET, option, &val, socklen_t(MemoryLayout<linger>.stride))
+    try CError.makeAndThrow(fromReturnCode: ret)
+  }
+
+  fileprivate static func getFcntl(fd: Int32) throws -> Int32 {
+    let flags = fcntl(fd, F_GETFL)
+    try CError.makeAndThrow(fromReturnCode: flags)
+    return flags
+  }
+
+  fileprivate static func setFcntl(fd: Int32, flag: Int32) throws {
+    let flags = try getFcntl(fd: fd)
+
+    // if flag is negative, unset the flag
+    let new = flag >= 0 ? (flags | flag) : (flags & ~(-flag))
+
+    let ret = fcntl(fd, F_SETFL, new)
+    try CError.makeAndThrow(fromReturnCode: ret)
+  }
+
+  // common implementation for accept(), getsockname(), getpeername().
+  fileprivate static func getReturnCodeAndAddress(fd: Int32, family: Family,
+    _ body: (Int32, UnsafeMutablePointer<sockaddr>, UnsafeMutablePointer<socklen_t>) throws -> Int32) throws -> (Int32, Address?) {
+
+    var addrLen = socklen_t()
+    let returnAddr: Address?
+    let ret: Int32
+
+    switch family {
+    case .inet:
+      var addr = sockaddr_in()
+      addrLen = UInt32(MemoryLayout<sockaddr_in>.stride)
+
+      ret = try withUnsafeMutablePointer(to: &addr) { ptr in
+        try ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sa in
+          try body(fd, sa, &addrLen)
+        }
+      }
+      try CError.makeAndThrow(fromReturnCode: ret)
+
+      guard let f = Family.make(Int32(addr.sin_family)), f == family else {
+        throw MessageError("unexpected address family")
+      }
+      returnAddr = Address(sockaddr: addr)
+
+    case .inet6:
+      var addr = sockaddr_in6()
+      addrLen = UInt32(MemoryLayout<sockaddr_in6>.stride)
+
+      ret = try withUnsafeMutablePointer(to: &addr) { ptr in
+        try ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sa in
+          try body(fd, sa, &addrLen)
+        }
+      }
+      try CError.makeAndThrow(fromReturnCode: ret)
+
+      guard let f = Family.make(Int32(addr.sin6_family)), f == family else {
+        throw MessageError("unexpected address family")
+      }
+      returnAddr = Address(sockaddr: addr)
+
+    case .unix:
+      var addr = sockaddr_un()
+      addrLen = UInt32(MemoryLayout<sockaddr_un>.stride)
+
+      ret = try withUnsafeMutablePointer(to: &addr) { ptr in
+        try ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { sa in
+          try body(fd, sa, &addrLen)
+        }
+      }
+      try CError.makeAndThrow(fromReturnCode: ret)
+
+      guard let f = Family.make(Int32(addr.sun_family)), f == family else {
+        throw MessageError("unexpected address family")
+      }
+      returnAddr = Address(sockaddr: addr)
+
+    case .unspec:
+      throw MessageError("unsupported family")
+    }
+
+    return (ret, returnAddr)
   }
 }
