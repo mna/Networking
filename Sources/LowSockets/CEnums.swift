@@ -51,15 +51,29 @@ public enum SocketType {
     return fromValues[value]
   }
 
+  #if os(Linux)
   private static let toValues: [SocketType: Int32] = [
-    .stream: SOCK_STREAM,
-    .datagram: SOCK_DGRAM,
+      .stream: Int32(SOCK_STREAM.rawValue),
+      .datagram: Int32(SOCK_DGRAM.rawValue),
   ]
+  #else
+  private static let toValues: [SocketType: Int32] = [
+      .stream: SOCK_STREAM,
+      .datagram: SOCK_DGRAM,
+  ]
+  #endif
 
+  #if os(Linux)
+  private static let fromValues: [Int32: SocketType] = [
+    Int32(SOCK_STREAM.rawValue): .stream,
+    Int32(SOCK_DGRAM.rawValue): .datagram,
+  ]
+  #else
   private static let fromValues: [Int32: SocketType] = [
     SOCK_STREAM: .stream,
     SOCK_DGRAM: .datagram,
   ]
+  #endif
 }
 
 // MARK: - SocketProtocol
@@ -81,14 +95,14 @@ public enum SocketProtocol {
   }
 
   private static let toValues: [SocketProtocol: Int32] = [
-    .tcp: IPPROTO_TCP,
-    .udp: IPPROTO_UDP,
+    .tcp: Int32(IPPROTO_TCP),
+    .udp: Int32(IPPROTO_UDP),
     .unix: 0,
   ]
 
   private static let fromValues: [Int32: SocketProtocol] = [
-    IPPROTO_TCP: .tcp,
-    IPPROTO_UDP: .udp,
+    Int32(IPPROTO_TCP): .tcp,
+    Int32(IPPROTO_UDP): .udp,
     0: .unix,
   ]
 }

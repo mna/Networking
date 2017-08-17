@@ -51,8 +51,11 @@ public class Socket: FileDescriptorRepresentable {
     self.type = type
 
     #if os(Linux)
-      self.family = family ?? Family.make(try Socket.getOption(fd: fileDescriptor, option: SO_DOMAIN))
-      self.proto = SocketProtocol.make(try Socket.getOption(fd: fileDescriptor, option: SO_PROTOCOL))
+      self.family = try family ?? Family.make(try Socket.getOption(fd: fd, option: SO_DOMAIN))
+      guard let proto = SocketProtocol.make(try Socket.getOption(fd: fd, option: SO_PROTOCOL)) else {
+        throw MessageError("unsupported socket protocol")
+      }
+      self.proto = proto
     #else
       self.family = family
       self.proto = family == .unix ? .unix : (type == .stream ? .tcp : .udp)
@@ -267,6 +270,7 @@ public class Socket: FileDescriptorRepresentable {
     return Int(ret)
   }
 
+/*
   public func receiveFrom(_ data: inout Array<UInt8>, flags: ReceiveFlags = []) throws -> Int {
     let ret = data.withUnsafeMutableBufferPointer { buf in
       addr.withUnsafeSockaddrPointer { sa, len in
@@ -275,6 +279,7 @@ public class Socket: FileDescriptorRepresentable {
     }
     // TODO: return an address with the int
   }
+*/
 
   public func listen(backlog: Int = 128) throws {
     let ret = clisten(fileDescriptor, Int32(backlog))
@@ -315,10 +320,10 @@ extension Socket {
       self.rawValue = rawValue
     }
 
-    public static let oob = SendFlags(rawValue: MSG_OOB)
-    public static let dontRoute = SendFlags(rawValue: MSG_DONTROUTE)
+    public static let oob = SendFlags(rawValue: Int32(MSG_OOB))
+    public static let dontRoute = SendFlags(rawValue: Int32(MSG_DONTROUTE))
     #if os(Linux)
-      public static let noSignal = SendFlags(rawValue: MSG_NOSIGNAL)
+      public static let noSignal = SendFlags(rawValue: Int32(MSG_NOSIGNAL))
     #endif
   }
 
@@ -329,9 +334,9 @@ extension Socket {
       self.rawValue = rawValue
     }
 
-    public static let oob = ReceiveFlags(rawValue: MSG_OOB)
-    public static let peek = ReceiveFlags(rawValue: MSG_PEEK)
-    public static let waitAll = ReceiveFlags(rawValue: MSG_WAITALL)
+    public static let oob = ReceiveFlags(rawValue: Int32(MSG_OOB))
+    public static let peek = ReceiveFlags(rawValue: Int32(MSG_PEEK))
+    public static let waitAll = ReceiveFlags(rawValue: Int32(MSG_WAITALL))
   }
 }
 
@@ -354,15 +359,15 @@ extension Socket {
     }
 
     private static let toValues: [ShutdownMode: Int32] = [
-      .read: SHUT_RD,
-      .write: SHUT_WR,
-      .readWrite: SHUT_RDWR,
+      .read: Int32(SHUT_RD),
+      .write: Int32(SHUT_WR),
+      .readWrite: Int32(SHUT_RDWR),
     ]
 
     private static let fromValues: [Int32: ShutdownMode] = [
-      SHUT_RD: .read,
-      SHUT_WR: .write,
-      SHUT_RDWR: .readWrite,
+      Int32(SHUT_RD): .read,
+      Int32(SHUT_WR): .write,
+      Int32(SHUT_RDWR): .readWrite,
     ]
   }
 }
