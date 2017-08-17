@@ -149,10 +149,7 @@ class SocketTests: XCTestCase {
     }
 
     XCTAssertEqual(server.sock?.boundAddress, Address.ip4(ip: IPAddress(127, 0, 0, 1), port: 0))
-    guard let bound = try server.sock?.loadBoundAddress() else {
-      XCTFail("no bound address for server")
-      return
-    }
+    let bound = try server.sock!.loadBoundAddress()
     switch bound {
     case .ip4(let ip, let port):
       XCTAssertEqual(ip, IPAddress(127, 0, 0, 1))
@@ -174,10 +171,7 @@ class SocketTests: XCTestCase {
     }
 
     XCTAssertEqual(server.sock?.boundAddress, Address.ip4(ip: IPAddress(127, 0, 0, 1), port: 8899))
-    guard let bound = try server.sock?.loadBoundAddress() else {
-      XCTFail("no bound address for server")
-      return
-    }
+    let bound = try server.sock!.loadBoundAddress()
     XCTAssertEqual(bound, Address.ip4(ip: IPAddress(127, 0, 0, 1), port: 8899))
 
     // run server in background and close it after a connection
@@ -219,10 +213,7 @@ class SocketTests: XCTestCase {
     }
 
     XCTAssertEqual(server.sock?.boundAddress, Address.ip6(ip: IPAddress(0, 0, 0, 0, 0, 0, 0, 1), port: 8898, scopeID: 0))
-    guard let bound = try server.sock?.loadBoundAddress() else {
-      XCTFail("no bound address for server")
-      return
-    }
+    let bound = try server.sock!.loadBoundAddress()
     XCTAssertEqual(bound, Address.ip6(ip: IPAddress(0, 0, 0, 0, 0, 0, 0, 1), port: 8898, scopeID: 0))
 
     // run server in background and close it after a connection
@@ -259,10 +250,7 @@ class SocketTests: XCTestCase {
     try server.listen()
 
     XCTAssertEqual(server.sock?.boundAddress, Address.unix(path: "/tmp/test.sock"))
-    guard let bound = try server.sock?.loadBoundAddress() else {
-      XCTFail("no bound address for server")
-      return
-    }
+    let bound = try server.sock!.loadBoundAddress()
     XCTAssertEqual(bound, Address.unix(path: "/tmp/test.sock"))
 
     // run server in background and close it after a connection
@@ -312,4 +300,4 @@ class SocketTests: XCTestCase {
       ]
     }
   }
-#endif 
+#endif

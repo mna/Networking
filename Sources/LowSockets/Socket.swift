@@ -113,26 +113,30 @@ public class Socket: FileDescriptorRepresentable {
     return (flags & O_NONBLOCK) == 0
   }
 
-  // TODO: throws and returns nil?
-
-  public func loadBoundAddress() throws -> Address? {
+  public func loadBoundAddress() throws -> Address {
     guard let family = family else {
       throw MessageError("socket has no family specified")
     }
 
     let (_, boundAddr) = try Socket.getReturnCodeAndAddress(fd: fileDescriptor, family: family, getsockname)
-    self.boundAddress = boundAddr
-    return boundAddr
+    guard let mustBoundAddr = boundAddr else {
+      throw MessageError("no bound address")
+    }
+    self.boundAddress = mustBoundAddr
+    return mustBoundAddr
   }
 
-  public func loadPeerAddress() throws -> Address? {
+  public func loadPeerAddress() throws -> Address {
     guard let family = family else {
       throw MessageError("socket has no family specified")
     }
 
     let (_, peerAddr) = try Socket.getReturnCodeAndAddress(fd: fileDescriptor, family: family, getpeername)
-    self.peerAddress = peerAddr
-    return peerAddr
+    guard let mustPeerAddr = peerAddr else {
+      throw MessageError("no peer address")
+    }
+    self.peerAddress = mustPeerAddr
+    return mustPeerAddr
   }
 
   public func bind(to addr: Address) throws {
