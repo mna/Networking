@@ -147,79 +147,11 @@ public class Socket: FileDescriptorRepresentable {
     boundAddress = addr
   }
 
-  public func bind(to addr: String) throws {
-    if addr.contains("/") {
-      try bind(toPath: addr)
-    } else {
-      try bind(toHostPort: addr)
-    }
-  }
-
-  public func bind(toPath path: String) throws {
-    guard let addr = Address(path: path) else {
-      throw MessageError("path too long", context: ["path": path])
-    }
-    try bind(to: addr)
-  }
-
-  public func bind(toHostPort hostPort: String) throws {
-    let (host, service) = try Address.split(hostPort: hostPort)
-    try bind(toHost: host, service: service)
-  }
-
-  public func bind(toHost host: String, service: String) throws {
-    let host = host.isEmpty ? nil : host
-    let flags: AddrInfo.Flags = host == nil ? [.default, .passive] : .default
-    let (_, addrs) = try AddrInfo.get(host: host, service: service, flags: flags, family: family, type: type, proto: proto)
-
-    guard let first = addrs.first else {
-      throw MessageError("no address found", context: ["host": host ?? "", "service": service])
-    }
-    try bind(to: first)
-  }
-
-  public func bind(toHost host: String, port: Int) throws {
-    try bind(toHost: host, service: String(port))
-  }
-
   public func connect(to addr: Address) throws {
     let ret = addr.withUnsafeSockaddrPointer { (ptr, size) in
       cconnect(fileDescriptor, ptr, size)
     }
     try CError.makeAndThrow(fromReturnCode: ret)
-  }
-
-  public func connect(to addr: String) throws {
-    if addr.contains("/") {
-      try connect(toPath: addr)
-    } else {
-      try connect(toHostPort: addr)
-    }
-  }
-
-  public func connect(toPath path: String) throws {
-    guard let addr = Address(path: path) else {
-      throw MessageError("path too long", context: ["path": path])
-    }
-    try connect(to: addr)
-  }
-
-  public func connect(toHostPort hostPort: String) throws {
-    let (host, service) = try Address.split(hostPort: hostPort)
-    try connect(toHost: host, service: service)
-  }
-
-  public func connect(toHost host: String, service: String) throws {
-    // needs to call getaddrinfo to resolve address
-    let (_, addrs) = try AddrInfo.get(host: host, service: service, family: family, type: type, proto: proto)
-    guard let first = addrs.first else {
-      throw MessageError("no address found", context: ["host": host])
-    }
-    try connect(to: first)
-  }
-
-  public func connect(toHost host: String, port: Int) throws {
-    try connect(toHost: host, service: String(port))
   }
 
   public func send(_ data: Array<UInt8>, flags: SendFlags = []) throws -> Int {
@@ -274,16 +206,54 @@ public class Socket: FileDescriptorRepresentable {
     return Int(ret)
   }
 
-/*
-  public func receiveFrom(_ data: inout Array<UInt8>, flags: ReceiveFlags = []) throws -> Int {
+  public func receive(_ data: inout Array<UInt8>, from addr: inout Address, flags: ReceiveFlags = []) throws -> Int {
+    var storage = sockaddr_storage()
+    var length = socklen_t(MemoryLayout<sockaddr_storage>.stride)
+
     let ret = data.withUnsafeMutableBufferPointer { buf in
-      addr.withUnsafeSockaddrPointer { sa, len in
-        crecvfrom(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
+      withUnsafeMutablePointer(to: &storage) { ptr in
+        ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { (saptr: UnsafeMutablePointer<sockaddr>) in
+          crecvfrom(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue, saptr, &length)
+        }
       }
     }
-    // TODO: return an address with the int
+    try CError.makeAndThrow(fromReturnCode: Int32(ret))
+
+    guard let family = Family.make(Int32(storage.ss_family)) else {
+      throw MessageError("unsupported address family", context: ["family": String(storage.ss_family)])
+    }
+
+    let fromAddr: Address?
+    switch family {
+    case .inet:
+      fromAddr = withUnsafePointer(to: &storage) { ptr in
+        ptr.withMemoryRebound(to: sockaddr_in.self, capacity: 1) { (saptr: UnsafePointer<sockaddr_in>) in
+          Address(sockaddr: saptr.pointee)
+        }
+      }
+    case .inet6:
+      fromAddr = withUnsafePointer(to: &storage) { ptr in
+        ptr.withMemoryRebound(to: sockaddr_in6.self, capacity: 1) { (saptr: UnsafePointer<sockaddr_in6>) in
+          Address(sockaddr: saptr.pointee)
+        }
+      }
+    case .unix:
+      fromAddr = withUnsafePointer(to: &storage) { ptr in
+        ptr.withMemoryRebound(to: sockaddr_un.self, capacity: 1) { (saptr: UnsafePointer<sockaddr_un>) in
+          Address(sockaddr: saptr.pointee)
+        }
+      }
+    case .unspec:
+      fromAddr = nil
+    }
+
+    guard let mustFromAddr = fromAddr else {
+      throw MessageError("invalid from address")
+    }
+    addr = mustFromAddr
+
+    return ret
   }
-*/
 
   public func listen(backlog: Int = 128) throws {
     let ret = clisten(fileDescriptor, Int32(backlog))
