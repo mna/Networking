@@ -108,11 +108,48 @@ class SocketTests: XCTestCase {
     }
   }
 
-  func testShutdown() throws {
-    XCTFail("not implemented")
+  func testSendToReceiveFrom() throws {
+    let addr1 = Address(path: "/tmp/test1.sock")!
+    let addr2 = Address(path: "/tmp/test2.sock")!
+    defer {
+      unlink("/tmp/test1.sock")
+      unlink("/tmp/test2.sock")
+    }
+
+    var data1 = [UInt8](repeating: 0, count: 10)
+    var data2 = [UInt8](repeating: 0, count: 10)
+    var addrRecv: Address = addr2
+    do {
+      let sock1 = try Socket(family: .unix, type: .datagram)
+      let sock2 = try Socket(family: .unix, type: .datagram)
+      try sock1.bind(to: addr1)
+      try sock2.bind(to: addr2)
+
+      data1 = [1, 2, 3, 4]
+      var n1 = try sock1.send(data1[0..<4], to: addr2)
+      var n2 = try sock2.receive(&data2, from: &addrRecv)
+
+      XCTAssertEqual(n1, 4)
+      XCTAssertEqual(n1, n2)
+      XCTAssertEqual(addrRecv, addr1)
+      XCTAssertEqual(data1[0..<4], [1, 2, 3, 4])
+      XCTAssertEqual(data1[0..<4], data2[0..<4])
+
+      data2 = [5, 6, 7]
+      n2 = try sock2.send(data2[0..<3], to: addr1)
+      n1 = try sock1.receive(&data1, from: &addrRecv)
+
+      XCTAssertEqual(n2, 3)
+      XCTAssertEqual(n1, n2)
+      XCTAssertEqual(addrRecv, addr2)
+      XCTAssertEqual(data1[0..<3], [5, 6, 7])
+      XCTAssertEqual(data1[0..<3], data2[0..<3])
+    } catch {
+      XCTFail("\(error)")
+    }
   }
 
-  func testSendToReceiveFrom() throws {
+  func testShutdown() throws {
     XCTFail("not implemented")
   }
 
