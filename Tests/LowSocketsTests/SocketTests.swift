@@ -149,8 +149,48 @@ class SocketTests: XCTestCase {
     }
   }
 
-  func testShutdown() throws {
-    XCTFail("not implemented")
+  func xtestShutdown() throws {
+    // TODO: panics, does not exit cleanly
+    let server = PortServer("localhost", 8896)
+    do {
+      try server.listen()
+    } catch {
+      XCTFail("server.listen failed: \(error)")
+      return
+    }
+
+    // run server in background and close it after a connection
+    let expect = expectation(description: "server stops after a connection")
+    DispatchQueue.global(qos: .background).async {
+      do {
+        try server.serve { s in
+          print(">>>> sleep")
+          sleep(1)
+          print(">>>> fulfill")
+          expect.fulfill()
+          return false
+        }
+      } catch {
+        XCTFail("server.serve failed with \(error)")
+      }
+    }
+
+    do {
+      let sock = try Socket(family: .inet)
+      print(">>> call connect")
+      try sock.connect(to: "localhost:8896")
+      print(">>> call shutdown")
+      try sock.shutdown()
+
+      let bytes: [UInt8] = [1, 2, 3, 4]
+      print(">>> call send")
+      let _ = try sock.send(bytes)
+      XCTFail("want error, got none")
+    } catch {
+      print(">>>>> send on shutdown write failed: \(error)")
+    }
+
+    waitForExpectations(timeout: 10)
   }
 
   func testSendReceive() throws {
@@ -350,6 +390,8 @@ class SocketTests: XCTestCase {
         ("testSetNonBlocking", testSetNonBlocking),
         ("testSetLinger", testSetLinger),
         ("testSetTimeouts", testSetTimeouts),
+        ("testConnectToNonMatchingAddress", testConnectToNonMatchingAddress),
+        ("testSendToReceiveFrom", testSendToReceiveFrom),
         ("testSendReceive", testSendReceive),
         ("testListenTCPUnspecifiedPort", testListenTCPUnspecifiedPort),
         ("testConnectTCP4", testConnectTCP4),
