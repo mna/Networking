@@ -154,6 +154,10 @@ public class Socket: FileDescriptorRepresentable {
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
+  // TODO: when conditional protocol conformance lands, refactor this
+  // by conforming Array<UInt8> and ArraySlice<UInt8> to an UnsafeBytesBuffer
+  // protocol.
+
   public func send(_ data: Array<UInt8>, flags: SendFlags = []) throws -> Int {
     let ret = data.withUnsafeBufferPointer { buf in
       csend(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
@@ -206,15 +210,13 @@ public class Socket: FileDescriptorRepresentable {
     return Int(ret)
   }
 
-  public func receive(_ data: inout Array<UInt8>, from addr: inout Address, flags: ReceiveFlags = []) throws -> Int {
+  private func receive(_ data: UnsafeMutableBufferPointer<UInt8>, from addr: inout Address, flags: ReceiveFlags) throws -> Int {
     var storage = sockaddr_storage()
     var length = socklen_t(MemoryLayout<sockaddr_storage>.stride)
 
-    let ret = data.withUnsafeMutableBufferPointer { buf in
-      withUnsafeMutablePointer(to: &storage) { ptr in
-        ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { (saptr: UnsafeMutablePointer<sockaddr>) in
-          crecvfrom(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue, saptr, &length)
-        }
+    let ret = withUnsafeMutablePointer(to: &storage) { ptr in
+      ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { (saptr: UnsafeMutablePointer<sockaddr>) in
+        crecvfrom(fileDescriptor, data.baseAddress, data.count, flags.rawValue, saptr, &length)
       }
     }
     try CError.makeAndThrow(fromReturnCode: Int32(ret))
@@ -252,6 +254,20 @@ public class Socket: FileDescriptorRepresentable {
     }
     addr = mustFromAddr
 
+    return ret
+  }
+
+  public func receive(_ data: inout Array<UInt8>, from addr: inout Address, flags: ReceiveFlags = []) throws -> Int {
+    let ret = try data.withUnsafeMutableBufferPointer { buf in
+      try receive(buf, from: &addr, flags: flags)
+    }
+    return ret
+  }
+
+  public func receive(_ data: inout ArraySlice<UInt8>, from addr: inout Address, flags: ReceiveFlags = []) throws -> Int {
+    let ret = try data.withUnsafeMutableBufferPointer { buf in
+      try receive(buf, from: &addr, flags: flags)
+    }
     return ret
   }
 
