@@ -95,6 +95,27 @@ class SocketTests: XCTestCase {
     }
   }
 
+  func testConnectToNonMatchingAddress() throws {
+    let sock = try Socket(family: .inet)
+    let addr = Address(path: "/tmp/test.sock")!
+    do {
+      try sock.connect(to: addr)
+      XCTFail("want error, got none")
+    } catch let ce as CError {
+      if ce.code != EAFNOSUPPORT {
+        XCTFail("want EAFNOSUPPORT, got \(ce.code): \(ce.message)")
+      }
+    }
+  }
+
+  func testShutdown() throws {
+    XCTFail("not implemented")
+  }
+
+  func testSendToReceiveFrom() throws {
+    XCTFail("not implemented")
+  }
+
   func testSendReceive() throws {
     let server = PortServer("localhost", 8897)
     do {
