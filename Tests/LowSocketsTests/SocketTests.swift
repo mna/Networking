@@ -1,5 +1,6 @@
 import XCTest
 import Libc
+import Networking
 import Foundation
 import Dispatch
 @testable import LowSockets

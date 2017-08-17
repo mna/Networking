@@ -25,13 +25,13 @@ public struct CError: Swift.Error {
     self.message = String(validatingUTF8: gai_strerror(code)) ?? ""
   }
 
-  static func makeAndThrow(fromReturnCode code: Int32, errorValue: Int32 = -1) throws {
+  public static func makeAndThrow(fromReturnCode code: Int32, errorValue: Int32 = -1) throws {
     if let err = CError(fromReturnCode: code, errorValue: errorValue) {
       throw err
     }
   }
 
-  static func makeAndThrow(fromGAICode code: Int32) throws {
+  public static func makeAndThrow(fromGAICode code: Int32) throws {
     if let err = CError(fromGAICode: code) {
       throw err
     }
