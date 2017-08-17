@@ -7,6 +7,5 @@ let package = Package(
     targets: [
       Target(name: "Libc"),
       Target(name: "LowSockets", dependencies: ["Libc"]),
-      Target(name: "Sockets", dependencies: ["LowSockets"]),
     ]
 )
