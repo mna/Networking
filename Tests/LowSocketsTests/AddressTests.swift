@@ -86,3 +86,14 @@ class AddressTests: XCTestCase {
     }
   }
 }
+
+#if os(Linux)
+  extension AddressTests {
+    static var allTests : [(String, (AddressTests) -> () throws -> Void)] {
+      return [
+        ("testJoinHostPort", testJoinHostPort),
+        ("testSplitHostPort", testSplitHostPort),
+      ]
+    }
+  }
+#endif 

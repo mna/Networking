@@ -15,3 +15,13 @@ class EndiannessTests: XCTestCase {
     }
   }
 }
+
+#if os(Linux)
+  extension EndiannessTests {
+    static var allTests : [(String, (EndiannessTests) -> () throws -> Void)] {
+      return [
+        ("testNtoh", testNtoh),
+      ]
+    }
+  }
+#endif 

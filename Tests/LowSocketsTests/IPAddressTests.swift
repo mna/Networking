@@ -95,3 +95,14 @@ class IPAddressTests: XCTestCase {
     }
   }
 }
+
+#if os(Linux)
+  extension IPAddressTests {
+    static var allTests : [(String, (IPAddressTests) -> () throws -> Void)] {
+      return [
+        ("testInitParsing", testInitParsing),
+        ("testInitBytes", testInitBytes),
+      ]
+    }
+  }
+#endif 

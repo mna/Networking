@@ -1,6 +1,7 @@
 import XCTest
 import Libc
 import Foundation
+import Dispatch
 @testable import LowSockets
 
 class SocketTests: XCTestCase {
@@ -75,13 +76,14 @@ class SocketTests: XCTestCase {
       -1,
     ]
 
+    let within = 0.005
     for c in cases {
       try sock.setReadTimeout(c)
       var want = c
       if c < 0 {
         want = 0
       }
-      XCTAssertEqual(want, try sock.getReadTimeout())
+      XCTAssertEqualWithAccuracy(want, try sock.getReadTimeout(), accuracy: within)
     }
     for c in cases {
       try sock.setWriteTimeout(c)
@@ -89,7 +91,7 @@ class SocketTests: XCTestCase {
       if c < 0 {
         want = 0
       }
-      XCTAssertEqual(want, try sock.getWriteTimeout())
+      XCTAssertEqualWithAccuracy(want, try sock.getWriteTimeout(), accuracy: within)
     }
   }
 
@@ -292,3 +294,22 @@ class SocketTests: XCTestCase {
     waitForExpectations(timeout: 10)
   }
 }
+
+#if os(Linux)
+  extension SocketTests {
+    static var allTests : [(String, (SocketTests) -> () throws -> Void)] {
+      return [
+        ("testDefaultSocket", testDefaultSocket),
+        ("testCreateFromFD", testCreateFromFD),
+        ("testSetNonBlocking", testSetNonBlocking),
+        ("testSetLinger", testSetLinger),
+        ("testSetTimeouts", testSetTimeouts),
+        ("testSendReceive", testSendReceive),
+        ("testListenTCPUnspecifiedPort", testListenTCPUnspecifiedPort),
+        ("testConnectTCP4", testConnectTCP4),
+        ("testConnectTCP6", testConnectTCP6),
+        ("testConnectUnix", testConnectUnix),
+      ]
+    }
+  }
+#endif 

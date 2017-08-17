@@ -37,10 +37,17 @@ class AddrInfoTests: XCTestCase {
   }
 
   func testResolveIP() {
-    let cases: [String: [IPAddress]] = [
-      "localhost": [IPAddress(127, 0, 0, 1), IPAddress(0, 0, 0, 0, 0, 0, 0, 1)], // loopback addresses
-      "broadcasthost": [IPAddress(255, 255, 255, 255)],
-    ]
+    #if os(Linux)
+      // presume Linux doesn't have ipv6 enabled, nor broadcasthost
+      let cases: [String: [IPAddress]] = [
+        "localhost": [IPAddress(127, 0, 0, 1)], // loopback addresses
+      ]
+    #else
+      let cases: [String: [IPAddress]] = [
+        "localhost": [IPAddress(127, 0, 0, 1), IPAddress(0, 0, 0, 0, 0, 0, 0, 1)], // loopback addresses
+        "broadcasthost": [IPAddress(255, 255, 255, 255)],
+      ]
+    #endif
 
     for c in cases {
       do {
@@ -77,3 +84,15 @@ class AddrInfoTests: XCTestCase {
     }
   }
 }
+
+#if os(Linux)
+  extension AddrInfoTests {
+    static var allTests : [(String, (AddrInfoTests) -> () throws -> Void)] {
+      return [
+        ("testResolveService", testResolveService),
+        ("testResolveIP", testResolveIP),
+        ("testResolveCNAME", testResolveCNAME),
+      ]
+    }
+  }
+#endif 
