@@ -8,6 +8,17 @@ struct Kevent {
   let flags: Flags
   let filterFlags: FilterFlags
   let data: Int
+
+  func toCStruct() -> kevent {
+    var kev = kevent()
+    kev.ident = UInt(identifier)
+    kev.filter = Int16(filter.value)
+    kev.flags = UInt16(flags.rawValue)
+    kev.fflags = filterFlags.rawValue
+    kev.data = data
+
+    return kev
+  }
 }
 
 // MARK: - Kevent+Flags
