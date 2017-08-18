@@ -2,6 +2,16 @@ import XCTest
 import Networking
 @testable import Kqueue
 
+func tempFile(_ name: String) throws -> (Int32, () -> Void) {
+  let file = "/tmp/\(name)"
+  let fd = open(file, O_RDWR|O_CREAT, 0o666)
+  try CError.makeAndThrow(fromReturnCode: fd)
+  return (fd, {
+    close(fd)
+    unlink(file)
+  })
+}
+
 class AddressTests: XCTestCase {
   func testKqueueClose() throws {
     let kq = try Kqueue()
@@ -20,13 +30,8 @@ class AddressTests: XCTestCase {
   }
 
   func testKqueueFileWrite() throws {
-    let file = "/tmp/filetest.txt"
-    let fd = open(file, O_CREAT, 0o666)
-    try CError.makeAndThrow(fromReturnCode: fd)
-    defer {
-      close(fd)
-      unlink(file)
-    }
+    let (fd, fn) = try tempFile("filetest.txt")
+    defer { fn() }
 
     // watch for write availability on fd
     var events = Array<Kevent>(repeating: Kevent(), count: 1)
@@ -41,13 +46,8 @@ class AddressTests: XCTestCase {
   }
 
   func testKqueueFileRead() throws {
-    let file = "/tmp/filetest2.txt"
-    let fd = open(file, O_RDWR|O_CREAT, 0o666)
-    try CError.makeAndThrow(fromReturnCode: fd)
-    defer {
-      close(fd)
-      unlink(file)
-    }
+    let (fd, fn) = try tempFile("filetest.txt")
+    defer { fn() }
 
     let expect = expectation(description: "kqueue notifies file read")
     DispatchQueue.global(qos: .background).async {
@@ -80,6 +80,24 @@ class AddressTests: XCTestCase {
     }
 
     waitForExpectations(timeout: 10)
+  }
+
+  func testKqueueTimeout() throws {
+    let (fd, fn) = try tempFile("filetest.txt")
+    defer { fn() }
+
+    // watch for read availability on fd, will never happen
+    var events = Array(repeating: Kevent(), count: 1)
+    let ev = Kevent(fd: fd)
+    let kq = try Kqueue()
+    let timeout: TimeInterval = 0.1
+    let start = Date()
+
+    let ret = try kq.query(with: [ev], into: &events, timeout: timeout)
+
+    let dur = Date().timeIntervalSince(start)
+    XCTAssertEqual(0, ret)
+    XCTAssertGreaterThanOrEqual(dur, timeout)
   }
 
   // TODO: testKqueueTimer
