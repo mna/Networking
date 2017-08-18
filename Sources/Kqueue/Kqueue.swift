@@ -41,10 +41,14 @@ class Kqueue: FileDescriptorRepresentable {
     } else {
       ret = kevent(fileDescriptor, inKevs, Int32(inKevs.count), &outKevs, Int32(outKevs.count), nil)
     }
-
-    // TODO: fill events lists with results
-
     try CError.makeAndThrow(fromReturnCode: ret)
+
+    // fill events list with results
+    for i in 0..<Int(ret) {
+      if let ev = Kevent(outKevs[i]) {
+        events[i] = ev
+      }
+    }
     return Int(ret)
   }
 

@@ -1,13 +1,48 @@
 import Darwin.C
+import Networking
 
 // MARK: - Kevent
 
 struct Kevent {
+
+  // MARK: - Properties
+
   let identifier: Int
   let filter: Filter
   let flags: Flags
   let filterFlags: FilterFlags
   let data: Int
+
+  // MARK: - Constructors
+
+  init() {
+    self.identifier = 0
+    self.filter = .read
+    self.flags = []
+    self.filterFlags = []
+    self.data = 0
+  }
+
+  init?(_ kev: kevent) {
+    self.identifier = Int(kev.ident)
+    guard let filter = Filter.make(Int32(kev.filter)) else {
+      return nil
+    }
+    self.filter = filter
+    self.flags = Flags(rawValue: Int32(kev.flags))
+    self.filterFlags = FilterFlags(rawValue: kev.fflags)
+    self.data = kev.data
+  }
+
+  init(fd: FileDescriptorRepresentable, filter: Filter = .read, flags: Flags = [.add], filterFlags: FilterFlags = [], data: Int = 0) {
+    self.identifier = Int(fd.fileDescriptor)
+    self.filter = filter
+    self.flags = flags
+    self.filterFlags = filterFlags
+    self.data = data
+  }
+
+  // MARK: - Methods
 
   func toCStruct() -> kevent {
     var kev = kevent()
