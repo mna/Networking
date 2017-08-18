@@ -1,5 +1,6 @@
 import XCTest
 import Networking
+import LowSockets
 @testable import Kqueue
 
 func tempFile(_ name: String) throws -> (Int32, () -> Void) {
@@ -127,6 +128,50 @@ class KqueueTests: XCTestCase {
 
     waitForExpectations(timeout: 10)
   }
+
+  func testKqueueSocket() throws {
+    let path = "/tmp/test.sock"
+    let addr = Address.unix(path: path)
+    let sock = try Socket(family: .unix)
+    try sock.bind(to: addr)
+    try sock.listen()
+    defer {
+      try? sock.close()
+      unlink(path)
+    }
+
+    // add the listening socket to the kqueue
+    let kq = try Kqueue()
+    let ev = Kevent(fd: sock)
+    var events = Array(repeating: Kevent(), count: 2)
+
+    // wait for a connection
+    let expect = expectation(description: "kqueue notifies accepted connection")
+    DispatchQueue.global(qos: .background).async {
+      do {
+        let ret = try kq.query(with: [ev], into: &events)
+        XCTAssertEqual(1, ret)
+        let ev0 = events[0]
+        XCTAssertEqual(ev0.identifier, Int(sock.fileDescriptor))
+        XCTAssertEqual(ev0.data, 1)
+
+        let _ = try sock.accept()
+
+        expect.fulfill()
+      } catch {
+        XCTFail("kqueue failed with \(error)")
+      }
+    }
+
+    do {
+      let sock = try Socket(family: .unix)
+      try sock.connect(to: addr)
+    } catch {
+      XCTFail("client socket failed with \(error)")
+    }
+
+    waitForExpectations(timeout: 10)
+  }
+
   // TODO: testKqueueUser
-  // TODO: testKqueueSocket
 }
