@@ -42,6 +42,14 @@ struct Kevent {
     self.data = data
   }
 
+  init(identifier: Int, filter: Filter = .read, flags: Flags = [.add], filterFlags: FilterFlags = [], data: Int = 0) {
+    self.identifier = identifier
+    self.filter = filter
+    self.flags = flags
+    self.filterFlags = filterFlags
+    self.data = data
+  }
+
   // MARK: - Methods
 
   func toCStruct() -> kevent {

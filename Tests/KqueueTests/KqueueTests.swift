@@ -12,7 +12,7 @@ func tempFile(_ name: String) throws -> (Int32, () -> Void) {
   })
 }
 
-class AddressTests: XCTestCase {
+class KqueueTests: XCTestCase {
   func testKqueueClose() throws {
     let kq = try Kqueue()
     try kq.close()
@@ -100,7 +100,33 @@ class AddressTests: XCTestCase {
     XCTAssertGreaterThanOrEqual(dur, timeout)
   }
 
-  // TODO: testKqueueTimer
+  func testKqueueTimer() throws {
+    let kq = try Kqueue()
+    let ev = Kevent(identifier: 1, filter: .timer, data: 1) // 1ms
+    var events = Array(repeating: Kevent(), count: 2)
+
+    let ret = try kq.query(with: [ev], into: &events)
+    XCTAssertEqual(ret, 1)
+    let ev0 = events[0]
+    XCTAssertGreaterThan(ev0.data, 0)
+    XCTAssertEqualWithAccuracy(1.0, Double(ev0.data), accuracy: 1.0)
+
+    let expect = expectation(description: "kqueue after 10ms")
+    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(10)) {
+      do {
+        let ret = try kq.query(with: [], into: &events)
+        XCTAssertEqual(ret, 1)
+        let ev0 = events[0]
+        XCTAssertGreaterThanOrEqual(ev0.data, 10)
+
+        expect.fulfill()
+      } catch {
+        XCTFail("kqueue failed with \(error)")
+      }
+    }
+
+    waitForExpectations(timeout: 10)
+  }
   // TODO: testKqueueUser
   // TODO: testKqueueSocket
 }
