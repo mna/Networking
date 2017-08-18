@@ -5,31 +5,6 @@ import Networking
 
 public enum AddrInfo {
 
-  // MARK: - Flags
-
-  public struct Flags: OptionSet {
-    public let rawValue: Int32
-
-    public init(rawValue: Int32) {
-      self.rawValue = rawValue
-    }
-
-    public static let addrConfig = Flags(rawValue: AI_ADDRCONFIG)
-    public static let all = Flags(rawValue: AI_ALL)
-    public static let canonName = Flags(rawValue: AI_CANONNAME)
-    public static let numericHost = Flags(rawValue: AI_NUMERICHOST)
-    public static let numericServ = Flags(rawValue: AI_NUMERICSERV)
-    public static let passive = Flags(rawValue: AI_PASSIVE)
-    public static let v4Mapped = Flags(rawValue: AI_V4MAPPED)
-
-    #if os(Linux)
-      public static let `default`: Flags = [v4Mapped, addrConfig]
-    #else
-      public static let v4MappedCfg = Flags(rawValue: AI_V4MAPPED_CFG)
-      public static let `default`: Flags = [v4MappedCfg, addrConfig]
-    #endif
-  }
-
   // MARK: - Static Methods
 
   public static func `get`(host: String? = nil, service: String? = nil, flags: Flags = .default, family: Family? = nil, type: SocketType? = nil, proto: SocketProtocol? = nil) throws -> (String, [Address]) {
@@ -110,5 +85,32 @@ public enum AddrInfo {
       list = addr.pointee.ai_next
     }
     return (cname, addrs)
+  }
+}
+
+// MARK: - AddrInfo+Flags
+
+extension AddrInfo {
+  public struct Flags: OptionSet {
+    public let rawValue: Int32
+
+    public init(rawValue: Int32) {
+      self.rawValue = rawValue
+    }
+
+    public static let addrConfig = Flags(rawValue: AI_ADDRCONFIG)
+    public static let all = Flags(rawValue: AI_ALL)
+    public static let canonName = Flags(rawValue: AI_CANONNAME)
+    public static let numericHost = Flags(rawValue: AI_NUMERICHOST)
+    public static let numericServ = Flags(rawValue: AI_NUMERICSERV)
+    public static let passive = Flags(rawValue: AI_PASSIVE)
+    public static let v4Mapped = Flags(rawValue: AI_V4MAPPED)
+
+    #if os(Linux)
+      public static let `default`: Flags = [v4Mapped, addrConfig]
+    #else
+      public static let v4MappedCfg = Flags(rawValue: AI_V4MAPPED_CFG)
+      public static let `default`: Flags = [v4MappedCfg, addrConfig]
+    #endif
   }
 }

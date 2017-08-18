@@ -8,6 +8,10 @@ let package = Package(
       Target(name: "Libc"),
       Target(name: "Networking"),
       Target(name: "LowSockets", dependencies: ["Libc", "Networking"]),
-      Target(name: "Kqueue", dependencies: ["Networking"]),
     ]
 )
+
+#if !os(Linux)
+  let kqueueTarget = Target(name: "Kqueue", dependencies: ["Networking"])
+  package.targets.append(kqueueTarget)
+#endif

@@ -303,6 +303,7 @@ public class Socket: FileDescriptorRepresentable {
 }
 
 // MARK: - Socket+SendFlags+ReceiveFlags
+
 extension Socket {
   public struct SendFlags: OptionSet {
     public let rawValue: Int32
@@ -332,6 +333,7 @@ extension Socket {
 }
 
 // MARK: - Socket+ShutdownMode
+
 extension Socket {
   public enum ShutdownMode {
     case read
@@ -364,6 +366,7 @@ extension Socket {
 }
 
 // MARK: - Socket Static Methods
+
 extension Socket {
   fileprivate static func getOption(fd: Int32, option: Int32) throws -> Int32 {
     var v: Int32 = 0

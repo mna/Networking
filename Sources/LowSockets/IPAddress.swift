@@ -3,14 +3,7 @@ import Libc
 // MARK: - IPAddress
 
 /// IPAddress represents an IP (v4 or v6) address.
-public struct IPAddress: Equatable {
-
-  // MARK: - IPAddress+Equatable
-
-  public static func ==(lhs: IPAddress, rhs: IPAddress) -> Bool {
-    return lhs.bytes.elementsEqual(rhs.bytes)
-  }
-
+public struct IPAddress {
   let bytes: [UInt8]
 
   // MARK: - Constructors
@@ -94,5 +87,13 @@ public struct IPAddress: Equatable {
     default:
       fatalError("unknown family for byte count \(bytes.count)")
     }
+  }
+}
+
+// MARK: - IPAddress+Equatable
+
+extension IPAddress: Equatable {
+  public static func ==(lhs: IPAddress, rhs: IPAddress) -> Bool {
+    return lhs.bytes.elementsEqual(rhs.bytes)
   }
 }
