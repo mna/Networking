@@ -40,11 +40,11 @@ class AddrInfoTests: XCTestCase {
     #if os(Linux)
       // presume Linux doesn't have ipv6 enabled, nor broadcasthost
       let cases: [String: [IPAddress]] = [
-        "localhost": [.ipv4Loopback], // loopback addresses
+        "localhost": [.ip4Loopback], // loopback addresses
       ]
     #else
       let cases: [String: [IPAddress]] = [
-        "localhost": [.ipv4Loopback, .ipv6Loopback], // loopback addresses
+        "localhost": [.ip4Loopback, .ip6Loopback], // loopback addresses
         "broadcasthost": [IPAddress(255, 255, 255, 255)],
       ]
     #endif
