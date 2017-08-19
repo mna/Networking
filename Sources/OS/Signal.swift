@@ -10,7 +10,6 @@ public enum Signal {
   case ill
   case trap
   case abrt
-  case emt
   case fpe
   case kill
   case bus
@@ -32,7 +31,6 @@ public enum Signal {
   case vtalrm
   case prof
   case winch
-  case info
   case usr1
   case usr2
 
@@ -54,7 +52,6 @@ public enum Signal {
     .ill: SIGILL,
     .trap: SIGTRAP,
     .abrt: SIGABRT,
-    .emt: SIGEMT,
     .fpe: SIGFPE,
     .kill: SIGKILL,
     .bus: SIGBUS,
@@ -76,7 +73,6 @@ public enum Signal {
     .vtalrm: SIGVTALRM,
     .prof: SIGPROF,
     .winch: SIGWINCH,
-    .info: SIGINFO,
     .usr1: SIGUSR1,
     .usr2: SIGUSR2,
   ]
@@ -88,7 +84,6 @@ public enum Signal {
     SIGILL: .ill,
     SIGTRAP: .trap,
     SIGABRT: .abrt,
-    SIGEMT: .emt,
     SIGFPE: .fpe,
     SIGKILL: .kill,
     SIGBUS: .bus,
@@ -110,7 +105,6 @@ public enum Signal {
     SIGVTALRM: .vtalrm,
     SIGPROF: .prof,
     SIGWINCH: .winch,
-    SIGINFO: .info,
     SIGUSR1: .usr1,
     SIGUSR2: .usr2,
   ]

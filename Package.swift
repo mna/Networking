@@ -11,7 +11,9 @@ let package = Package(
     ]
 )
 
-#if !os(Linux)
+#if os(Linux)
+  package.exclude = ["Sources/Kqueue", "Tests/KqueueTests"]
+#else
   let kqueueTarget = Target(name: "Kqueue", dependencies: ["OS"])
   package.targets.append(kqueueTarget)
 #endif

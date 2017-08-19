@@ -311,9 +311,14 @@ class SocketTests: XCTestCase {
       return
     }
 
-    XCTAssertEqual(server.sock?.boundAddress, Address.ip6(ip: IPAddress(0, 0, 0, 0, 0, 0, 0, 1), port: 8898, scopeID: 0))
+    #if os(Linux)
+      let wantAddr = IPAddress(bytes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 127, 0, 0, 1])!
+    #else
+      let wantAddr = IPAddress.ip6Loopback
+    #endif
+    XCTAssertEqual(server.sock?.boundAddress, Address.ip6(ip: wantAddr, port: 8898, scopeID: 0))
     let bound = try server.sock!.loadBoundAddress()
-    XCTAssertEqual(bound, Address.ip6(ip: IPAddress(0, 0, 0, 0, 0, 0, 0, 1), port: 8898, scopeID: 0))
+    XCTAssertEqual(bound, Address.ip6(ip: wantAddr, port: 8898, scopeID: 0))
 
     // run server in background and close it after a connection
     let expect = expectation(description: "server stops after a connection")
