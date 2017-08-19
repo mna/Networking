@@ -1,4 +1,5 @@
 import Glibc
+import Cepoll
 import OS
 
 // to avoid ambiguity between the Epoll methods and the system calls.
@@ -42,6 +43,6 @@ extension Epoll {
       self.rawValue = rawValue
     }
 
-    static let cloExec = Flags(rawValue: EPOLL_CLOEXEC)
+    static let cloExec = Flags(rawValue: Int32(EPOLL_CLOEXEC))
   }
 }

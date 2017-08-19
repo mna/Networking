@@ -13,7 +13,7 @@ let package = Package(
 
 #if os(Linux)
   let epollTarget = Target(name: "Epoll", dependencies: ["OS"])
-  let cepollDep = Package.Dependency.Package(url: "git clone git@bitbucket.org:___mna___/cepoll.git", majorVersion: 1)
+  let cepollDep = Package.Dependency.Package(url: "../Cepoll", majorVersion: 1)
   package.exclude = ["Sources/Kqueue", "Tests/KqueueTests"]
   package.dependencies.append(cepollDep)
   package.targets.append(epollTarget)

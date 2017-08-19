@@ -1,7 +1,12 @@
 {
   "autoPin": true,
   "pins": [
-
+    {
+      "package": "Cepoll",
+      "reason": null,
+      "repositoryURL": "/home/m/src/bitbucket.org/___mna___/Cepoll",
+      "version": "1.0.0"
+    }
   ],
   "version": 1
 }
