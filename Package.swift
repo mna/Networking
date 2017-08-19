@@ -12,8 +12,11 @@ let package = Package(
 )
 
 #if os(Linux)
+  let epollTarget = Target(name: "Epoll", dependencies: ["OS"])
   package.exclude = ["Sources/Kqueue", "Tests/KqueueTests"]
+  package.targets.append(epollTarget)
 #else
   let kqueueTarget = Target(name: "Kqueue", dependencies: ["OS"])
+  package.exclude = ["Sources/Epoll", "Tests/EpollTests"]
   package.targets.append(kqueueTarget)
 #endif
