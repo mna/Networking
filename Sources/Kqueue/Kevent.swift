@@ -50,6 +50,10 @@ struct Kevent {
     self.data = data
   }
 
+  init(signal: Signal, flags: Flags = [.add]) {
+    self.init(identifier: Int(signal.value), filter: .signal, flags: flags)
+  }
+
   // MARK: - Methods
 
   func toCStruct() -> kevent {

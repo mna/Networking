@@ -173,6 +173,44 @@ class KqueueTests: XCTestCase {
     waitForExpectations(timeout: 10)
   }
 
+  func testKqueueSignal() throws {
+    let kq = try Kqueue()
+    let ev = Kevent(signal: .info)
+
+    let expect = expectation(description: "kqueue notifies signal")
+    expect.expectedFulfillmentCount = 2
+
+    DispatchQueue.global(qos: .background).async {
+      do{
+        var events = Array(repeating: Kevent(), count: 2)
+        let ret = try kq.query(with: [ev], into: &events, timeout: 1)
+        XCTAssertEqual(1, ret)
+        let ev0 = events[0]
+        XCTAssertEqual(ev0.identifier, Int(Signal.info.value))
+        XCTAssertEqual(ev0.data, 1)
+
+        expect.fulfill()
+      } catch {
+        XCTFail("kqueue failed with \(error)")
+      }
+    }
+
+    // send the signal
+    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
+      do {
+        let pid = getpid()
+        let ret = kill(pid, Signal.info.value)
+        try CError.makeAndThrow(fromReturnCode: ret)
+
+        expect.fulfill()
+      } catch {
+        XCTFail("raise signal failed with \(error)")
+      }
+    }
+
+    waitForExpectations(timeout: 10)
+  }
+
   func testKqueueUser() throws {
     let kq = try Kqueue()
     let ev = Kevent(identifier: 1, filter: .user, data: 42)
