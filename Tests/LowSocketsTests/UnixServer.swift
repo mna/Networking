@@ -18,6 +18,7 @@ class UnixServer {
 
   func listen() throws {
     let sock = try Socket(family: .unix)
+    try sock.setOption(SO_REUSEADDR, to: 1)
     self.sock = sock
 
     try sock.bind(to: path)

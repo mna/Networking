@@ -22,6 +22,8 @@ class PortServer {
 
   func listen() throws {
     let sock = try Socket(family: family)
+    try sock.setOption(SO_REUSEADDR, to: 1)
+    try sock.setOption(SO_REUSEPORT, to: 1)
     self.sock = sock
 
     try sock.bind(toHost: host, port: port)
