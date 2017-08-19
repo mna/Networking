@@ -90,6 +90,13 @@ public struct IPAddress {
   }
 }
 
+// MARK: - IPAddress+Common Addresses
+
+extension IPAddress {
+  public static let ipv4Loopback = IPAddress(127, 0, 0, 1)
+  public static let ipv6Loopback = IPAddress(0, 0, 0, 0, 0, 0, 0, 1)
+}
+
 // MARK: - IPAddress+Equatable
 
 extension IPAddress: Equatable {
