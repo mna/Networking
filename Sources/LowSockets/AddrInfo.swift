@@ -1,5 +1,5 @@
 import Libc
-import Networking
+import OS
 
 // MARK: - AddrInfo
 

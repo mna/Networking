@@ -1,5 +1,5 @@
 import Libc
-import Networking
+import OS
 import Foundation
 
 // to avoid ambiguity between the Socket methods and the system calls.

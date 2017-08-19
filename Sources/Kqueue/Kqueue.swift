@@ -1,5 +1,5 @@
 import Darwin.C
-import Networking
+import OS
 import Foundation
 
 // to avoid ambiguity between the Kqueue methods and the system calls.

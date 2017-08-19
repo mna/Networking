@@ -1,5 +1,5 @@
 import XCTest
-import Networking
+import OS
 import LowSockets
 @testable import Kqueue
 
