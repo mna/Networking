@@ -1,6 +1,7 @@
 import Glibc
 import Cepoll
 import OS
+import Foundation
 
 // to avoid ambiguity between the Epoll methods and the system calls.
 private let cclose = close
@@ -27,26 +28,45 @@ class Epoll: FileDescriptorRepresentable {
 
   // MARK: - Methods
 
-  func add(fd: FileDescriptorRepresentable, events: Events) throws {
-    try apply(EPOLL_CTL_ADD, fd: fd.fileDescriptor, events: events)
+  func add(fd: FileDescriptorRepresentable, event: Event) throws {
+    try apply(EPOLL_CTL_ADD, fd: fd.fileDescriptor, event: event)
   }
 
-  func update(fd: FileDescriptorRepresentable, events: Events) throws {
-    try apply(EPOLL_CTL_MOD, fd: fd.fileDescriptor, events: events)
+  func update(fd: FileDescriptorRepresentable, event: Event) throws {
+    try apply(EPOLL_CTL_MOD, fd: fd.fileDescriptor, event: event)
   }
 
   func remove(fd: FileDescriptorRepresentable) throws {
-    try apply(EPOLL_CTL_DEL, fd: fd.fileDescriptor, events: [])
+    try apply(EPOLL_CTL_DEL, fd: fd.fileDescriptor, event: nil)
   }
 
-  // TODO: currently, always sets the epoll_event.data field to the same fd as fd.
-  private func apply(_ op: Int32, fd: Int32, events: Events) throws {
-    var ev = epoll_event()
-    ev.events = events.rawValue
-    ev.data.fd = fd
-
-    let ret = epoll_ctl(fileDescriptor, op, fd, &ev)
+  private func apply(_ op: Int32, fd: Int32, event: Event?) throws {
+    let ret: Int32
+    if let event = event {
+      var ev = event.toCStruct()
+      ret = epoll_ctl(fileDescriptor, op, fd, &ev)
+    } else {
+      ret = epoll_ctl(fileDescriptor, op, fd, nil)
+    }
     try CError.makeAndThrow(fromReturnCode: ret)
+  }
+
+  // TODO: sigmask, epoll_pwait
+  func wait(into events: inout [Event], timeout: TimeInterval? = nil) throws -> Int {
+    var eevs = Array<epoll_event>(repeating: epoll_event(), count: events.count)
+
+    var ms = Int32(-1)
+    if let timeout = timeout {
+      ms = Int32(timeout * 1000)
+    }
+
+    let ret = epoll_wait(fileDescriptor, &eevs, Int32(eevs.count), ms)
+    try CError.makeAndThrow(fromReturnCode: ret)
+
+    for i in 0..<Int(ret) {
+      events[i] = Event(epollEvent: eevs[i])
+    }
+    return Int(ret)
   }
 
   func close() throws {
@@ -66,29 +86,5 @@ extension Epoll {
     }
 
     static let cloExec = Flags(rawValue: Int32(EPOLL_CLOEXEC))
-  }
-}
-
-// MARK: - Epoll+Events
-
-extension Epoll {
-  struct Events: OptionSet {
-    let rawValue: UInt32
-
-    init(rawValue: UInt32) {
-      self.rawValue = rawValue
-    }
-
-    static let `in` = Events(rawValue: EPOLLIN.rawValue)
-    static let out = Events(rawValue: EPOLLOUT.rawValue)
-    static let rdhup = Events(rawValue: EPOLLRDHUP.rawValue)
-    static let pri = Events(rawValue: EPOLLPRI.rawValue)
-    static let err = Events(rawValue: EPOLLERR.rawValue)
-    static let hup = Events(rawValue: EPOLLHUP.rawValue)
-    static let et = Events(rawValue: EPOLLET.rawValue)
-    static let oneShot = Events(rawValue: EPOLLONESHOT.rawValue)
-    // TODO: those are from Linux 3.5 and 4.5 respectively:
-    static let wakeUp = Events(rawValue: EPOLLWAKEUP.rawValue)
-    static let exclusive = Events(rawValue: EPOLLEXCLUSIVE.rawValue)
   }
 }
