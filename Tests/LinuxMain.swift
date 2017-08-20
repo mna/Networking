@@ -1,5 +1,6 @@
 import XCTest
 @testable import LowSocketsTests
+@testable import EpollTests
 
 XCTMain([
     testCase(AddressTests.allTests),
@@ -7,4 +8,6 @@ XCTMain([
     testCase(EndiannessTests.allTests),
     testCase(IPAddressTests.allTests),
     testCase(SocketTests.allTests),
+
+    testCase(EpollTests.allTests),
 ])
