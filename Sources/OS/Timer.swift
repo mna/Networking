@@ -18,6 +18,7 @@ class Timer: FileDescriptorRepresentable {
 
   // MARK: - Constructors
 
+  // TODO: a way to read the number of expirations with read() (8-byte)
   init(using clock: Clock = .realTime, flags: Flags = []) throws {
     let ret = timerfd_create(clock.value, flags.rawValue)
     try CError.makeAndThrow(fromReturnCode: ret)
