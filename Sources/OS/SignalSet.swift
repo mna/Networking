@@ -50,7 +50,6 @@ struct SignalSet {
     return sigset
   }
 
-/*
   #if os(Linux)
 
   func fileDescriptor(replacing fd: FileDescriptorRepresentable? = nil, flags: Flags = []) throws -> Int32 {
@@ -61,10 +60,8 @@ struct SignalSet {
   }
 
   #endif
-*/
 }
 
-/*
 #if os(Linux)
 
 // MARK: SignalSet+Flags
@@ -83,4 +80,3 @@ extension SignalSet {
 }
 
 #endif
-*/
