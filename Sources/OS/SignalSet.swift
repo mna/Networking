@@ -1,5 +1,9 @@
 import Libc
 
+#if os(Linux)
+  import Linux
+#endif
+
 // MARK: - SignalSet
 
 struct SignalSet {
@@ -52,9 +56,9 @@ struct SignalSet {
 
   #if os(Linux)
 
-  func fileDescriptor(replacing fd: FileDescriptorRepresentable? = nil, flags: Flags = []) throws -> Int32 {
+  mutating func fileDescriptor(replacing fd: FileDescriptorRepresentable? = nil, flags: Flags = []) throws -> Int32 {
     let fd = fd?.fileDescriptor ?? -1
-    let ret = try signalfd(fd, &sigset, flags.rawValue)
+    let ret = signalfd(fd, &sigset, flags.rawValue)
     try CError.makeAndThrow(fromReturnCode: ret)
     return ret
   }
@@ -74,8 +78,8 @@ extension SignalSet {
       self.rawValue = rawValue
     }
 
-    static let nonBlock = Flags(rawValue: SFD_NONBLOCK)
-    static let cloExec = Flags(rawValue: SFD_CLOEXEC)
+    static let nonBlock = Flags(rawValue: Int32(SFD_NONBLOCK))
+    static let cloExec = Flags(rawValue: Int32(SFD_CLOEXEC))
   }
 }
 
