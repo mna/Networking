@@ -9,7 +9,8 @@ let package = Package(
   targets: [
     Target(name: "Csignal"),
     Target(name: "Cepoll"),
-    Target(name: "Libc", dependencies: ["Csignal", "Cepoll"]),
+    Target(name: "Ctimer"),
+    Target(name: "Libc", dependencies: ["Csignal", "Cepoll", "Ctimer"]),
     Target(name: "OS", dependencies: ["Libc"]),
     Target(name: "LowSockets", dependencies: ["Libc", "OS"]),
     Target(name: "Epoll", dependencies: ["Libc", "OS"]),
@@ -34,6 +35,7 @@ let package = Package(
     "Sources/Epoll",
     "Sources/Csignal",
     "Sources/Cepoll",
+    "Sources/Ctimer",
     "Tests/EpollTests",
   ]
 )

@@ -33,10 +33,7 @@ class Kqueue: FileDescriptorRepresentable {
 
     let ret: Int32
     if let timeout = timeout {
-      var ts = timespec()
-      ts.tv_sec = Int(timeout)
-      let ns = Int(timeout.truncatingRemainder(dividingBy: 1) * 1_000_000_000)
-      ts.tv_nsec = ns
+      var ts = timeout.toTimeSpec()
       ret = kevent(fileDescriptor, inKevs, Int32(inKevs.count), &outKevs, Int32(outKevs.count), &ts)
     } else {
       ret = kevent(fileDescriptor, inKevs, Int32(inKevs.count), &outKevs, Int32(outKevs.count), nil)

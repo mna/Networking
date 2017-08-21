@@ -384,11 +384,7 @@ extension Socket {
     let ret = getsockopt(fd, SOL_SOCKET, option, &val, &len)
     try CError.makeAndThrow(fromReturnCode: ret)
 
-    let secs = Int(val.tv_sec)
-    let us = Int(val.tv_usec)
-    let t = TimeInterval(Double(secs) + (Double(us) / 1_000_000))
-
-    return t
+    return TimeInterval(from: val)
   }
 
   fileprivate static func getLingerOption(fd: Int32) throws -> TimeInterval? {
@@ -417,20 +413,7 @@ extension Socket {
   }
 
   fileprivate static func setTimevalOption(fd: Int32, option: Int32, t: TimeInterval) throws {
-    var val = timeval()
-
-    // see https://stackoverflow.com/a/28872601/1094941
-    if t > 0 {
-      val.tv_sec = Int(t)
-
-      let us = Int(t.truncatingRemainder(dividingBy: 1) * 1_000_000)
-      #if os(Linux)
-				val.tv_usec = Int(us)
-			#else
-				val.tv_usec = Int32(us)
-			#endif
-    }
-
+    var val = t > 0 ? t.toTimeVal() : TimeInterval(0).toTimeVal()
 		let ret = setsockopt(fd, SOL_SOCKET, option, &val, socklen_t(MemoryLayout<timeval>.stride))
     try CError.makeAndThrow(fromReturnCode: ret)
   }

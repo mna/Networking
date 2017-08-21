@@ -1,0 +1,4 @@
+module Ctimer {
+  header "Ctimer.h"
+  export *
+}
