@@ -13,4 +13,5 @@ XCTMain([
     testCase(EpollTests.allTests),
 
     testCase(SignalSetTests.allTests),
+    testCase(TimerTests.allTests),
 ])

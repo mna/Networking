@@ -18,7 +18,6 @@ class Timer: FileDescriptorRepresentable {
 
   // MARK: - Constructors
 
-  // TODO: a way to read the number of expirations with read() (8-byte)
   init(using clock: Clock = .realTime, flags: Flags = []) throws {
     let ret = timerfd_create(clock.value, flags.rawValue)
     try CError.makeAndThrow(fromReturnCode: ret)
@@ -31,7 +30,8 @@ class Timer: FileDescriptorRepresentable {
 
   // MARK: - Methods
 
-  func set(initial: TimeInterval, thenEach interval: TimeInterval = 0, flags: SetFlags = []) throws -> (initial: TimeInterval, thenEach: TimeInterval) {
+  @discardableResult
+  func set(initial: TimeInterval, thenEach interval: TimeInterval = 0, flags: SetFlags = []) throws -> (initial: TimeInterval, interval: TimeInterval) {
     var oldValue = itimerspec()
     var newValue = itimerspec()
     newValue.it_value = initial.toTimeSpec()
@@ -44,17 +44,28 @@ class Timer: FileDescriptorRepresentable {
     return (t1, t2)
   }
 
-  func unset() throws -> (initial: TimeInterval, thenEach: TimeInterval) {
+  @discardableResult
+  func unset() throws -> (initial: TimeInterval, interval: TimeInterval) {
     return try set(initial: 0)
   }
 
-  func get() throws -> (initial: TimeInterval, thenEach: TimeInterval) {
+  func get() throws -> (initial: TimeInterval, interval: TimeInterval) {
     var currValue = itimerspec()
     let ret = timerfd_gettime(fileDescriptor, &currValue)
     try CError.makeAndThrow(fromReturnCode: ret)
 
     let (t1, t2) = (TimeInterval(from: currValue.it_value), TimeInterval(from: currValue.it_interval))
     return (t1, t2)
+  }
+
+  func expirations() throws -> UInt64 {
+    var n: UInt64 = 0
+    let sz = MemoryLayout.size(ofValue: n)
+
+    let ret = read(fileDescriptor, &n, sz)
+    try CError.makeAndThrow(fromReturnCode: Int32(ret))
+
+    return n
   }
 
   func close() throws {
