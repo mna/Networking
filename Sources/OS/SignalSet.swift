@@ -52,12 +52,15 @@ public struct SignalSet {
 
   #if os(Linux)
 
-  // TODO: read signal information from FD
-  public mutating func fileDescriptor(replacing fd: FileDescriptorRepresentable? = nil, flags: Flags = []) throws -> Int32 {
-    let fd = fd?.fileDescriptor ?? -1
+  public mutating func fileDescriptor(replacing fdr: FileDescriptorRepresentable? = nil, flags: Flags = []) throws -> SignalFileDescriptor {
+    let fd = fdr?.fileDescriptor ?? -1
     let ret = signalfd(fd, &sigset, flags.rawValue)
     try CError.makeAndThrow(fromReturnCode: ret)
-    return ret
+
+    if let fdr = fdr, let sfd = fdr as? SignalFileDescriptor {
+      return sfd
+    }
+    return SignalFileDescriptor(ret)
   }
 
   #endif
@@ -65,7 +68,7 @@ public struct SignalSet {
 
 #if os(Linux)
 
-// MARK: SignalSet+Flags
+// MARK: - SignalSet+Flags
 
 extension SignalSet {
   public struct Flags: OptionSet {
