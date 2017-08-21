@@ -51,6 +51,8 @@ class KqueueTests: XCTestCase {
     defer { fn() }
 
     let expect = expectation(description: "kqueue notifies file read")
+    expect.expectedFulfillmentCount = 2
+
     DispatchQueue.global(qos: .background).async {
       do {
         // watch for read availability on fd
@@ -70,11 +72,12 @@ class KqueueTests: XCTestCase {
       }
     }
 
-    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
+    DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .milliseconds(100)) {
       let b: [UInt8] = [1, 2, 3]
       do {
         try CError.makeAndThrow(fromReturnCode: Int32(write(fd, b, b.count)))
         try CError.makeAndThrow(fromReturnCode: fsync(fd))
+        expect.fulfill()
       } catch {
         XCTFail("write or fsync failed: \(error)")
       }
@@ -113,7 +116,7 @@ class KqueueTests: XCTestCase {
     XCTAssertEqualWithAccuracy(1.0, Double(ev0.data), accuracy: 1.0)
 
     let expect = expectation(description: "kqueue after 10ms")
-    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(10)) {
+    DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .milliseconds(10)) {
       do {
         let ret = try kq.query(with: [], into: &events)
         XCTAssertEqual(ret, 1)
@@ -196,7 +199,7 @@ class KqueueTests: XCTestCase {
     }
 
     // send the signal
-    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
+    DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .milliseconds(100)) {
       do {
         let pid = getpid()
         let ret = kill(pid, Signal.info.value)
@@ -234,7 +237,7 @@ class KqueueTests: XCTestCase {
     }
 
     // trigger the user event
-    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
+    DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .milliseconds(100)) {
       do {
         var events = Array(repeating: Kevent(), count: 2)
         let ev = Kevent(identifier: 1, filter: .user, filterFlags: [.trigger])
