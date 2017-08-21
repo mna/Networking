@@ -2,25 +2,24 @@
 
 import PackageDescription
 
+#if os(Linux)
+
 let package = Package(
-    name: "Networking",
-    targets: [
-      Target(name: "Libc"),
-      Target(name: "OS", dependencies: ["Linux"]),
-      Target(name: "LowSockets", dependencies: ["Libc", "OS"]),
-    ]
+  name: "Networking",
+  targets: [
+    Target(name: "Csignal"),
+    Target(name: "Cepoll"),
+    Target(name: "Libc", dependencies: ["Csignal", "Cepoll"]),
+    Target(name: "OS", dependencies: ["Libc"]),
+    Target(name: "LowSockets", dependencies: ["Libc", "OS"]),
+    Target(name: "Epoll", dependencies: ["Libc", "OS"]),
+  ],
+  exclude: [
+    "Sources/Kqueue",
+    "Tests/KqueueTests",
+  ]
 )
 
-#if os(Linux)
-  let epollTarget = Target(name: "Epoll", dependencies: ["OS"])
-  let linuxTarget = Target(name: "Linux", dependencies: [])
-  let cepollDep = Package.Dependency.Package(url: "git@bitbucket.org:___mna___/cepoll.git", majorVersion: 1)
-  package.exclude = ["Sources/Kqueue", "Tests/KqueueTests"]
-  package.dependencies.append(cepollDep)
-  package.targets.append(epollTarget)
-  package.targets.append(linuxTarget)
 #else
-  let kqueueTarget = Target(name: "Kqueue", dependencies: ["OS"])
-  package.exclude = ["Sources/Epoll", "Tests/EpollTests"]
-  package.targets.append(kqueueTarget)
+
 #endif

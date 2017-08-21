@@ -1,9 +1,5 @@
 import Libc
 
-#if os(Linux)
-  import Linux
-#endif
-
 // MARK: - SignalSet
 
 struct SignalSet {
