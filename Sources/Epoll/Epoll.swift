@@ -1,4 +1,4 @@
-import Glibc
+import Libc
 import Cepoll
 import OS
 import Foundation
@@ -51,8 +51,7 @@ class Epoll: FileDescriptorRepresentable {
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
-  // TODO: sigmask, epoll_pwait
-  func wait(into events: inout [Event], timeout: TimeInterval? = nil) throws -> Int {
+  func wait(into events: inout [Event], timeout: TimeInterval? = nil, blockedSignals signals: SignalSet? = nil) throws -> Int {
     var eevs = Array<epoll_event>(repeating: epoll_event(), count: events.count)
 
     var ms = Int32(-1)
@@ -60,7 +59,13 @@ class Epoll: FileDescriptorRepresentable {
       ms = Int32(timeout * 1000)
     }
 
-    let ret = epoll_wait(fileDescriptor, &eevs, Int32(eevs.count), ms)
+    let ret: Int32
+    if let signals = signals {
+      var sigmask = signals.toCStruct()
+      ret = epoll_pwait(fileDescriptor, &eevs, Int32(eevs.count), ms, &sigmask)
+    } else {
+      ret = epoll_pwait(fileDescriptor, &eevs, Int32(eevs.count), ms, nil)
+    }
     try CError.makeAndThrow(fromReturnCode: ret)
 
     for i in 0..<Int(ret) {

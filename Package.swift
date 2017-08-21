@@ -22,4 +22,20 @@ let package = Package(
 
 #else
 
+let package = Package(
+  name: "Networking",
+  targets: [
+    Target(name: "Libc"),
+    Target(name: "OS", dependencies: ["Libc"]),
+    Target(name: "LowSockets", dependencies: ["Libc", "OS"]),
+    Target(name: "Kqueue", dependencies: ["Libc", "OS"]),
+  ],
+  exclude: [
+    "Sources/Epoll",
+    "Sources/Csignal",
+    "Sources/Cepoll",
+    "Tests/EpollTests",
+  ]
+)
+
 #endif

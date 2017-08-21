@@ -2,7 +2,7 @@ import Libc
 
 // MARK: - SignalSet
 
-struct SignalSet {
+public struct SignalSet {
 
   // MARK: - Properties
 
@@ -10,7 +10,7 @@ struct SignalSet {
 
   // MARK: - Constructors
 
-  init(fill: Bool) throws {
+  public init(fill: Bool) throws {
     let ret: Int32
     if fill {
       ret = sigfillset(&sigset)
@@ -20,7 +20,7 @@ struct SignalSet {
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
-  init(insert signals: [Signal]) throws {
+  public init(insert signals: [Signal]) throws {
     try self.init(fill: false)
     for sig in signals {
       let ret = sigaddset(&sigset, sig.value)
@@ -30,29 +30,30 @@ struct SignalSet {
 
   // MARK: - Methods
 
-  mutating func insert(signal: Signal) throws {
+  public mutating func insert(signal: Signal) throws {
     let ret = sigaddset(&sigset, signal.value)
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
-  mutating func remove(signal: Signal) throws {
+  public mutating func remove(signal: Signal) throws {
     let ret = sigdelset(&sigset, signal.value)
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
-  mutating func contains(signal: Signal) throws -> Bool {
+  public mutating func contains(signal: Signal) throws -> Bool {
     let ret = sigismember(&sigset, signal.value)
     try CError.makeAndThrow(fromReturnCode: ret)
     return ret == 1
   }
 
-  func toCStruct() -> sigset_t {
+  public func toCStruct() -> sigset_t {
     return sigset
   }
 
   #if os(Linux)
 
-  mutating func fileDescriptor(replacing fd: FileDescriptorRepresentable? = nil, flags: Flags = []) throws -> Int32 {
+  // TODO: read signal information from FD
+  public mutating func fileDescriptor(replacing fd: FileDescriptorRepresentable? = nil, flags: Flags = []) throws -> Int32 {
     let fd = fd?.fileDescriptor ?? -1
     let ret = signalfd(fd, &sigset, flags.rawValue)
     try CError.makeAndThrow(fromReturnCode: ret)
@@ -67,15 +68,15 @@ struct SignalSet {
 // MARK: SignalSet+Flags
 
 extension SignalSet {
-  struct Flags: OptionSet {
-    let rawValue: Int32
+  public struct Flags: OptionSet {
+    public let rawValue: Int32
 
-    init(rawValue: Int32) {
+    public init(rawValue: Int32) {
       self.rawValue = rawValue
     }
 
-    static let nonBlock = Flags(rawValue: Int32(SFD_NONBLOCK))
-    static let cloExec = Flags(rawValue: Int32(SFD_CLOEXEC))
+    public static let nonBlock = Flags(rawValue: Int32(SFD_NONBLOCK))
+    public static let cloExec = Flags(rawValue: Int32(SFD_CLOEXEC))
   }
 }
 
