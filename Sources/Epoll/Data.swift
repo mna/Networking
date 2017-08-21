@@ -6,6 +6,25 @@ enum Data {
   case u64(UInt64)
   case ptr(UnsafeMutableRawPointer)
 
-  // TODO: helper methods to switch u64 returned from epoll_wait to
-  // fd, u32 or ptr
+  init?(asU32 u64: UInt64) {
+    guard let u32 = UInt32(exactly: u64) else {
+      return nil
+    }
+    self = .u32(u32)
+  }
+
+  init?(asFD u64: UInt64) {
+    guard let i32 = Int32(exactly: u64) else {
+      return nil
+    }
+    self = .fd(i32)
+  }
+
+  init?(asPtr u64: UInt64) {
+    guard let u = UInt(exactly: u64),
+      let p = UnsafeMutableRawPointer(bitPattern: u) else {
+      return nil
+    }
+    self = .ptr(p)
+  }
 }
