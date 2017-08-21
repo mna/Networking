@@ -2,7 +2,6 @@ import Libc
 
 // MARK: - Signal
 
-// TODO: check list on Linux
 public enum Signal {
   case hup
   case int
