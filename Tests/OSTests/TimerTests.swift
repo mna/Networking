@@ -18,7 +18,7 @@ class TimerTests: XCTestCase {
     XCTAssertEqual(old.interval, TimeInterval(0))
 
     let expect = expectation(description: "checks after timer")
-    DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .milliseconds(10)) {
+    DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .milliseconds(100)) {
       do {
         let n = try t.expirations()
         XCTAssertEqual(n, 1)
