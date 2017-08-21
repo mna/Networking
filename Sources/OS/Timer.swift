@@ -43,6 +43,19 @@ class Timer: FileDescriptorRepresentable {
     return (t1, t2)
   }
 
+  func unset() throws -> (initial: TimeInterval, thenEach: TimeInterval) {
+    return try set(initial: 0)
+  }
+
+  func get() throws -> (initial: TimeInterval, thenEach: TimeInterval) {
+    var currValue = itimerspec()
+    let ret = timerfd_gettime(fileDescriptor, &currValue)
+    try CError.makeAndThrow(fromReturnCode: ret)
+
+    let (t1, t2) = (TimeInterval(from: currValue.it_value), TimeInterval(from: currValue.it_interval))
+    return (t1, t2)
+  }
+
   func close() throws {
     let ret = cclose(fileDescriptor)
     try CError.makeAndThrow(fromReturnCode: ret)
@@ -114,6 +127,7 @@ extension Timer {
     }
 
     static let absTime = SetFlags(rawValue: Int32(TFD_TIMER_ABSTIME))
+    // TODO: mentioned in man page but somehow not in header file (not in any system header)
     //static let cancelOnSet = SetFlags(rawValue: Int32(TFD_TIMER_CANCEL_ON_SET))
   }
 }
