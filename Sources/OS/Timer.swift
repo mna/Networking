@@ -10,15 +10,15 @@ private let cclose = close
 
 // MARK: - Timer
 
-class Timer: FileDescriptorRepresentable {
+public class Timer: FileDescriptorRepresentable {
 
   // MARK: - Properties
 
-  let fileDescriptor: Int32
+  public let fileDescriptor: Int32
 
   // MARK: - Constructors
 
-  init(using clock: Clock = .realTime, flags: Flags = []) throws {
+  public init(using clock: Clock = .realTime, flags: Flags = []) throws {
     let ret = timerfd_create(clock.value, flags.rawValue)
     try CError.makeAndThrow(fromReturnCode: ret)
     self.fileDescriptor = ret
@@ -31,7 +31,7 @@ class Timer: FileDescriptorRepresentable {
   // MARK: - Methods
 
   @discardableResult
-  func set(initial: TimeInterval, thenEach interval: TimeInterval = 0, flags: SetFlags = []) throws -> (initial: TimeInterval, interval: TimeInterval) {
+  public func set(initial: TimeInterval, thenEach interval: TimeInterval = 0, flags: SetFlags = []) throws -> (initial: TimeInterval, interval: TimeInterval) {
     var oldValue = itimerspec()
     var newValue = itimerspec()
     newValue.it_value = initial.toTimeSpec()
@@ -45,11 +45,11 @@ class Timer: FileDescriptorRepresentable {
   }
 
   @discardableResult
-  func unset() throws -> (initial: TimeInterval, interval: TimeInterval) {
+  public func unset() throws -> (initial: TimeInterval, interval: TimeInterval) {
     return try set(initial: 0)
   }
 
-  func get() throws -> (initial: TimeInterval, interval: TimeInterval) {
+  public func get() throws -> (initial: TimeInterval, interval: TimeInterval) {
     var currValue = itimerspec()
     let ret = timerfd_gettime(fileDescriptor, &currValue)
     try CError.makeAndThrow(fromReturnCode: ret)
@@ -58,7 +58,7 @@ class Timer: FileDescriptorRepresentable {
     return (t1, t2)
   }
 
-  func expirations() throws -> UInt64 {
+  public func expirations() throws -> UInt64 {
     var n: UInt64 = 0
     let sz = MemoryLayout.size(ofValue: n)
 
@@ -68,7 +68,7 @@ class Timer: FileDescriptorRepresentable {
     return n
   }
 
-  func close() throws {
+  public func close() throws {
     let ret = cclose(fileDescriptor)
     try CError.makeAndThrow(fromReturnCode: ret)
   }
@@ -77,7 +77,7 @@ class Timer: FileDescriptorRepresentable {
 // MARK: - Timer+Clock
 
 extension Timer {
-  enum Clock {
+  public enum Clock {
     case realTime
     case monotonic
     case bootTime
@@ -116,29 +116,29 @@ extension Timer {
 // MARK: - Timer+Flags
 
 extension Timer {
-  struct Flags: OptionSet {
-    let rawValue: Int32
+  public struct Flags: OptionSet {
+    public let rawValue: Int32
 
-    init(rawValue: Int32) {
+    public init(rawValue: Int32) {
       self.rawValue = rawValue
     }
 
-    static let nonBlock = Flags(rawValue: Int32(TFD_NONBLOCK))
-    static let cloExec = Flags(rawValue: Int32(TFD_CLOEXEC))
+    public static let nonBlock = Flags(rawValue: Int32(TFD_NONBLOCK))
+    public static let cloExec = Flags(rawValue: Int32(TFD_CLOEXEC))
   }
 }
 
 // MARK: - Timer+SetFlags
 
 extension Timer {
-  struct SetFlags: OptionSet {
-    let rawValue: Int32
+  public struct SetFlags: OptionSet {
+    public let rawValue: Int32
 
-    init(rawValue: Int32) {
+    public init(rawValue: Int32) {
       self.rawValue = rawValue
     }
 
-    static let absTime = SetFlags(rawValue: Int32(TFD_TIMER_ABSTIME))
+    public static let absTime = SetFlags(rawValue: Int32(TFD_TIMER_ABSTIME))
     // TODO: mentioned in man page but somehow not in header file (not in any system header)
     //static let cancelOnSet = SetFlags(rawValue: Int32(TFD_TIMER_CANCEL_ON_SET))
   }

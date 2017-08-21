@@ -4,9 +4,9 @@ import Libc
 
 struct Event {
   let types: Types
-  let data: Data?
+  let data: Data
 
-  init(_ types: Types = [], data: Data? = nil) {
+  init(_ types: Types = [], data: Data = .u64(0)) {
     self.types = types
     self.data = data
   }
@@ -19,19 +19,16 @@ struct Event {
   func toCStruct() -> epoll_event {
     var eev = epoll_event()
     eev.events = types.rawValue
-    eev.data.u64 = 0
 
-    if let data = data {
-      switch data {
-      case .fd(let fd):
-        eev.data.fd = fd
-      case .u32(let u):
-        eev.data.u32 = u
-      case .u64(let u):
-        eev.data.u64 = u
-      case .ptr(let p):
-        eev.data.ptr = p
-      }
+    switch data {
+    case .fd(let fd):
+      eev.data.fd = fd
+    case .u32(let u):
+      eev.data.u32 = u
+    case .u64(let u):
+      eev.data.u64 = u
+    case .ptr(let p):
+      eev.data.ptr = p
     }
 
     return eev
