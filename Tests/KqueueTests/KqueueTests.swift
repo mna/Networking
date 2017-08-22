@@ -178,7 +178,7 @@ class KqueueTests: XCTestCase {
 
   func testKqueueSignal() throws {
     let kq = try Kqueue()
-    let ev = Kevent(signal: .info)
+    let ev = Kevent(signal: .urg)
 
     let expect = expectation(description: "kqueue notifies signal")
     expect.expectedFulfillmentCount = 2
@@ -189,7 +189,7 @@ class KqueueTests: XCTestCase {
         let ret = try kq.query(with: [ev], into: &events, timeout: 1)
         XCTAssertEqual(1, ret)
         let ev0 = events[0]
-        XCTAssertEqual(ev0.identifier, Int(Signal.info.value))
+        XCTAssertEqual(ev0.identifier, Int(Signal.urg.value))
         XCTAssertEqual(ev0.data, 1)
 
         expect.fulfill()
@@ -202,7 +202,7 @@ class KqueueTests: XCTestCase {
     DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .milliseconds(100)) {
       do {
         let pid = getpid()
-        let ret = kill(pid, Signal.info.value)
+        let ret = kill(pid, Signal.urg.value)
         try CError.makeAndThrow(fromReturnCode: ret)
 
         expect.fulfill()
