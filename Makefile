@@ -47,4 +47,5 @@ test-cov:
 	@xcodebuild -scheme Networking -derivedDataPath .build/xcode -enableCodeCoverage YES test
 	@xcov --scheme Networking --configuration Debug --derived_data_path .build/xcode --skip_slack --markdown_report
 	@rm -rf .build/xcode
+	@open xcov_report/index.html
 
