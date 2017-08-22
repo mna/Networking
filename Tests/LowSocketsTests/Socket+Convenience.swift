@@ -1,3 +1,4 @@
+import OS
 @testable import LowSockets
 
 extension Socket {

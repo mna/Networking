@@ -1,18 +1,7 @@
 {
   "autoPin": true,
   "pins": [
-    {
-      "package": "Cepoll",
-      "reason": null,
-      "repositoryURL": "git@bitbucket.org:___mna___/cepoll.git",
-      "version": "1.0.2"
-    },
-    {
-      "package": "Csignal",
-      "reason": null,
-      "repositoryURL": "/home/m/src/bitbucket.org/___mna___/Csignal",
-      "version": "1.0.2"
-    }
+
   ],
   "version": 1
 }
