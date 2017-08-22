@@ -164,12 +164,11 @@ class SocketTests: XCTestCase {
     let expect = expectation(description: "server stops after a connection")
     DispatchQueue.global(qos: .background).async {
       do {
-        try server.serve { s in
+        try server.serveOne { s in
           print(">>>> sleep")
           sleep(1)
           print(">>>> fulfill")
           expect.fulfill()
-          return false
         }
       } catch {
         XCTFail("server.serve failed with \(error)")
@@ -209,7 +208,7 @@ class SocketTests: XCTestCase {
     let expect = expectation(description: "server stops after a connection")
     DispatchQueue.global(qos: .background).async {
       do {
-        try server.serve { s in
+        try server.serveOne { s in
           var buf = [UInt8](repeating: 0, count: 12)
           let n = try s.receive(&buf)
 
@@ -217,7 +216,6 @@ class SocketTests: XCTestCase {
           XCTAssertEqual(data, String(bytes: buf, encoding: .utf8))
 
           expect.fulfill()
-          return false
         }
       } catch {
         XCTFail("server.run failed with \(error)")
@@ -262,12 +260,7 @@ class SocketTests: XCTestCase {
 
   func testConnectTCP4() throws {
     let server = PortServer("localhost", 8899)
-    do {
-      try server.listen()
-    } catch {
-      XCTFail("server.listen failed: \(error)")
-      return
-    }
+    try server.listen()
 
     XCTAssertEqual(server.sock?.boundAddress, Address.ip4(ip: IPAddress(127, 0, 0, 1), port: 8899))
     let bound = try server.sock!.loadBoundAddress()
@@ -277,16 +270,15 @@ class SocketTests: XCTestCase {
     let expect = expectation(description: "server stops after a connection")
     DispatchQueue.global(qos: .background).async {
       do {
-        try server.serve { s in
+        try server.serveOne { s in
           switch s.peerAddress {
           case .ip4(_, let port)?:
             XCTAssertTrue(port > 30000, "port is \(port)")
           default:
             XCTFail("unexpected address type \(String(describing: s.peerAddress))")
           }
-          expect.fulfill()
-          return false
         }
+        expect.fulfill()
       } catch {
         XCTFail("server.run failed with \(error)")
       }
@@ -304,12 +296,7 @@ class SocketTests: XCTestCase {
 
   func testConnectTCP6() throws {
     let server = PortServer("localhost", 8898, family: .inet6)
-    do {
-      try server.listen()
-    } catch {
-      XCTFail("server.listen failed: \(error)")
-      return
-    }
+    try server.listen()
 
     #if os(Linux)
       let wantAddr = IPAddress(bytes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 127, 0, 0, 1])!
@@ -324,16 +311,15 @@ class SocketTests: XCTestCase {
     let expect = expectation(description: "server stops after a connection")
     DispatchQueue.global(qos: .background).async {
       do {
-        try server.serve { s in
+        try server.serveOne { s in
           switch s.peerAddress {
           case .ip6(_, let port, _)?:
             XCTAssertTrue(port > 30000, "port is \(port)")
           default:
             XCTFail("unexpected address type \(String(describing: s.peerAddress))")
           }
-          expect.fulfill()
-          return false
         }
+        expect.fulfill()
       } catch {
         XCTFail("server.run failed with \(error)")
       }
@@ -361,16 +347,15 @@ class SocketTests: XCTestCase {
     let expect = expectation(description: "server stops after a connection")
     DispatchQueue.global(qos: .background).async {
       do {
-        try server.serve { s in
+        try server.serveOne { s in
           switch s.peerAddress {
           case .unix?:
             break
           default:
             XCTFail("unexpected address type \(String(describing: s.peerAddress))")
           }
-          expect.fulfill()
-          return false
         }
+        expect.fulfill()
       } catch {
         XCTFail("server.run failed with \(error)")
       }

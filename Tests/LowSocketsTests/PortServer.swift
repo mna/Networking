@@ -30,18 +30,12 @@ class PortServer {
     try sock.listen()
   }
 
-  func serve(_ handler: (Socket) throws -> Bool) throws {
+  func serveOne(_ handler: (Socket) throws -> Void) throws {
     guard let sock = sock else {
       throw MessageError("no listening socket")
     }
-    while true {
-      let remote = try sock.accept()
-      defer { try? remote.close() }
-
-      if !(try handler(remote)) {
-        try sock.close()
-        return
-      }
-    }
+    let remote = try sock.accept()
+    defer { try? remote.close() }
+    try handler(remote)
   }
 }
