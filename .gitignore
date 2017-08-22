@@ -8,6 +8,9 @@
 # Xcode projects
 /*.xcodeproj
 
+# Xcov coverage reports
+/xcov_report
+
 # Vim temporary files
 *.sw?
 
