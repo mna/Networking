@@ -94,60 +94,60 @@ extension Kevent {
 // MARK: - Kevent+FilterFlags
 
 extension Kevent {
-  struct FilterFlags: OptionSet {
-    let rawValue: UInt32
+  public struct FilterFlags: OptionSet {
+    public let rawValue: UInt32
 
-    init(rawValue: UInt32) {
+    public init(rawValue: UInt32) {
       self.rawValue = rawValue
     }
 
     // for sockets on .read, .write:
-    static let lowat = FilterFlags(rawValue: UInt32(NOTE_LOWAT))
+    public static let lowat = FilterFlags(rawValue: UInt32(NOTE_LOWAT))
 
     // for .except:
-    static let oob = FilterFlags(rawValue: UInt32(NOTE_OOB))
+    public static let oob = FilterFlags(rawValue: UInt32(NOTE_OOB))
 
     // for .vnode:
-    static let delete = FilterFlags(rawValue: UInt32(NOTE_DELETE))
-    static let write = FilterFlags(rawValue: UInt32(NOTE_WRITE))
-    static let extend = FilterFlags(rawValue: UInt32(NOTE_EXTEND))
-    static let attrib = FilterFlags(rawValue: UInt32(NOTE_ATTRIB))
-    static let link = FilterFlags(rawValue: UInt32(NOTE_LINK))
-    static let rename = FilterFlags(rawValue: UInt32(NOTE_RENAME))
-    static let revoke = FilterFlags(rawValue: UInt32(NOTE_REVOKE))
-    static let funlock = FilterFlags(rawValue: UInt32(NOTE_FUNLOCK))
+    public static let delete = FilterFlags(rawValue: UInt32(NOTE_DELETE))
+    public static let write = FilterFlags(rawValue: UInt32(NOTE_WRITE))
+    public static let extend = FilterFlags(rawValue: UInt32(NOTE_EXTEND))
+    public static let attrib = FilterFlags(rawValue: UInt32(NOTE_ATTRIB))
+    public static let link = FilterFlags(rawValue: UInt32(NOTE_LINK))
+    public static let rename = FilterFlags(rawValue: UInt32(NOTE_RENAME))
+    public static let revoke = FilterFlags(rawValue: UInt32(NOTE_REVOKE))
+    public static let funlock = FilterFlags(rawValue: UInt32(NOTE_FUNLOCK))
 
     // for .proc:
-    static let exit = FilterFlags(rawValue: UInt32(NOTE_EXIT))
-    static let exitStatus = FilterFlags(rawValue: UInt32(NOTE_EXITSTATUS))
-    static let fork = FilterFlags(rawValue: UInt32(NOTE_FORK))
-    static let exec = FilterFlags(rawValue: UInt32(NOTE_EXEC))
-    static let signal = FilterFlags(rawValue: UInt32(NOTE_SIGNAL))
+    public static let exit = FilterFlags(rawValue: UInt32(NOTE_EXIT))
+    public static let exitStatus = FilterFlags(rawValue: UInt32(NOTE_EXITSTATUS))
+    public static let fork = FilterFlags(rawValue: UInt32(NOTE_FORK))
+    public static let exec = FilterFlags(rawValue: UInt32(NOTE_EXEC))
+    public static let signal = FilterFlags(rawValue: UInt32(NOTE_SIGNAL))
 
     // for .timer:
-    static let seconds = FilterFlags(rawValue: UInt32(NOTE_SECONDS))
-    static let useconds = FilterFlags(rawValue: UInt32(NOTE_USECONDS))
-    static let nseconds = FilterFlags(rawValue: UInt32(NOTE_NSECONDS))
-    static let absolute = FilterFlags(rawValue: UInt32(NOTE_ABSOLUTE))
-    static let critical = FilterFlags(rawValue: UInt32(NOTE_CRITICAL))
-    static let background = FilterFlags(rawValue: UInt32(NOTE_BACKGROUND))
+    public static let seconds = FilterFlags(rawValue: UInt32(NOTE_SECONDS))
+    public static let useconds = FilterFlags(rawValue: UInt32(NOTE_USECONDS))
+    public static let nseconds = FilterFlags(rawValue: UInt32(NOTE_NSECONDS))
+    public static let absolute = FilterFlags(rawValue: UInt32(NOTE_ABSOLUTE))
+    public static let critical = FilterFlags(rawValue: UInt32(NOTE_CRITICAL))
+    public static let background = FilterFlags(rawValue: UInt32(NOTE_BACKGROUND))
     // leeway not supported for now, as only kevent is used (not kevent64)
 
     // for .user:
-    static let ffnop = FilterFlags(rawValue: UInt32(NOTE_FFNOP))
-    static let ffand = FilterFlags(rawValue: UInt32(NOTE_FFAND))
-    static let ffor = FilterFlags(rawValue: UInt32(NOTE_FFOR))
-    static let ffcopy = FilterFlags(rawValue: UInt32(NOTE_FFCOPY))
-    static let ffctrlMask = FilterFlags(rawValue: UInt32(NOTE_FFCTRLMASK))
-    static let fflagsMask = FilterFlags(rawValue: UInt32(NOTE_FFLAGSMASK))
-    static let trigger = FilterFlags(rawValue: UInt32(NOTE_TRIGGER))
+    public static let ffnop = FilterFlags(rawValue: UInt32(NOTE_FFNOP))
+    public static let ffand = FilterFlags(rawValue: UInt32(NOTE_FFAND))
+    public static let ffor = FilterFlags(rawValue: UInt32(NOTE_FFOR))
+    public static let ffcopy = FilterFlags(rawValue: UInt32(NOTE_FFCOPY))
+    public static let ffctrlMask = FilterFlags(rawValue: UInt32(NOTE_FFCTRLMASK))
+    public static let fflagsMask = FilterFlags(rawValue: UInt32(NOTE_FFLAGSMASK))
+    public static let trigger = FilterFlags(rawValue: UInt32(NOTE_TRIGGER))
   }
 }
 
 // MARK: - Kevent+Filter
 
 extension Kevent {
-  enum Filter {
+  public enum Filter {
     case read
     case except
     case write
