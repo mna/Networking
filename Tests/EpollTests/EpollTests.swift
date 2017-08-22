@@ -1,5 +1,6 @@
 import XCTest
 import OS
+import Dispatch
 import Foundation
 @testable import Epoll
 
@@ -43,6 +44,42 @@ class EpollTests: XCTestCase {
     XCTAssertEqual(Data(asU32: ev0.data), Data.u32(42))
     XCTAssertEqualWithAccuracy(dur, TimeInterval(0.01), accuracy: 0.01)
   }
+
+  func testEpollSignal() throws {
+    let ep = try Epoll()
+    var sigs = try SignalSet(insert: [.int])
+    let fd = try sigs.fileDescriptor()
+
+    try ep.add(fd: fd, event: Event([.in]))
+
+    let expect = expectation(description: "epoll wait for signal")
+    DispatchQueue.global(qos: .background).async {
+      do {
+        var events = Array<Event>(repeating: Event(), count: 2)
+        print(">>>> wait")
+        let n = try ep.wait(into: &events, timeout: 1.0, blockedSignals: sigs)
+        XCTAssertEqual(n, 1)
+
+        let ev0 = events[0]
+        XCTAssertEqual(ev0.types, Event.Types.in)
+        let sig = try fd.next()
+        XCTAssertEqual(sig, Signal.int)
+
+        expect.fulfill()
+      } catch {
+        XCTFail("epoll.wait failed with \(error)")
+      }
+    }
+
+    // send the signal
+    DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .milliseconds(100)) {
+      let pid = getpid()
+      print(">>>> send signal")
+      kill(pid, Signal.int.value)
+    }
+
+    waitForExpectations(timeout: 10)
+  }
 }
 
 extension EpollTests {
@@ -51,6 +88,7 @@ extension EpollTests {
       ("testEpollClose", testEpollClose),
       ("testEpollEmpty", testEpollEmpty),
       ("testEpollTimerFD", testEpollTimerFD),
+      ("testEpollSignal", testEpollSignal),
     ]
   }
 }
