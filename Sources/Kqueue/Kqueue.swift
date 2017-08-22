@@ -7,7 +7,7 @@ private let cclose = close
 
 // MARK: - Kqueue
 
-class Kqueue: FileDescriptorRepresentable {
+public class Kqueue: FileDescriptorRepresentable {
 
   // MARK: - Properties
 
@@ -15,7 +15,7 @@ class Kqueue: FileDescriptorRepresentable {
 
   // MARK: - Constructors
 
-  init() throws {
+  public init() throws {
     let ret = kqueue()
     try CError.makeAndThrow(fromReturnCode: ret)
     self.fileDescriptor = ret
@@ -27,7 +27,7 @@ class Kqueue: FileDescriptorRepresentable {
 
   // MARK: - Methods
 
-  func query(with changes: [Kevent], into events: inout [Kevent], timeout: TimeInterval? = nil) throws -> Int {
+  public func poll(with changes: [Kevent], into events: inout [Kevent], timeout: TimeInterval? = nil) throws -> Int {
     let inKevs = changes.map({ $0.toCStruct() })
     var outKevs = Array<kevent>(repeating: kevent(), count: events.count)
 
@@ -49,7 +49,7 @@ class Kqueue: FileDescriptorRepresentable {
     return Int(ret)
   }
 
-  func close() throws {
+  public func close() throws {
     let ret = cclose(fileDescriptor)
     try CError.makeAndThrow(fromReturnCode: ret)
   }

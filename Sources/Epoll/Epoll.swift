@@ -7,7 +7,7 @@ private let cclose = close
 
 // MARK: - Epoll
 
-class Epoll: FileDescriptorRepresentable {
+public class Epoll: FileDescriptorRepresentable {
 
   // MARK: - Properties
 
@@ -15,7 +15,7 @@ class Epoll: FileDescriptorRepresentable {
 
   // MARK: - Constructors
 
-  init(flags: Flags = []) throws {
+  public init(flags: Flags = []) throws {
     let ret = epoll_create1(flags.rawValue)
     try CError.makeAndThrow(fromReturnCode: ret)
     self.fileDescriptor = ret
@@ -27,15 +27,15 @@ class Epoll: FileDescriptorRepresentable {
 
   // MARK: - Methods
 
-  func add(fd: FileDescriptorRepresentable, event: Event) throws {
+  public func add(fd: FileDescriptorRepresentable, event: Event) throws {
     try apply(EPOLL_CTL_ADD, fd: fd.fileDescriptor, event: event)
   }
 
-  func update(fd: FileDescriptorRepresentable, event: Event) throws {
+  public func update(fd: FileDescriptorRepresentable, event: Event) throws {
     try apply(EPOLL_CTL_MOD, fd: fd.fileDescriptor, event: event)
   }
 
-  func remove(fd: FileDescriptorRepresentable) throws {
+  public func remove(fd: FileDescriptorRepresentable) throws {
     try apply(EPOLL_CTL_DEL, fd: fd.fileDescriptor, event: nil)
   }
 
@@ -50,7 +50,7 @@ class Epoll: FileDescriptorRepresentable {
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
-  func wait(into events: inout [Event], timeout: TimeInterval? = nil, blockedSignals signals: SignalSet? = nil) throws -> Int {
+  public func poll(into events: inout [Event], timeout: TimeInterval? = nil, blockedSignals signals: SignalSet? = nil) throws -> Int {
     var eevs = Array<epoll_event>(repeating: epoll_event(), count: events.count)
 
     var ms = Int32(-1)
@@ -73,7 +73,7 @@ class Epoll: FileDescriptorRepresentable {
     return Int(ret)
   }
 
-  func close() throws {
+  public func close() throws {
     let ret = cclose(fileDescriptor)
     try CError.makeAndThrow(fromReturnCode: ret)
   }
@@ -82,13 +82,13 @@ class Epoll: FileDescriptorRepresentable {
 // MARK: - Epoll+Flags
 
 extension Epoll {
-  struct Flags: OptionSet {
-    let rawValue: Int32
+  public struct Flags: OptionSet {
+    public let rawValue: Int32
 
-    init(rawValue: Int32) {
+    public init(rawValue: Int32) {
       self.rawValue = rawValue
     }
 
-    static let cloExec = Flags(rawValue: Int32(EPOLL_CLOEXEC))
+    public static let cloExec = Flags(rawValue: Int32(EPOLL_CLOEXEC))
   }
 }

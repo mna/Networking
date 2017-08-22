@@ -20,7 +20,7 @@ class EpollTests: XCTestCase {
     let ep = try Epoll()
     var events = Array<Event>(repeating: Event(), count: 1)
     do {
-      let ret = try ep.wait(into: &events, timeout: 0)
+      let ret = try ep.poll(into: &events, timeout: 0)
       XCTAssertEqual(0, ret)
     } catch {
       XCTFail("want no error, got \(error)")
@@ -35,7 +35,7 @@ class EpollTests: XCTestCase {
 
     let timeout: TimeInterval = 0.1
     let start = Date()
-    let ret = try ep.wait(into: &events, timeout: timeout)
+    let ret = try ep.poll(into: &events, timeout: timeout)
 
     let dur = Date().timeIntervalSince(start)
     XCTAssertEqual(0, ret)
@@ -51,7 +51,7 @@ class EpollTests: XCTestCase {
     try tfd.set(initial: 0.01)
 
     try ep.add(fd: tfd, event: Event([.in], data: .u32(42)))
-    let n = try ep.wait(into: &events, timeout: 1.0)
+    let n = try ep.poll(into: &events, timeout: 1.0)
     let dur = Date().timeIntervalSince(start)
     let ev0 = events[0]
 
@@ -81,7 +81,7 @@ class EpollTests: XCTestCase {
     DispatchQueue.global(qos: .background).async {
       do {
         var events = Array<Event>(repeating: Event(), count: 2)
-        let ret = try ep.wait(into: &events)
+        let ret = try ep.poll(into: &events)
         XCTAssertEqual(1, ret)
         let ev0 = events[0]
         if case let .fd(fd)? = Data(asFD: ev0.data) {
@@ -125,7 +125,7 @@ class EpollTests: XCTestCase {
     }
 
     var events = Array<Event>(repeating: Event(), count: 2)
-    let n = try ep.wait(into: &events, timeout: 1.0, blockedSignals: sigs)
+    let n = try ep.poll(into: &events, timeout: 1.0, blockedSignals: sigs)
     XCTAssertEqual(n, 1)
 
     let ev0 = events[0]

@@ -2,11 +2,11 @@ import Libc
 
 // MARK: - Event
 
-struct Event {
-  let types: Types
-  let data: Data
+public struct Event {
+  public let types: Types
+  public let data: Data
 
-  init(_ types: Types = [], data: Data = .u64(0)) {
+  public init(_ types: Types = [], data: Data = .u64(0)) {
     self.types = types
     self.data = data
   }
@@ -38,23 +38,23 @@ struct Event {
 // MARK: - Event+Types
 
 extension Event {
-  struct Types: OptionSet {
-    let rawValue: UInt32
+  public struct Types: OptionSet {
+    public let rawValue: UInt32
 
-    init(rawValue: UInt32) {
+    public init(rawValue: UInt32) {
       self.rawValue = rawValue
     }
 
-    static let `in` = Types(rawValue: EPOLLIN.rawValue)
-    static let out = Types(rawValue: EPOLLOUT.rawValue)
-    static let rdhup = Types(rawValue: EPOLLRDHUP.rawValue)
-    static let pri = Types(rawValue: EPOLLPRI.rawValue)
-    static let err = Types(rawValue: EPOLLERR.rawValue)
-    static let hup = Types(rawValue: EPOLLHUP.rawValue)
-    static let et = Types(rawValue: EPOLLET.rawValue)
-    static let oneShot = Types(rawValue: EPOLLONESHOT.rawValue)
+    public static let `in` = Types(rawValue: EPOLLIN.rawValue)
+    public static let out = Types(rawValue: EPOLLOUT.rawValue)
+    public static let rdhup = Types(rawValue: EPOLLRDHUP.rawValue)
+    public static let pri = Types(rawValue: EPOLLPRI.rawValue)
+    public static let err = Types(rawValue: EPOLLERR.rawValue)
+    public static let hup = Types(rawValue: EPOLLHUP.rawValue)
+    public static let et = Types(rawValue: EPOLLET.rawValue)
+    public static let oneShot = Types(rawValue: EPOLLONESHOT.rawValue)
     // TODO: those are from Linux 3.5 and 4.5 respectively:
-    static let wakeUp = Types(rawValue: EPOLLWAKEUP.rawValue)
-    static let exclusive = Types(rawValue: EPOLLEXCLUSIVE.rawValue)
+    public static let wakeUp = Types(rawValue: EPOLLWAKEUP.rawValue)
+    public static let exclusive = Types(rawValue: EPOLLEXCLUSIVE.rawValue)
   }
 }

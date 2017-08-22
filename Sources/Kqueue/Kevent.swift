@@ -3,19 +3,19 @@ import OS
 
 // MARK: - Kevent
 
-struct Kevent {
+public struct Kevent {
 
   // MARK: - Properties
 
-  let identifier: Int
-  let filter: Filter
-  let flags: Flags
-  let filterFlags: FilterFlags
-  let data: Int
+  public let identifier: Int
+  public let filter: Filter
+  public let flags: Flags
+  public let filterFlags: FilterFlags
+  public let data: Int
 
   // MARK: - Constructors
 
-  init() {
+  public init() {
     self.identifier = 0
     self.filter = .read
     self.flags = []
@@ -34,7 +34,7 @@ struct Kevent {
     self.data = kev.data
   }
 
-  init(fd: FileDescriptorRepresentable, filter: Filter = .read, flags: Flags = [.add], filterFlags: FilterFlags = [], data: Int = 0) {
+  public init(fd: FileDescriptorRepresentable, filter: Filter = .read, flags: Flags = [.add], filterFlags: FilterFlags = [], data: Int = 0) {
     self.identifier = Int(fd.fileDescriptor)
     self.filter = filter
     self.flags = flags
@@ -42,7 +42,7 @@ struct Kevent {
     self.data = data
   }
 
-  init(identifier: Int, filter: Filter = .read, flags: Flags = [.add], filterFlags: FilterFlags = [], data: Int = 0) {
+  public init(identifier: Int, filter: Filter = .read, flags: Flags = [.add], filterFlags: FilterFlags = [], data: Int = 0) {
     self.identifier = identifier
     self.filter = filter
     self.flags = flags
@@ -50,7 +50,7 @@ struct Kevent {
     self.data = data
   }
 
-  init(signal: Signal, flags: Flags = [.add]) {
+  public init(signal: Signal, flags: Flags = [.add]) {
     self.init(identifier: Int(signal.value), filter: .signal, flags: flags)
   }
 
@@ -71,23 +71,23 @@ struct Kevent {
 // MARK: - Kevent+Flags
 
 extension Kevent {
-  struct Flags: OptionSet {
-    let rawValue: Int32
+  public struct Flags: OptionSet {
+    public let rawValue: Int32
 
-    init(rawValue: Int32) {
+    public init(rawValue: Int32) {
       self.rawValue = rawValue
     }
 
-    static let add = Flags(rawValue: EV_ADD)
-    static let enable = Flags(rawValue: EV_ENABLE)
-    static let disable = Flags(rawValue: EV_DISABLE)
-    static let delete = Flags(rawValue: EV_DELETE)
-    static let receipt = Flags(rawValue: EV_RECEIPT)
-    static let oneShot = Flags(rawValue: EV_ONESHOT)
-    static let clear = Flags(rawValue: EV_CLEAR)
-    static let eof = Flags(rawValue: EV_EOF)
-    static let ooband = Flags(rawValue: EV_OOBAND)
-    static let error = Flags(rawValue: EV_ERROR)
+    public static let add = Flags(rawValue: EV_ADD)
+    public static let enable = Flags(rawValue: EV_ENABLE)
+    public static let disable = Flags(rawValue: EV_DISABLE)
+    public static let delete = Flags(rawValue: EV_DELETE)
+    public static let receipt = Flags(rawValue: EV_RECEIPT)
+    public static let oneShot = Flags(rawValue: EV_ONESHOT)
+    public static let clear = Flags(rawValue: EV_CLEAR)
+    public static let eof = Flags(rawValue: EV_EOF)
+    public static let ooband = Flags(rawValue: EV_OOBAND)
+    public static let error = Flags(rawValue: EV_ERROR)
   }
 }
 

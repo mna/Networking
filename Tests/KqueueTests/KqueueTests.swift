@@ -23,7 +23,7 @@ class KqueueTests: XCTestCase {
     let kq = try Kqueue()
     var events = Array<Kevent>()
     do {
-      let ret = try kq.query(with: [], into: &events)
+      let ret = try kq.poll(with: [], into: &events)
       XCTAssertEqual(0, ret)
     } catch {
       XCTFail("want no error, got \(error)")
@@ -40,7 +40,7 @@ class KqueueTests: XCTestCase {
     let kq = try Kqueue()
 
     // should be immediately available
-    let ret = try kq.query(with: [ev], into: &events)
+    let ret = try kq.poll(with: [ev], into: &events)
     XCTAssertEqual(1, ret)
     let ev0 = events[0]
     XCTAssertEqual(ev0.identifier, Int(fd))
@@ -60,7 +60,7 @@ class KqueueTests: XCTestCase {
         let ev = Kevent(fd: fd)
         let kq = try Kqueue()
 
-        let ret = try kq.query(with: [ev], into: &events, timeout: 2)
+        let ret = try kq.poll(with: [ev], into: &events, timeout: 2)
         XCTAssertEqual(1, ret)
         let ev0 = events[0]
         XCTAssertEqual(ev0.identifier, Int(fd))
@@ -97,7 +97,7 @@ class KqueueTests: XCTestCase {
     let timeout: TimeInterval = 0.1
     let start = Date()
 
-    let ret = try kq.query(with: [ev], into: &events, timeout: timeout)
+    let ret = try kq.poll(with: [ev], into: &events, timeout: timeout)
 
     let dur = Date().timeIntervalSince(start)
     XCTAssertEqual(0, ret)
@@ -109,7 +109,7 @@ class KqueueTests: XCTestCase {
     let ev = Kevent(identifier: 1, filter: .timer, data: 1) // 1ms
     var events = Array(repeating: Kevent(), count: 2)
 
-    let ret = try kq.query(with: [ev], into: &events)
+    let ret = try kq.poll(with: [ev], into: &events)
     XCTAssertEqual(ret, 1)
     let ev0 = events[0]
     XCTAssertGreaterThan(ev0.data, 0)
@@ -118,7 +118,7 @@ class KqueueTests: XCTestCase {
     let expect = expectation(description: "kqueue after 10ms")
     DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .milliseconds(10)) {
       do {
-        let ret = try kq.query(with: [], into: &events)
+        let ret = try kq.poll(with: [], into: &events)
         XCTAssertEqual(ret, 1)
         let ev0 = events[0]
         XCTAssertGreaterThanOrEqual(ev0.data, 10)
@@ -152,7 +152,7 @@ class KqueueTests: XCTestCase {
     let expect = expectation(description: "kqueue notifies accepted connection")
     DispatchQueue.global(qos: .background).async {
       do {
-        let ret = try kq.query(with: [ev], into: &events)
+        let ret = try kq.poll(with: [ev], into: &events)
         XCTAssertEqual(1, ret)
         let ev0 = events[0]
         XCTAssertEqual(ev0.identifier, Int(sock.fileDescriptor))
@@ -186,7 +186,7 @@ class KqueueTests: XCTestCase {
     DispatchQueue.global(qos: .background).async {
       do{
         var events = Array(repeating: Kevent(), count: 2)
-        let ret = try kq.query(with: [ev], into: &events, timeout: 1)
+        let ret = try kq.poll(with: [ev], into: &events, timeout: 1)
         XCTAssertEqual(1, ret)
         let ev0 = events[0]
         XCTAssertEqual(ev0.identifier, Int(Signal.urg.value))
@@ -225,7 +225,7 @@ class KqueueTests: XCTestCase {
     DispatchQueue.global(qos: .background).async {
       do{
         var events = Array(repeating: Kevent(), count: 2)
-        let ret = try kq.query(with: [ev], into: &events, timeout: 1)
+        let ret = try kq.poll(with: [ev], into: &events, timeout: 1)
         XCTAssertEqual(1, ret)
         let ev0 = events[0]
         XCTAssertEqual(ev0.identifier, 1)
@@ -241,7 +241,7 @@ class KqueueTests: XCTestCase {
       do {
         var events = Array(repeating: Kevent(), count: 2)
         let ev = Kevent(identifier: 1, filter: .user, filterFlags: [.trigger])
-        let ret = try kq.query(with: [ev], into: &events)
+        let ret = try kq.poll(with: [ev], into: &events)
         XCTAssertEqual(1, ret)
         let ev0 = events[0]
         XCTAssertEqual(ev0.identifier, 1)
