@@ -7,6 +7,7 @@ public enum AddrInfo {
 
   // MARK: - Static Methods
 
+  // TODO: move as static method on Address (i.e. Address.resolve?)
   public static func `get`(host: String? = nil, service: String? = nil, flags: Flags = .default, family: Family? = nil, type: SocketType? = nil, proto: SocketProtocol? = nil) throws -> (String, [Address]) {
     var hints = addrinfo()
     hints.ai_flags = flags.rawValue
