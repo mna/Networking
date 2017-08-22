@@ -17,78 +17,58 @@ class TimerTests: XCTestCase {
     XCTAssertEqual(old.initial, TimeInterval(0))
     XCTAssertEqual(old.interval, TimeInterval(0))
 
-    let expect = expectation(description: "checks after timer")
-    DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .milliseconds(100)) {
-      do {
-        let n = try t.expirations()
-        XCTAssertEqual(n, 1)
-        expect.fulfill()
-      } catch {
-        XCTFail("timer.expirations failed with \(error)")
-      }
+    usleep(10_000)
+    do {
+      let n = try t.expirations()
+      XCTAssertEqual(n, 1)
+    } catch {
+      XCTFail("timer.expirations failed with \(error)")
     }
-
-    waitForExpectations(timeout: 10)
   }
 
   func testInterval() throws {
     let t = try Timer(flags: [.nonBlock])
-    try t.set(initial: 0.001, thenEach: 0.01)
+    try t.set(initial: 0.1, thenEach: 0.1)
 
-    let expect = expectation(description: "checks after timer")
-    DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .milliseconds(100)) {
-      do {
-        let n = try t.expirations()
-        XCTAssertGreaterThanOrEqual(n, 10)
-        XCTAssertLessThan(n, 12)
-        expect.fulfill()
-      } catch {
-        XCTFail("timer.expirations failed with \(error)")
-      }
+    usleep(300_000)
+    do {
+      let n = try t.expirations()
+      XCTAssertGreaterThanOrEqual(n, 2)
+      XCTAssertLessThan(n, 4)
+    } catch {
+      XCTFail("timer.expirations failed with \(error)")
     }
-
-    waitForExpectations(timeout: 10)
   }
 
   func testUnset() throws {
     let t = try Timer(flags: [.nonBlock])
     try t.set(initial: 0.001, thenEach: 0.01)
 
-    let exp1 = expectation(description: "unsets after timer")
-    let exp2 = expectation(description: "checks after unset")
+    usleep(10_000)
+    do {
+      let n = try t.expirations()
+      XCTAssertGreaterThanOrEqual(n, 1)
+      XCTAssertLessThan(n, 3)
 
-    DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .milliseconds(10)) {
-      do {
-        let n = try t.expirations()
-        XCTAssertGreaterThanOrEqual(n, 1)
-        XCTAssertLessThan(n, 3)
-
-        let old = try t.unset()
-        XCTAssertEqualWithAccuracy(old.initial, TimeInterval(0.001), accuracy: 0.001)
-        XCTAssertEqualWithAccuracy(old.interval, TimeInterval(0.01), accuracy: 0.001)
-
-        exp1.fulfill()
-      } catch {
-        XCTFail("timer.expirations failed with \(error)")
-      }
+      let old = try t.unset()
+      XCTAssertEqualWithAccuracy(old.initial, TimeInterval(0.001), accuracy: 0.001)
+      XCTAssertEqualWithAccuracy(old.interval, TimeInterval(0.01), accuracy: 0.001)
+    } catch {
+      XCTFail("timer.expirations failed with \(error)")
     }
 
-    DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .milliseconds(10)) {
-      do {
-        _ = try t.expirations()
-        XCTFail("want EGAIN, got no error")
-      } catch let ce as CError {
-        // expects EAGAIN, no expiration
-        if ce.code != EAGAIN {
-          XCTFail("timer.expirations failed with \(ce.code): \(ce.message)")
-        }
-        exp2.fulfill()
-      } catch {
-        XCTFail("timer.expirations failed with \(error)")
+    usleep(10_000)
+    do {
+      _ = try t.expirations()
+      XCTFail("want EGAIN, got no error")
+    } catch let ce as CError {
+      // expects EAGAIN, no expiration
+      if ce.code != EAGAIN {
+        XCTFail("timer.expirations failed with \(ce.code): \(ce.message)")
       }
+    } catch {
+      XCTFail("timer.expirations failed with \(error)")
     }
-
-    waitForExpectations(timeout: 10)
   }
 
   func testGet() throws {
