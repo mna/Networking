@@ -4,13 +4,13 @@ import Libc
 
 /// IPAddress represents an IP (v4 or v6) address.
 public struct IPAddress {
-  let bytes: [UInt8]
+  public let bytes: [UInt8]
 
   // MARK: - Constructors
 
   /// Creates an IPAddress by parsing the string which must be in "1.2.3.4" or
   /// "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff" formats (IPv4 or IPv6).
-  init?(parsing s: String) {
+  public init?(parsing s: String) {
     guard !s.isEmpty else {
       return nil
     }
@@ -45,7 +45,7 @@ public struct IPAddress {
     return
   }
 
-  init?(bytes: [UInt8]) {
+  public init?(bytes: [UInt8]) {
     guard bytes.count == 4 || bytes.count == 16 else {
       return nil
     }
@@ -54,13 +54,13 @@ public struct IPAddress {
 
   /// Creates an IPv4 address. The four UInt8 arguments represent the
   /// 4 bytes of the address, matching the IPv4 display format.
-  init(_ b0: UInt8, _ b1: UInt8, _ b2: UInt8, _ b3: UInt8) {
+  public init(_ b0: UInt8, _ b1: UInt8, _ b2: UInt8, _ b3: UInt8) {
     self.bytes = [b0, b1, b2, b3]
   }
 
   /// Creates an IPv6 address. The UInt16 arguments can be passed as
   /// hexadecimal to match the IPv6 display format.
-  init(_ bb0: UInt16, _ bb1: UInt16, _ bb2: UInt16, _ bb3: UInt16,
+  public init(_ bb0: UInt16, _ bb1: UInt16, _ bb2: UInt16, _ bb3: UInt16,
        _ bb4: UInt16, _ bb5: UInt16, _ bb6: UInt16, _ bb7: UInt16) {
 
     self.bytes = [
@@ -78,7 +78,7 @@ public struct IPAddress {
   // MARK: - Properties
 
   /// Indicates the address family (ip4 or ip6).
-  var family: Family {
+  public var family: Family {
     switch bytes.count {
     case 4:
       return .inet

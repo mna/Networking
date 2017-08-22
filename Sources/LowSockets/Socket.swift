@@ -17,6 +17,7 @@ private let cshutdown = shutdown
 // MARK: - Socket
 
 public class Socket: FileDescriptorRepresentable {
+
   // MARK: - Properties
 
   public let fileDescriptor: Int32
