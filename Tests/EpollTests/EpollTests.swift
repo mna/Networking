@@ -1,5 +1,6 @@
 import XCTest
 import OS
+import LowSockets
 import Dispatch
 import Foundation
 @testable import Epoll
@@ -26,6 +27,21 @@ class EpollTests: XCTestCase {
     }
   }
 
+  func testEpollTimeout() throws {
+    let ep = try Epoll()
+    var events = Array<Event>(repeating: Event(), count: 2)
+    let tfd = try Timer()
+    try tfd.set(initial: 2.0)
+
+    let timeout: TimeInterval = 0.1
+    let start = Date()
+    let ret = try ep.wait(into: &events, timeout: timeout)
+
+    let dur = Date().timeIntervalSince(start)
+    XCTAssertEqual(0, ret)
+    XCTAssertGreaterThanOrEqual(dur, timeout)
+  }
+
   func testEpollTimerFD() throws {
     let ep = try Epoll()
     var events = Array<Event>(repeating: Event(), count: 2)
@@ -45,13 +61,60 @@ class EpollTests: XCTestCase {
     XCTAssertEqualWithAccuracy(dur, TimeInterval(0.01), accuracy: 0.01)
   }
 
+  func testEpollSocket() throws {
+    let path = "/tmp/test.sock"
+    let addr = Address.unix(path: path)
+    let sock = try Socket(family: .unix)
+    try sock.bind(to: addr)
+    try sock.listen()
+    defer {
+      try? sock.close()
+      unlink(path)
+    }
+
+    // add the listening socket to epoll
+    let ep = try Epoll()
+    try ep.add(fd: sock, event: Event([.in], data: .fd(sock.fileDescriptor)))
+
+    // wait for a connection
+    let expect = expectation(description: "epoll notifies accepted connection")
+    DispatchQueue.global(qos: .background).async {
+      do {
+        var events = Array<Event>(repeating: Event(), count: 2)
+        let ret = try ep.wait(into: &events)
+        XCTAssertEqual(1, ret)
+        let ev0 = events[0]
+        if case let .fd(fd)? = Data(asFD: ev0.data) {
+          XCTAssertEqual(fd, sock.fileDescriptor)
+        } else {
+          XCTFail("data could not be read as fd")
+        }
+
+        let _ = try sock.accept()
+
+        expect.fulfill()
+      } catch {
+        XCTFail("epoll failed with \(error)")
+      }
+    }
+
+    do {
+      let sock = try Socket(family: .unix)
+      try sock.connect(to: addr)
+    } catch {
+      XCTFail("client socket failed with \(error)")
+    }
+
+    waitForExpectations(timeout: 10)
+  }
+
   func testEpollSignal() throws {
     let ep = try Epoll()
     var sigs = try SignalSet(insert: [.int])
 
     // TODO: should this be required? Why doesn't epoll_pwait do its job?
     var mask = sigs.toCStruct()
-    try CError.makeAndThrow(fromReturnCode: pthread_sigmask(SIG_BLOCK, &mask, nil))
+    try CError.makeAndThrow(fromReturnCode: pthread_sigmask(SIG_SETMASK, &mask, nil))
 
     let fd = try sigs.fileDescriptor()
     try ep.add(fd: fd, event: Event([.in]))
@@ -78,8 +141,10 @@ extension EpollTests {
     return [
       ("testEpollClose", testEpollClose),
       ("testEpollEmpty", testEpollEmpty),
+      ("testEpollTimeout", testEpollTimeout),
       ("testEpollTimerFD", testEpollTimerFD),
       ("testEpollSignal", testEpollSignal),
+      ("testEpollSocket", testEpollSocket),
     ]
   }
 }
