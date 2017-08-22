@@ -13,12 +13,27 @@ list:
 .PHONY: doc
 doc:
 	@swift build
+	sourcekitten doc --spm-module OS > OS.json
+	sourcekitten doc --spm-module Kqueue > Kqueue.json
 	sourcekitten doc --spm-module LowSockets > LowSockets.json
 	jazzy \
 		--clean \
 		--min-acl internal \
+		--sourcekitten-sourcefile OS.json \
+		--module OS \
+		--output docs/OS
+	jazzy \
+		--clean \
+		--min-acl internal \
+		--sourcekitten-sourcefile Kqueue.json \
+		--module Kqueue \
+		--output docs/Kqueue
+	jazzy \
+		--clean \
+		--min-acl internal \
 		--sourcekitten-sourcefile LowSockets.json \
-		--module LowSockets
+		--module LowSockets \
+		--output docs/LowSockets
 
 .PHONY: serve-doc
 serve-doc:
