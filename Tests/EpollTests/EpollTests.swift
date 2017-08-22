@@ -113,8 +113,7 @@ class EpollTests: XCTestCase {
     var sigs = try SignalSet(insert: [.int])
 
     // TODO: should this be required? Why doesn't epoll_pwait do its job?
-    var mask = sigs.toCStruct()
-    try CError.makeAndThrow(fromReturnCode: pthread_sigmask(SIG_SETMASK, &mask, nil))
+    try sigs.block()
 
     let fd = try sigs.fileDescriptor()
     try ep.add(fd: fd, event: Event([.in]))

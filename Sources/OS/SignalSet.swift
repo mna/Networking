@@ -10,6 +10,10 @@ public struct SignalSet {
 
   // MARK: - Constructors
 
+  private init(mask sigset: sigset_t) {
+    self.sigset = sigset
+  }
+
   public init(fill: Bool) throws {
     let ret: Int32
     if fill {
@@ -40,10 +44,21 @@ public struct SignalSet {
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
-  public mutating func contains(signal: Signal) throws -> Bool {
-    let ret = sigismember(&sigset, signal.value)
+  public func contains(signal: Signal) throws -> Bool {
+    var mask = sigset // copy so "mutating" is not required
+    let ret = sigismember(&mask, signal.value)
     try CError.makeAndThrow(fromReturnCode: ret)
     return ret == 1
+  }
+
+  @discardableResult
+  public func block(mode: BlockMode = .setMask) throws -> SignalSet {
+    var mask = sigset // copy so "mutating" is not required
+    var old = sigset_t()
+    let ret = pthread_sigmask(mode.value, &mask, &old)
+    try CError.makeAndThrow(fromErrNo: ret)
+
+    return SignalSet(mask: old)
   }
 
   public func toCStruct() -> sigset_t {
@@ -64,6 +79,39 @@ public struct SignalSet {
   }
 
   #endif
+}
+
+// MARK: - SignalSet+BlockMode
+
+extension SignalSet {
+  public enum BlockMode {
+    case block
+    case unblock
+    case setMask
+
+    var value: Int32 {
+      guard let v = BlockMode.toValues[self] else {
+        fatalError("unknown BlockMode enum: \(self)")
+      }
+      return v
+    }
+
+    static func make(_ value: Int32) -> BlockMode? {
+      return fromValues[value]
+    }
+
+    private static let toValues: [BlockMode: Int32] = [
+      .block: SIG_BLOCK,
+      .unblock: SIG_UNBLOCK,
+      .setMask: SIG_SETMASK,
+    ]
+
+    private static let fromValues: [Int32: BlockMode] = [
+      SIG_BLOCK: .block,
+      SIG_UNBLOCK: .unblock,
+      SIG_SETMASK: .setMask,
+    ]
+  }
 }
 
 #if os(Linux)

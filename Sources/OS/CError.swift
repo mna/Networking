@@ -25,8 +25,24 @@ public struct CError: Swift.Error {
     self.message = String(validatingUTF8: gai_strerror(code)) ?? ""
   }
 
+  private init?(fromErrNo errno: Int32) {
+    // errno == 0 means no error
+    guard errno != 0 else {
+      return nil
+    }
+
+    self.code = errno
+    self.message = String(validatingUTF8: strerror(errno)) ?? ""
+  }
+
   public static func makeAndThrow(fromReturnCode code: Int32, errorValue: Int32 = -1) throws {
     if let err = CError(fromReturnCode: code, errorValue: errorValue) {
+      throw err
+    }
+  }
+
+  public static func makeAndThrow(fromErrNo errno: Int32) throws {
+    if let err = CError(fromErrNo: errno) {
       throw err
     }
   }
