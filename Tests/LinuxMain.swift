@@ -5,7 +5,6 @@ import XCTest
 
 XCTMain([
     testCase(AddressTests.allTests),
-    testCase(AddrInfoTests.allTests),
     testCase(EndiannessTests.allTests),
     testCase(IPAddressTests.allTests),
     testCase(SocketTests.allTests),
