@@ -17,7 +17,7 @@ public class Event: FileDescriptorRepresentable {
 
   // MARK: - Constructors
 
-  public init(initialValue: UInt32, flags: Flags =  []) throws {
+  public init(initialValue: UInt32 = 0, flags: Flags =  []) throws {
     let ret = eventfd(initialValue, flags.rawValue)
     try CError.makeAndThrow(fromReturnCode: ret)
     self.fileDescriptor = ret
