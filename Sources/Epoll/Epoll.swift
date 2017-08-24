@@ -27,11 +27,11 @@ public class Epoll: FileDescriptorRepresentable {
 
   // MARK: - Methods
 
-  public func add(fd: FileDescriptorRepresentable, event: Event) throws {
+  public func add(fd: FileDescriptorRepresentable, event: PollEvent) throws {
     try apply(EPOLL_CTL_ADD, fd: fd.fileDescriptor, event: event)
   }
 
-  public func update(fd: FileDescriptorRepresentable, event: Event) throws {
+  public func update(fd: FileDescriptorRepresentable, event: PollEvent) throws {
     try apply(EPOLL_CTL_MOD, fd: fd.fileDescriptor, event: event)
   }
 
@@ -39,7 +39,7 @@ public class Epoll: FileDescriptorRepresentable {
     try apply(EPOLL_CTL_DEL, fd: fd.fileDescriptor, event: nil)
   }
 
-  private func apply(_ op: Int32, fd: Int32, event: Event?) throws {
+  private func apply(_ op: Int32, fd: Int32, event: PollEvent?) throws {
     let ret: Int32
     if let event = event {
       var ev = event.toCStruct()
@@ -50,7 +50,7 @@ public class Epoll: FileDescriptorRepresentable {
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
-  public func poll(into events: inout [Event], timeout: TimeInterval? = nil, blockedSignals signals: SignalSet? = nil) throws -> Int {
+  public func poll(into events: inout [PollEvent], timeout: TimeInterval? = nil, blockedSignals signals: SignalSet? = nil) throws -> Int {
     var eevs = Array<epoll_event>(repeating: epoll_event(), count: events.count)
 
     var ms = Int32(-1)
@@ -68,7 +68,7 @@ public class Epoll: FileDescriptorRepresentable {
     try CError.makeAndThrow(fromReturnCode: ret)
 
     for i in 0..<Int(ret) {
-      events[i] = Event(epollEvent: eevs[i])
+      events[i] = PollEvent(epollEvent: eevs[i])
     }
     return Int(ret)
   }

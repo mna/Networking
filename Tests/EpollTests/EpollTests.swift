@@ -18,7 +18,7 @@ class EpollTests: XCTestCase {
 
   func testEpollEmpty() throws {
     let ep = try Epoll()
-    var events = Array<Event>(repeating: Event(), count: 1)
+    var events = Array<PollEvent>(repeating: PollEvent(), count: 1)
     do {
       let ret = try ep.poll(into: &events, timeout: 0)
       XCTAssertEqual(0, ret)
@@ -29,7 +29,7 @@ class EpollTests: XCTestCase {
 
   func testEpollTimeout() throws {
     let ep = try Epoll()
-    var events = Array<Event>(repeating: Event(), count: 2)
+    var events = Array<PollEvent>(repeating: PollEvent(), count: 2)
     let tfd = try Timer()
     try tfd.set(initial: 2.0)
 
@@ -44,19 +44,19 @@ class EpollTests: XCTestCase {
 
   func testEpollTimerFD() throws {
     let ep = try Epoll()
-    var events = Array<Event>(repeating: Event(), count: 2)
+    var events = Array<PollEvent>(repeating: PollEvent(), count: 2)
     let tfd = try Timer()
 
     let start = Date()
     try tfd.set(initial: 0.01)
 
-    try ep.add(fd: tfd, event: Event([.in], data: .u32(42)))
+    try ep.add(fd: tfd, event: PollEvent([.in], data: .u32(42)))
     let n = try ep.poll(into: &events, timeout: 1.0)
     let dur = Date().timeIntervalSince(start)
     let ev0 = events[0]
 
     XCTAssertEqual(n, 1)
-    XCTAssertEqual(ev0.types, Event.Types.in)
+    XCTAssertEqual(ev0.types, PollEvent.Types.in)
     XCTAssertEqual(Data(asU32: ev0.data), Data.u32(42))
     XCTAssertEqualWithAccuracy(dur, TimeInterval(0.01), accuracy: 0.01)
   }
@@ -74,13 +74,13 @@ class EpollTests: XCTestCase {
 
     // add the listening socket to epoll
     let ep = try Epoll()
-    try ep.add(fd: sock, event: Event([.in], data: .fd(sock.fileDescriptor)))
+    try ep.add(fd: sock, event: PollEvent([.in], data: .fd(sock.fileDescriptor)))
 
     // wait for a connection
     let expect = expectation(description: "epoll notifies accepted connection")
     DispatchQueue.global(qos: .background).async {
       do {
-        var events = Array<Event>(repeating: Event(), count: 2)
+        var events = Array<PollEvent>(repeating: PollEvent(), count: 2)
         let ret = try ep.poll(into: &events)
         XCTAssertEqual(1, ret)
         let ev0 = events[0]
@@ -116,7 +116,7 @@ class EpollTests: XCTestCase {
     try sigs.block()
 
     let fd = try sigs.fileDescriptor()
-    try ep.add(fd: fd, event: Event([.in]))
+    try ep.add(fd: fd, event: PollEvent([.in]))
 
     // send the signal
     DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .milliseconds(100)) {
@@ -124,12 +124,12 @@ class EpollTests: XCTestCase {
       kill(pid, Signal.int.value)
     }
 
-    var events = Array<Event>(repeating: Event(), count: 2)
+    var events = Array<PollEvent>(repeating: PollEvent(), count: 2)
     let n = try ep.poll(into: &events, timeout: 1.0, blockedSignals: sigs)
     XCTAssertEqual(n, 1)
 
     let ev0 = events[0]
-    XCTAssertEqual(ev0.types, Event.Types.in)
+    XCTAssertEqual(ev0.types, PollEvent.Types.in)
     let sig = try fd.next()
     XCTAssertEqual(sig, Signal.int)
   }

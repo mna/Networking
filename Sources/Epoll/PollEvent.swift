@@ -1,8 +1,8 @@
 import Libc
 
-// MARK: - Event
+// MARK: - PollEvent
 
-public struct Event {
+public struct PollEvent {
   public let types: Types
   public let data: Data
 
@@ -35,9 +35,9 @@ public struct Event {
   }
 }
 
-// MARK: - Event+Types
+// MARK: - PollEvent+Types
 
-extension Event {
+extension PollEvent {
   public struct Types: OptionSet {
     public let rawValue: UInt32
 
