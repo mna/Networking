@@ -5,7 +5,7 @@ import Dispatch
 import Foundation
 @testable import Epoll
 
-// Epoll does not support adding regular files to watch for
+// NOTE: Epoll does not support adding regular files to watch for
 // read-write, unlike kqueue (because those files are always
 // ready to read/write). It fails with operation not permitted.
 // Other FDs must be used for tests.

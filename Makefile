@@ -10,6 +10,7 @@ list:
 
 # MARK: documentation targets.
 
+# Generate documentation webpages.
 .PHONY: doc
 doc:
 	@swift build
@@ -35,12 +36,14 @@ doc:
 		--module LowSockets \
 		--output docs/LowSockets
 
+# Serve documentation websites via Caddy.
 .PHONY: serve-doc
 serve-doc:
 	caddy -root docs/
 
 # MARK: test targets
 
+# Generate test code coverage.
 .PHONY: test-cov
 test-cov:
 	@swift package generate-xcodeproj
