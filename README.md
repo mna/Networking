@@ -62,10 +62,19 @@ dependencies: [
 ]
 ```
 
-See `TODO: link to github pages for jazz doc?` for API documentation.
+See `TODO: link to github pages for jazzy doc?` for API documentation.
+
+Note that in order to generate the jazzy documentation, the following requirements must be met:
+
+1. Install a Swift version that includes SourceKit (on Ubuntu, the official version 3.1.1 on the swift.org does not include it, but 4.0 does).
+2. Install SourceKitten (https://github.com/jpsim/SourceKitten).
+3. On Ubuntu, SourceKitten must be able to find `libsourcekitdInProc.so`, which means setting the `LINUX_SOURCEKIT_LIB_PATH` environment variable to its directory.
+4. On Ubuntu, `libsourcekitdInProc.so` must be able to find `libBlocksRuntime.so.0`, which may not be installed. It can be installed with `apt install libblocksruntime0`.
+5. Ruby must be installed (ruby-dev on Ubuntu), and then jazzy itself by running `gem install jazzy`.
 
 ## License
 
 The [BSD 3-Clause license][bsd]. See the LICENSE file for details.
 
 [bsd]: http://opensource.org/licenses/BSD-3-Clause
+

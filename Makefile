@@ -1,3 +1,5 @@
+OS := $(shell uname | tr '[:upper:]' '[:lower:]')
+
 # default make target if none is specified.
 .DEFAULT_GOAL := list
 
@@ -15,7 +17,11 @@ list:
 doc:
 	@swift build
 	sourcekitten doc --spm-module OS > OS.json
+ifeq ($(OS), linux)
+	sourcekitten doc --spm-module Epoll > Epoll.json
+else
 	sourcekitten doc --spm-module Kqueue > Kqueue.json
+endif
 	sourcekitten doc --spm-module LowSockets > LowSockets.json
 	jazzy \
 		--clean \
@@ -26,15 +32,24 @@ doc:
 	jazzy \
 		--clean \
 		--min-acl internal \
-		--sourcekitten-sourcefile Kqueue.json \
-		--module Kqueue \
-		--output docs/Kqueue
-	jazzy \
-		--clean \
-		--min-acl internal \
 		--sourcekitten-sourcefile LowSockets.json \
 		--module LowSockets \
 		--output docs/LowSockets
+ifeq ($(OS), linux)
+	jazzy \
+		--clean \
+		--min-acl internal \
+		--sourcekitten-sourcefile Epoll.json \
+		--module Epoll \
+		--output docs/Epoll
+else
+	jazzy \
+		--clean \
+		--min-acl internal \
+		--sourcekitten-sourcefile Kqueue.json \
+		--module Kqueue \
+		--output docs/Kqueue
+endif
 
 # Serve documentation websites via Caddy.
 .PHONY: serve-doc

@@ -1,6 +1,9 @@
 # Apple desktop files
 .DS_Store
 
+# direnv file
+.envrc
+
 # package manager directories
 /.build
 /Packages
