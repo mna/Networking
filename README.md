@@ -27,6 +27,13 @@ Networking is a low-level Swift package that provides a thin Swift layer over th
 * Polling mechanisms (`epoll` on Linux, `kqueue` on Darwin)
 * `signalfd`, `timerfd` and `eventfd` support on Linux for use with `epoll` (natively supported by `kqueue` on Darwin)
 
+The package exports the following modules:
+
+* OS: basic types used by many modules: errors, signals, and on Linux: signalfd(2), timerfd\_create(2), eventfd(2).
+* LowSockets: cross-platform POSIX sockets, basically socket(2) and getaddrinfo(3).
+* Epoll: Linux-only, epoll(7).
+* Kqueue: Darwin-only, kqueue(2).
+
 ## Guiding Principles
 
 * Just a thin layer over the system calls;
