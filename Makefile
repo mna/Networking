@@ -58,12 +58,13 @@ serve-doc:
 
 # MARK: test targets
 
-# Generate test code coverage.
-.PHONY: test-cov
-test-cov:
-	@swift package generate-xcodeproj
-	@xcodebuild -scheme Networking -derivedDataPath .build/xcode -enableCodeCoverage YES test
-	@xcov --scheme Networking --configuration Debug --derived_data_path .build/xcode --skip_slack --markdown_report
-	@rm -rf .build/xcode
-	@open xcov_report/index.html
-
+ifeq ($(OS), darwin)
+	# Generate test code coverage.
+	.PHONY: test-cov
+	test-cov:
+		@swift package generate-xcodeproj
+		@xcodebuild -scheme Networking -derivedDataPath .build/xcode -enableCodeCoverage YES test
+		@xcov --scheme Networking --configuration Debug --derived_data_path .build/xcode --skip_slack --markdown_report
+		@rm -rf .build/xcode
+		@open xcov_report/index.html
+endif
