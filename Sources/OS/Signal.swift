@@ -2,6 +2,7 @@ import Libc
 
 // MARK: - Signal
 
+/// The list of supported signals.
 public enum Signal {
   case hup
   case int
@@ -33,6 +34,7 @@ public enum Signal {
   case usr1
   case usr2
 
+  /// The value of the signal enum for the current platform.
   public var value: Int32 {
     guard let v = Signal.toValues[self] else {
       fatalError("unknown Signal enum: \(self)")

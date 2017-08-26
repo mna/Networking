@@ -8,6 +8,7 @@ public protocol FileDescriptorRepresentable {
 // MARK: - Int32+FileDescriptorRepresentable
 
 extension Int32: FileDescriptorRepresentable {
+  /// The file descriptor for an Int32 is the value of the Int32 itself.
   public var fileDescriptor: Int32 {
     return self
   }

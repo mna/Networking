@@ -9,14 +9,19 @@ private let cwrite = write
 
 // MARK: - Event
 
+/// Event represents an event file descriptor as described in
+/// eventfd(2).
 public class Event: FileDescriptorRepresentable {
 
   // MARK: - Properties
 
+  /// The file descriptor for this event.
   public let fileDescriptor: Int32
 
   // MARK: - Constructors
 
+  /// Creates an event file descriptor with the provided initial value and
+  /// flags.
   public init(initialValue: UInt32 = 0, flags: Flags =  []) throws {
     let ret = eventfd(initialValue, flags.rawValue)
     try CError.makeAndThrow(fromReturnCode: ret)
@@ -29,6 +34,9 @@ public class Event: FileDescriptorRepresentable {
 
   // MARK: - Methods
 
+  /// Reads the current value from the file descriptor. See eventfd(2)
+  /// for details on the behaviour of this call. Returns the value
+  /// read from the event.
   public func read() throws -> UInt64 {
     var n: UInt64 = 0
     let ret = cread(fileDescriptor, &n, MemoryLayout<UInt64>.size)
@@ -37,12 +45,15 @@ public class Event: FileDescriptorRepresentable {
     return n
   }
 
+  /// Adds the specified value to the event file descriptor. See
+  /// eventfd(2) for details on the behaviour of this call.
   public func write(_ n: UInt64) throws {
     var n: UInt64 = n
     let ret = cwrite(fileDescriptor, &n, MemoryLayout<UInt64>.size)
     try CError.makeAndThrow(fromReturnCode: Int32(ret))
   }
 
+  /// Releases the resource associated with this file descriptor.
   public func close() throws {
     let ret = cclose(fileDescriptor)
     try CError.makeAndThrow(fromReturnCode: ret)
@@ -52,6 +63,7 @@ public class Event: FileDescriptorRepresentable {
 // MARK: - Event+Flags
 
 extension Event {
+  /// Flags for the event file descriptor.
   public struct Flags: OptionSet {
     public let rawValue: Int32
 
