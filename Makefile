@@ -25,27 +25,27 @@ endif
 	sourcekitten doc --spm-module LowSockets > LowSockets.json
 	jazzy \
 		--clean \
-		--min-acl internal \
+		--min-acl public \
 		--sourcekitten-sourcefile OS.json \
 		--module OS \
 		--output docs/OS
 	jazzy \
 		--clean \
-		--min-acl internal \
+		--min-acl public \
 		--sourcekitten-sourcefile LowSockets.json \
 		--module LowSockets \
 		--output docs/LowSockets
 ifeq ($(OS), linux)
 	jazzy \
 		--clean \
-		--min-acl internal \
+		--min-acl public \
 		--sourcekitten-sourcefile Epoll.json \
 		--module Epoll \
 		--output docs/Epoll
 else
 	jazzy \
 		--clean \
-		--min-acl internal \
+		--min-acl public \
 		--sourcekitten-sourcefile Kqueue.json \
 		--module Kqueue \
 		--output docs/Kqueue
