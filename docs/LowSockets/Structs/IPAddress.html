@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>IPAddress Struct Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Struct/IPAddress" class="dashAnchor"></a>
+    <a title="IPAddress Struct Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">LowSockets Docs</a> (70% documented)</p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">LowSockets Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        IPAddress Struct Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/Socket.html">Socket</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Socket/SendFlags.html">– SendFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Socket/ReceiveFlags.html">– ReceiveFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Socket/ShutdownMode.html">– ShutdownMode</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/Address.html">Address</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/Address/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/Family.html">Family</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/SocketProtocol.html">SocketProtocol</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/SocketType.html">SocketType</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/IPAddress.html">IPAddress</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>IPAddress</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">IPAddress</span></code></pre>
+
+                </div>
+              </div>
+            <p>IPAddress represents an IP (v4 or v6) address.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vV10LowSockets9IPAddress5bytesGSaVs5UInt8_"></a>
+                    <a name="//apple_ref/swift/Property/bytes" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vV10LowSockets9IPAddress5bytesGSaVs5UInt8_">bytes</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">IPAddress</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Constructors"></a>
+                <a name="//apple_ref/swift/Section/Constructors" class="dashAnchor"></a>
+                <a href="#/Constructors">
+                  <h3 class="section-name">Constructors</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FV10LowSockets9IPAddresscFT7parsingSS_GSqS0__"></a>
+                    <a name="//apple_ref/swift/Method/init(parsing:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FV10LowSockets9IPAddresscFT7parsingSS_GSqS0__">init(parsing:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates an IPAddress by parsing the string which must be in <q>1.2.3.4</q> or
+<q>ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff</q> formats (IPv4 or IPv6).</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">?(</span><span class="n">parsing</span> <span class="nv">s</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FV10LowSockets9IPAddresscFT5bytesGSaVs5UInt8__GSqS0__"></a>
+                    <a name="//apple_ref/swift/Method/init(bytes:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FV10LowSockets9IPAddresscFT5bytesGSaVs5UInt8__GSqS0__">init(bytes:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates an IP address corresponding to the provided bytes. The
+number of bytes must match either an IPv4 or IPv6 address.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">?(</span><span class="nv">bytes</span><span class="p">:</span> <span class="p">[</span><span class="kt">UInt8</span><span class="p">])</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FV10LowSockets9IPAddresscFTVs5UInt8S1_S1_S1__S0_"></a>
+                    <a name="//apple_ref/swift/Method/init(_:_:_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FV10LowSockets9IPAddresscFTVs5UInt8S1_S1_S1__S0_">init(_:_:_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates an IPv4 address. The four UInt8 arguments represent the
+4 bytes of the address, matching the IPv4 display format.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">_</span> <span class="nv">b0</span><span class="p">:</span> <span class="kt">UInt8</span><span class="p">,</span> <span class="n">_</span> <span class="nv">b1</span><span class="p">:</span> <span class="kt">UInt8</span><span class="p">,</span> <span class="n">_</span> <span class="nv">b2</span><span class="p">:</span> <span class="kt">UInt8</span><span class="p">,</span> <span class="n">_</span> <span class="nv">b3</span><span class="p">:</span> <span class="kt">UInt8</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FV10LowSockets9IPAddresscFTVs6UInt16S1_S1_S1_S1_S1_S1_S1__S0_"></a>
+                    <a name="//apple_ref/swift/Method/init(_:_:_:_:_:_:_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FV10LowSockets9IPAddresscFTVs6UInt16S1_S1_S1_S1_S1_S1_S1__S0_">init(_:_:_:_:_:_:_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates an IPv6 address. The UInt16 arguments can be passed as
+hexadecimal to match the IPv6 display format.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">_</span> <span class="nv">bb0</span><span class="p">:</span> <span class="kt">UInt16</span><span class="p">,</span> <span class="n">_</span> <span class="nv">bb1</span><span class="p">:</span> <span class="kt">UInt16</span><span class="p">,</span> <span class="n">_</span> <span class="nv">bb2</span><span class="p">:</span> <span class="kt">UInt16</span><span class="p">,</span> <span class="n">_</span> <span class="nv">bb3</span><span class="p">:</span> <span class="kt">UInt16</span><span class="p">,</span>
+       <span class="n">_</span> <span class="nv">bb4</span><span class="p">:</span> <span class="kt">UInt16</span><span class="p">,</span> <span class="n">_</span> <span class="nv">bb5</span><span class="p">:</span> <span class="kt">UInt16</span><span class="p">,</span> <span class="n">_</span> <span class="nv">bb6</span><span class="p">:</span> <span class="kt">UInt16</span><span class="p">,</span> <span class="n">_</span> <span class="nv">bb7</span><span class="p">:</span> <span class="kt">UInt16</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Properties"></a>
+                <a name="//apple_ref/swift/Section/Properties" class="dashAnchor"></a>
+                <a href="#/Properties">
+                  <h3 class="section-name">Properties</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vV10LowSockets9IPAddress6familyOS_6Family"></a>
+                    <a name="//apple_ref/swift/Property/family" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vV10LowSockets9IPAddress6familyOS_6Family">family</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Indicates the address family (ip4 or ip6).</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">family</span><span class="p">:</span> <span class="kt"><a href="../Enums/Family.html">Family</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZvV10LowSockets9IPAddress11ip4LoopbackS0_"></a>
+                    <a name="//apple_ref/swift/Variable/ip4Loopback" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZvV10LowSockets9IPAddress11ip4LoopbackS0_">ip4Loopback</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The typical IPv4 loopback address.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">ip4Loopback</span> <span class="o">=</span> <span class="kt">IPAddress</span><span class="p">(</span><span class="mi">127</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZvV10LowSockets9IPAddress11ip6LoopbackS0_"></a>
+                    <a name="//apple_ref/swift/Variable/ip6Loopback" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZvV10LowSockets9IPAddress11ip6LoopbackS0_">ip6Loopback</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The IPv6 loopback address.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">ip6Loopback</span> <span class="o">=</span> <span class="kt">IPAddress</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZFV10LowSockets9IPAddressoi2eeFTS0_S0__Sb"></a>
+                    <a name="//apple_ref/swift/Method/==(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZFV10LowSockets9IPAddressoi2eeFTS0_S0__Sb">==(_:_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Equatable implementation for IPAddress.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="o">==</span><span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="kt">IPAddress</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">IPAddress</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2017-08-27)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

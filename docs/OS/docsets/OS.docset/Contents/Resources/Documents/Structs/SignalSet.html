@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>SignalSet Struct Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Struct/SignalSet" class="dashAnchor"></a>
+    <a title="SignalSet Struct Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">OS Docs</a> (49% documented)</p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">OS Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        SignalSet Struct Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/Event.html">Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Event/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SignalFileDescriptor.html">SignalFileDescriptor</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Timer.html">Timer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Timer/Clock.html">– Clock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Timer/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Timer/SetFlags.html">– SetFlags</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enums</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/Signal.html">Signal</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/Int32.html">Int32</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/SignalSet.html">SignalSet</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/SignalSet/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/TimeInterval.html">TimeInterval</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/FileDescriptorRepresentable.html">FileDescriptorRepresentable</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/CError.html">CError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/MessageError.html">MessageError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SignalSet.html">SignalSet</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SignalSet/BlockMode.html">– BlockMode</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>SignalSet</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SignalSet</span></code></pre>
+
+                </div>
+              </div>
+            <p>SignalSet is a set of signals.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Constructors"></a>
+                <a name="//apple_ref/swift/Section/Constructors" class="dashAnchor"></a>
+                <a href="#/Constructors">
+                  <h3 class="section-name">Constructors</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FV2OS9SignalSetcFzT4fillSb_S0_"></a>
+                    <a name="//apple_ref/swift/Method/init(fill:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FV2OS9SignalSetcFzT4fillSb_S0_">init(fill:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates a SignalSet filled with all signals if fill is true,
+or empty if false.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">fill</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FV2OS9SignalSetcFzT6insertGSaOS_6Signal__S0_"></a>
+                    <a name="//apple_ref/swift/Method/init(insert:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FV2OS9SignalSetcFzT6insertGSaOS_6Signal__S0_">init(insert:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates a SignalSet with just the specified signals inserted.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">insert</span> <span class="nv">signals</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Enums/Signal.html">Signal</a></span><span class="p">])</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Methods"></a>
+                <a name="//apple_ref/swift/Section/Methods" class="dashAnchor"></a>
+                <a href="#/Methods">
+                  <h3 class="section-name">Methods</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FV2OS9SignalSet6insertFzT6signalOS_6Signal_T_"></a>
+                    <a name="//apple_ref/swift/Method/insert(signal:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FV2OS9SignalSet6insertFzT6signalOS_6Signal_T_">insert(signal:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Inserts <code>signal</code> into the SignalSet.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">insert</span><span class="p">(</span><span class="nv">signal</span><span class="p">:</span> <span class="kt"><a href="../Enums/Signal.html">Signal</a></span><span class="p">)</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FV2OS9SignalSet6removeFzT6signalOS_6Signal_T_"></a>
+                    <a name="//apple_ref/swift/Method/remove(signal:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FV2OS9SignalSet6removeFzT6signalOS_6Signal_T_">remove(signal:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Removes <code>signal</code> from the SignalSet.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">remove</span><span class="p">(</span><span class="nv">signal</span><span class="p">:</span> <span class="kt"><a href="../Enums/Signal.html">Signal</a></span><span class="p">)</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FV2OS9SignalSet8containsFzT6signalOS_6Signal_Sb"></a>
+                    <a name="//apple_ref/swift/Method/contains(signal:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FV2OS9SignalSet8containsFzT6signalOS_6Signal_Sb">contains(signal:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns true if the SignalSet contains <code>signal</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">contains</span><span class="p">(</span><span class="nv">signal</span><span class="p">:</span> <span class="kt"><a href="../Enums/Signal.html">Signal</a></span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FV2OS9SignalSet5blockFzT4modeOS0_9BlockMode_S0_"></a>
+                    <a name="//apple_ref/swift/Method/block(mode:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FV2OS9SignalSet5blockFzT4modeOS0_9BlockMode_S0_">block(mode:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Blocks (or unblocks) the signals from this SignalSet,
+depending the specified <code>mode</code>. See sigprocmask(2) for
+details.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">block</span><span class="p">(</span><span class="nv">mode</span><span class="p">:</span> <span class="kt"><a href="../Structs/SignalSet/BlockMode.html">BlockMode</a></span> <span class="o">=</span> <span class="o">.</span><span class="n">setMask</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">SignalSet</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FV2OS9SignalSet9toCStructFT_Vs6UInt32"></a>
+                    <a name="//apple_ref/swift/Method/toCStruct()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FV2OS9SignalSet9toCStructFT_Vs6UInt32">toCStruct()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Returns the C sigset_t struct for this SignalSet.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">toCStruct</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">sigset_t</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Method/fileDescriptor(replacing:flags:)" class="dashAnchor"></a>
+                    <a class="token" href="#/">fileDescriptor(replacing:flags:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Linux only. Creates a SignalFileDescriptor for this SignalSet.
+See signalfd(2) for details.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SignalSet</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:OV2OS9SignalSet9BlockMode"></a>
+                    <a name="//apple_ref/swift/Enum/BlockMode" class="dashAnchor"></a>
+                    <a class="token" href="#/s:OV2OS9SignalSet9BlockMode">BlockMode</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>BlockMode indicates the block mode for a SignalSet. See
+sigprocmask(2) for details.</p>
+
+                        <a href="../Structs/SignalSet/BlockMode.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">BlockMode</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2017-08-27)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

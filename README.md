@@ -8,6 +8,8 @@
 
 Networking is a low-level Swift package that provides a thin Swift layer over the native **POSIX sockets** and the kernel's polling mechanism (**epoll** for Linux, **kqueue** for Darwin).
 
+Note that this project follows [semver 2.0][semver], so for the major version `0.y.z` the API must be considered unstable and new versions may introduce breaking changes.
+
 ## Table Of Contents
 
 - [Features](#features)
@@ -89,4 +91,5 @@ The [BSD 3-Clause license][bsd]. See the LICENSE file for details.
 [lowsockets]: http://mna.github.io/Networking/LowSockets
 [epoll]: http://mna.github.io/Networking/Epoll
 [kqueue]: http://mna.github.io/Networking/Kqueue
+[semver]: http://semver.org/spec/v2.0.0.html
 

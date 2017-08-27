@@ -1,0 +1,215 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Address.swift",
+      "line": 15,
+      "symbol": "Address.ip4",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Address.swift",
+      "line": 16,
+      "symbol": "Address.ip6",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Address.swift",
+      "line": 17,
+      "symbol": "Address.unix",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Address.swift",
+      "line": 378,
+      "symbol": "Address.Flags.addrConfig",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Address.swift",
+      "line": 379,
+      "symbol": "Address.Flags.all",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Address.swift",
+      "line": 380,
+      "symbol": "Address.Flags.canonName",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Address.swift",
+      "line": 381,
+      "symbol": "Address.Flags.numericHost",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Address.swift",
+      "line": 382,
+      "symbol": "Address.Flags.numericServ",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Address.swift",
+      "line": 383,
+      "symbol": "Address.Flags.passive",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Address.swift",
+      "line": 384,
+      "symbol": "Address.Flags.v4Mapped",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Address.swift",
+      "line": 389,
+      "symbol": "Address.Flags.v4MappedCfg",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Address.swift",
+      "line": 390,
+      "symbol": "Address.Flags.default",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/CEnums.swift",
+      "line": 7,
+      "symbol": "Family.inet",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/CEnums.swift",
+      "line": 8,
+      "symbol": "Family.inet6",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/CEnums.swift",
+      "line": 9,
+      "symbol": "Family.unix",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/CEnums.swift",
+      "line": 10,
+      "symbol": "Family.unspec",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/CEnums.swift",
+      "line": 42,
+      "symbol": "SocketType.stream",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/CEnums.swift",
+      "line": 43,
+      "symbol": "SocketType.datagram",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/CEnums.swift",
+      "line": 85,
+      "symbol": "SocketProtocol.tcp",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/CEnums.swift",
+      "line": 86,
+      "symbol": "SocketProtocol.udp",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/CEnums.swift",
+      "line": 87,
+      "symbol": "SocketProtocol.unix",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/IPAddress.swift",
+      "line": 7,
+      "symbol": "IPAddress.bytes",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Socket.swift",
+      "line": 365,
+      "symbol": "Socket.SendFlags.oob",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Socket.swift",
+      "line": 366,
+      "symbol": "Socket.SendFlags.dontRoute",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Socket.swift",
+      "line": 380,
+      "symbol": "Socket.ReceiveFlags.oob",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Socket.swift",
+      "line": 381,
+      "symbol": "Socket.ReceiveFlags.peek",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Socket.swift",
+      "line": 382,
+      "symbol": "Socket.ReceiveFlags.waitAll",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Socket.swift",
+      "line": 391,
+      "symbol": "Socket.ShutdownMode.read",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Socket.swift",
+      "line": 392,
+      "symbol": "Socket.ShutdownMode.write",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Socket.swift",
+      "line": 393,
+      "symbol": "Socket.ShutdownMode.readWrite",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/m/src/github.com/mna/Networking"
+}

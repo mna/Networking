@@ -1,0 +1,327 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 96,
+      "symbol": "Kevent.Flags.add",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 97,
+      "symbol": "Kevent.Flags.enable",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 98,
+      "symbol": "Kevent.Flags.disable",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 99,
+      "symbol": "Kevent.Flags.delete",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 100,
+      "symbol": "Kevent.Flags.receipt",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 101,
+      "symbol": "Kevent.Flags.oneShot",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 102,
+      "symbol": "Kevent.Flags.clear",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 103,
+      "symbol": "Kevent.Flags.eof",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 104,
+      "symbol": "Kevent.Flags.ooband",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 105,
+      "symbol": "Kevent.Flags.error",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 121,
+      "symbol": "Kevent.FilterFlags.lowat",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 124,
+      "symbol": "Kevent.FilterFlags.oob",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 127,
+      "symbol": "Kevent.FilterFlags.delete",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 128,
+      "symbol": "Kevent.FilterFlags.write",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 129,
+      "symbol": "Kevent.FilterFlags.extend",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 130,
+      "symbol": "Kevent.FilterFlags.attrib",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 131,
+      "symbol": "Kevent.FilterFlags.link",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 132,
+      "symbol": "Kevent.FilterFlags.rename",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 133,
+      "symbol": "Kevent.FilterFlags.revoke",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 134,
+      "symbol": "Kevent.FilterFlags.funlock",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 137,
+      "symbol": "Kevent.FilterFlags.exit",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 138,
+      "symbol": "Kevent.FilterFlags.exitStatus",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 139,
+      "symbol": "Kevent.FilterFlags.fork",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 140,
+      "symbol": "Kevent.FilterFlags.exec",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 141,
+      "symbol": "Kevent.FilterFlags.signal",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 144,
+      "symbol": "Kevent.FilterFlags.seconds",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 145,
+      "symbol": "Kevent.FilterFlags.useconds",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 146,
+      "symbol": "Kevent.FilterFlags.nseconds",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 147,
+      "symbol": "Kevent.FilterFlags.absolute",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 148,
+      "symbol": "Kevent.FilterFlags.critical",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 149,
+      "symbol": "Kevent.FilterFlags.background",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 153,
+      "symbol": "Kevent.FilterFlags.ffnop",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 154,
+      "symbol": "Kevent.FilterFlags.ffand",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 155,
+      "symbol": "Kevent.FilterFlags.ffor",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 156,
+      "symbol": "Kevent.FilterFlags.ffcopy",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 157,
+      "symbol": "Kevent.FilterFlags.ffctrlMask",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 158,
+      "symbol": "Kevent.FilterFlags.fflagsMask",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 159,
+      "symbol": "Kevent.FilterFlags.trigger",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 168,
+      "symbol": "Kevent.Filter.read",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 169,
+      "symbol": "Kevent.Filter.except",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 170,
+      "symbol": "Kevent.Filter.write",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 171,
+      "symbol": "Kevent.Filter.vnode",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 172,
+      "symbol": "Kevent.Filter.proc",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 173,
+      "symbol": "Kevent.Filter.signal",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 174,
+      "symbol": "Kevent.Filter.timer",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/Kqueue/Kevent.swift",
+      "line": 175,
+      "symbol": "Kevent.Filter.user",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/m/src/github.com/mna/Networking"
+}
