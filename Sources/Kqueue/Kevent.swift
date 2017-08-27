@@ -3,18 +3,29 @@ import OS
 
 // MARK: - Kevent
 
+/// Darwin only. Kevent represents a kqueue event to register
+/// or receive from Kqueue.poll. See kqueue(2).
 public struct Kevent {
 
   // MARK: - Properties
 
+  /// The identifier of the event. Typically a file descriptor, but
+  /// can be other things (e.g. signal number).
   public let identifier: Int
+  /// The filter associated with the identifier.
   public let filter: Filter
+  /// The flags for the event.
   public let flags: Flags
+  /// The filter-specific flags.
   public let filterFlags: FilterFlags
-  public let data: Int
+  /// User data associated with the event.
+  public let data: Int // TODO: use the same approach as Epoll?
 
   // MARK: - Constructors
 
+  /// Creates a new kqueue event with all fields set to 0 or
+  /// empty defaults. Typically used only to fill a [Kevent]
+  /// to pass to Kqueue.poll.
   public init() {
     self.identifier = 0
     self.filter = .read
@@ -34,6 +45,7 @@ public struct Kevent {
     self.data = kev.data
   }
 
+  /// Creates a kqueue event for the provided file descriptor.
   public init(fd: FileDescriptorRepresentable, filter: Filter = .read, flags: Flags = [.add], filterFlags: FilterFlags = [], data: Int = 0) {
     self.identifier = Int(fd.fileDescriptor)
     self.filter = filter
@@ -42,6 +54,7 @@ public struct Kevent {
     self.data = data
   }
 
+  /// Creates a kqueue event for the provided identifier.
   public init(identifier: Int, filter: Filter = .read, flags: Flags = [.add], filterFlags: FilterFlags = [], data: Int = 0) {
     self.identifier = identifier
     self.filter = filter
@@ -50,6 +63,7 @@ public struct Kevent {
     self.data = data
   }
 
+  /// Creates a kqueue event for the provided signal.
   public init(signal: Signal, flags: Flags = [.add]) {
     self.init(identifier: Int(signal.value), filter: .signal, flags: flags)
   }
@@ -71,6 +85,7 @@ public struct Kevent {
 // MARK: - Kevent+Flags
 
 extension Kevent {
+  /// Darwin only. Flags to configure a kqueue event.
   public struct Flags: OptionSet {
     public let rawValue: Int32
 
@@ -94,6 +109,7 @@ extension Kevent {
 // MARK: - Kevent+FilterFlags
 
 extension Kevent {
+  /// Darwin only. Filter-specific flags.
   public struct FilterFlags: OptionSet {
     public let rawValue: UInt32
 
@@ -147,6 +163,7 @@ extension Kevent {
 // MARK: - Kevent+Filter
 
 extension Kevent {
+  /// Darwin only. Filter to apply to a kqueue event.
   public enum Filter {
     case read
     case except
