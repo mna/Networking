@@ -14,6 +14,7 @@ Networking is a low-level Swift package that provides a thin Swift layer over th
 - [Guiding Principles](#guiding-principles)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Documentation](#documentation)
 - [API Documentation](TODO: link to jazz doc)
 - [License](#license)
 
@@ -29,10 +30,10 @@ Networking is a low-level Swift package that provides a thin Swift layer over th
 
 The package exports the following modules:
 
-* OS: basic types used by many modules: errors, signals, and on Linux: signalfd(2), timerfd\_create(2), eventfd(2).
-* LowSockets: cross-platform POSIX sockets, basically socket(2) and getaddrinfo(3).
-* Epoll: Linux-only, epoll(7).
-* Kqueue: Darwin-only, kqueue(2).
+* [OS][os]: basic types used by many modules: errors, signals, and on Linux: signalfd(2), timerfd\_create(2), eventfd(2).
+* [LowSockets][lowsockets]: cross-platform POSIX sockets, basically socket(2) and getaddrinfo(3).
+* [Epoll][epoll]: Linux-only, epoll(7).
+* [Kqueue][kqueue]: Darwin-only, kqueue(2).
 
 ## Guiding Principles
 
@@ -69,9 +70,9 @@ dependencies: [
 ]
 ```
 
-See `TODO: link to github pages for jazzy doc?` for API documentation.
+## Documentation
 
-Note that in order to generate the jazzy documentation, the following requirements must be met:
+Full API documentation is available [here][doc]. Note that in order to generate the jazzy documentation, the following requirements must be met:
 
 1. Install a Swift version that includes SourceKit (on Ubuntu, the official version 3.1.1 on the swift.org does not include it, but 4.0 does).
 2. Install SourceKitten (https://github.com/jpsim/SourceKitten).
@@ -84,4 +85,9 @@ Note that in order to generate the jazzy documentation, the following requiremen
 The [BSD 3-Clause license][bsd]. See the LICENSE file for details.
 
 [bsd]: http://opensource.org/licenses/BSD-3-Clause
+[doc]: http://mna.github.io/Networking
+[os]: http://mna.github.io/Networking/OS
+[lowsockets]: http://mna.github.io/Networking/LowSockets
+[epoll]: http://mna.github.io/Networking/Epoll
+[kqueue]: http://mna.github.io/Networking/Kqueue
 
