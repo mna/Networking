@@ -15,7 +15,6 @@ Networking is a low-level Swift package that provides a thin Swift layer over th
 - [Installation](#installation)
 - [Usage](#usage)
 - [Documentation](#documentation)
-- [API Documentation](TODO: link to jazz doc)
 - [License](#license)
 
 ## Features
