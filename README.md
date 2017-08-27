@@ -75,7 +75,7 @@ dependencies: [
 
 Full API documentation is available [here][doc]. Note that in order to generate the jazzy documentation, the following requirements must be met:
 
-1. Install a Swift version that includes SourceKit (on Ubuntu, the official version 3.1.1 on the swift.org does not include it, but 4.0 does).
+1. Install a Swift version that includes SourceKit (on Ubuntu, the official version 3.1.1 on swift.org does not include it, but 4.0 does).
 2. Install SourceKitten (https://github.com/jpsim/SourceKitten).
 3. On Ubuntu, SourceKitten must be able to find `libsourcekitdInProc.so`, which means setting the `LINUX_SOURCEKIT_LIB_PATH` environment variable to its directory.
 4. On Ubuntu, `libsourcekitdInProc.so` must be able to find `libBlocksRuntime.so.0`, which may not be installed. It can be installed with `apt install libblocksruntime0`.
