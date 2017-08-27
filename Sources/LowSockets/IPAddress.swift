@@ -45,6 +45,8 @@ public struct IPAddress {
     return
   }
 
+  /// Creates an IP address corresponding to the provided bytes. The
+  /// number of bytes must match either an IPv4 or IPv6 address.
   public init?(bytes: [UInt8]) {
     guard bytes.count == 4 || bytes.count == 16 else {
       return nil
@@ -93,13 +95,16 @@ public struct IPAddress {
 // MARK: - IPAddress+Common Addresses
 
 extension IPAddress {
+  /// The typical IPv4 loopback address.
   public static let ip4Loopback = IPAddress(127, 0, 0, 1)
+  /// The IPv6 loopback address.
   public static let ip6Loopback = IPAddress(0, 0, 0, 0, 0, 0, 0, 1)
 }
 
 // MARK: - IPAddress+Equatable
 
 extension IPAddress: Equatable {
+  /// Equatable implementation for IPAddress.
   public static func ==(lhs: IPAddress, rhs: IPAddress) -> Bool {
     return lhs.bytes.elementsEqual(rhs.bytes)
   }

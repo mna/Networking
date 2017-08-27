@@ -2,6 +2,7 @@ import Libc
 
 // MARK: - Family
 
+/// Family represents a socket family.
 public enum Family {
   case inet
   case inet6
@@ -36,6 +37,7 @@ public enum Family {
 
 // MARK: - SocketType
 
+/// SocketType represents a socket type.
 public enum SocketType {
   case stream
   case datagram
@@ -78,6 +80,7 @@ public enum SocketType {
 
 // MARK: - SocketProtocol
 
+/// SocketProtocol represents a socket protocol.
 public enum SocketProtocol {
   case tcp
   case udp

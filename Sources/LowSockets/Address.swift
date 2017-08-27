@@ -18,6 +18,8 @@ public enum Address {
 
   // MARK: - Constructors
 
+  /// Creates an Address from the specified IP address, port number
+  /// and scope ID. If `ip` is an IPv4 address, `scopeID` is ignored.
   public init?(ip: IPAddress, port: Int, scopeID: Int = 0) {
     switch ip.family {
     case .inet:
@@ -29,6 +31,7 @@ public enum Address {
     }
   }
 
+  /// Creates a UNIX Domain Socket address using the specified `path`.
   public init?(path: String) {
     if path.utf8.count >= Address.maxUnixPathLen {
       return nil
@@ -88,6 +91,7 @@ public enum Address {
 
   // MARK: - Properties
 
+  /// Returns the socket family for this address.
   public var family: Family {
     switch self {
     case .ip4(let ip, _):
@@ -205,6 +209,8 @@ public enum Address {
 
 extension Address {
 
+  /// Resolves the provided `host` and/or `service` using the specified flags, family
+  /// and socket type. See getaddrinfo(2) for details.
   public static func resolve(host: String? = nil, service: String? = nil, flags: Flags = .default, family: Family? = nil, type: SocketType? = nil, proto: SocketProtocol? = nil) throws -> (cname: String, addresses: [Address]) {
     var hints = addrinfo()
     hints.ai_flags = flags.rawValue
@@ -361,6 +367,7 @@ extension Address {
 // MARK: - Address+Flags
 
 extension Address {
+  /// Flags that alter the behaviour of Address.resolve.
   public struct Flags: OptionSet {
     public let rawValue: Int32
 
@@ -388,6 +395,7 @@ extension Address {
 // MARK: - Address+Equatable
 
 extension Address: Equatable {
+  /// Equatable implementation for Address.
   public static func ==(lhs: Address, rhs: Address) -> Bool {
     switch (lhs, rhs) {
     case let (.ip4(lip, lport), .ip4(rip, rport)):
