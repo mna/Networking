@@ -7,14 +7,17 @@ private let cclose = close
 
 // MARK: - Epoll
 
+/// Linux only. Epoll implements the Linux epoll mechanism.
 public class Epoll: FileDescriptorRepresentable {
 
   // MARK: - Properties
 
+  /// The file descriptor for this epoll instance.
   public let fileDescriptor: Int32
 
   // MARK: - Constructors
 
+  /// Creates an epoll instance with the specified flags.
   public init(flags: Flags = []) throws {
     let ret = epoll_create1(flags.rawValue)
     try CError.makeAndThrow(fromReturnCode: ret)
@@ -27,14 +30,20 @@ public class Epoll: FileDescriptorRepresentable {
 
   // MARK: - Methods
 
+  /// Adds the file descriptor to the list of FDs watched by this epoll instance.
+  /// The `event` argument defines what event types to watch for and optional
+  /// user data associated with the event.
   public func add(fd: FileDescriptorRepresentable, event: PollEvent) throws {
     try apply(EPOLL_CTL_ADD, fd: fd.fileDescriptor, event: event)
   }
 
+  /// Updates the event types and user data associated with the file descriptor
+  /// for this epoll instance.
   public func update(fd: FileDescriptorRepresentable, event: PollEvent) throws {
     try apply(EPOLL_CTL_MOD, fd: fd.fileDescriptor, event: event)
   }
 
+  /// Removes the file descriptor from the list of FDs watched by this epoll instance.
   public func remove(fd: FileDescriptorRepresentable) throws {
     try apply(EPOLL_CTL_DEL, fd: fd.fileDescriptor, event: nil)
   }
@@ -50,6 +59,11 @@ public class Epoll: FileDescriptorRepresentable {
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
+  /// Polls for and returns available events into `events`, blocking as required.
+  /// If a timeout is set, unblocks after this delay if no events are available.
+  /// Signals may be blocked atomically by providing a SignalSet to `blockedSignals`.
+  /// Returns the number of events available in `events`. No more than `events.count` events
+  /// will be returned.
   public func poll(into events: inout [PollEvent], timeout: TimeInterval? = nil, blockedSignals signals: SignalSet? = nil) throws -> Int {
     var eevs = Array<epoll_event>(repeating: epoll_event(), count: events.count)
 
@@ -73,6 +87,7 @@ public class Epoll: FileDescriptorRepresentable {
     return Int(ret)
   }
 
+  /// Releases the resources for this file descriptor.
   public func close() throws {
     let ret = cclose(fileDescriptor)
     try CError.makeAndThrow(fromReturnCode: ret)
@@ -82,6 +97,7 @@ public class Epoll: FileDescriptorRepresentable {
 // MARK: - Epoll+Flags
 
 extension Epoll {
+  /// Linux only. Flags available to configure the epoll instance.
   public struct Flags: OptionSet {
     public let rawValue: Int32
 

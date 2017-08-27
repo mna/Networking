@@ -2,10 +2,13 @@ import Libc
 
 // MARK: - PollEvent
 
+/// Linux only. PollEvent defines the event types the caller is interested
+/// in, and the user-data associated with the event.
 public struct PollEvent {
   public let types: Types
   public let data: Data
 
+  /// Creates a PollEvent with the specified event types and user data.
   public init(_ types: Types = [], data: Data = .u64(0)) {
     self.types = types
     self.data = data
@@ -38,6 +41,7 @@ public struct PollEvent {
 // MARK: - PollEvent+Types
 
 extension PollEvent {
+  /// Linux only. The available event types.
   public struct Types: OptionSet {
     public let rawValue: UInt32
 
