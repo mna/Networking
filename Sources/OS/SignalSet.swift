@@ -2,6 +2,7 @@ import Libc
 
 // MARK: - SignalSet
 
+/// SignalSet is a set of signals.
 public struct SignalSet {
 
   // MARK: - Properties
@@ -14,6 +15,8 @@ public struct SignalSet {
     self.sigset = sigset
   }
 
+  /// Creates a SignalSet filled with all signals if fill is true,
+  /// or empty if false.
   public init(fill: Bool) throws {
     let ret: Int32
     if fill {
@@ -24,6 +27,7 @@ public struct SignalSet {
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
+  /// Creates a SignalSet with just the specified signals inserted.
   public init(insert signals: [Signal]) throws {
     try self.init(fill: false)
     for sig in signals {
@@ -34,16 +38,19 @@ public struct SignalSet {
 
   // MARK: - Methods
 
+  /// Inserts `signal` into the SignalSet.
   public mutating func insert(signal: Signal) throws {
     let ret = sigaddset(&sigset, signal.value)
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
+  /// Removes `signal` from the SignalSet.
   public mutating func remove(signal: Signal) throws {
     let ret = sigdelset(&sigset, signal.value)
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
+  /// Returns true if the SignalSet contains `signal`.
   public func contains(signal: Signal) throws -> Bool {
     var mask = sigset // copy so "mutating" is not required
     let ret = sigismember(&mask, signal.value)
@@ -51,6 +58,9 @@ public struct SignalSet {
     return ret == 1
   }
 
+  /// Blocks (or unblocks) the signals from this SignalSet,
+  /// depending the specified `mode`. See sigprocmask(2) for
+  /// details.
   @discardableResult
   public func block(mode: BlockMode = .setMask) throws -> SignalSet {
     var mask = sigset // copy so "mutating" is not required
@@ -61,12 +71,15 @@ public struct SignalSet {
     return SignalSet(mask: old)
   }
 
+  /// Returns the C sigset_t struct for this SignalSet.
   public func toCStruct() -> sigset_t {
     return sigset
   }
 
   #if os(Linux)
 
+  /// Linux only. Creates a SignalFileDescriptor for this SignalSet.
+  /// See signalfd(2) for details.
   public mutating func fileDescriptor(replacing fdr: FileDescriptorRepresentable? = nil, flags: Flags = []) throws -> SignalFileDescriptor {
     let fd = fdr?.fileDescriptor ?? -1
     let ret = signalfd(fd, &sigset, flags.rawValue)
@@ -84,6 +97,8 @@ public struct SignalSet {
 // MARK: - SignalSet+BlockMode
 
 extension SignalSet {
+  /// BlockMode indicates the block mode for a SignalSet. See
+  /// sigprocmask(2) for details.
   public enum BlockMode {
     case block
     case unblock
@@ -119,6 +134,7 @@ extension SignalSet {
 // MARK: - SignalSet+Flags
 
 extension SignalSet {
+  /// Linux only. Configure the file descriptor for a SignalSet.
   public struct Flags: OptionSet {
     public let rawValue: Int32
 

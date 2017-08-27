@@ -10,14 +10,19 @@ private let cclose = close
 
 // MARK: - Timer
 
+/// Timer is a file descriptor associated with a timer. See
+/// timerfd_create(2) for details.
 public class Timer: FileDescriptorRepresentable {
 
   // MARK: - Properties
 
+  /// The file descriptor for this timer.
   public let fileDescriptor: Int32
 
   // MARK: - Constructors
 
+  /// Creates a timer using the specified clock and configured with
+  /// the specified flags. See timerfd_create(2) for details.
   public init(using clock: Clock = .realTime, flags: Flags = []) throws {
     let ret = timerfd_create(clock.value, flags.rawValue)
     try CError.makeAndThrow(fromReturnCode: ret)
@@ -30,6 +35,8 @@ public class Timer: FileDescriptorRepresentable {
 
   // MARK: - Methods
 
+  /// Sets the timer to trigger on the initial delay, and then at the specified
+  /// interval. Returns the previously set timer delays.
   @discardableResult
   public func set(initial: TimeInterval, thenEach interval: TimeInterval = 0, flags: SetFlags = []) throws -> (initial: TimeInterval, interval: TimeInterval) {
     var oldValue = itimerspec()
@@ -44,11 +51,14 @@ public class Timer: FileDescriptorRepresentable {
     return (t1, t2)
   }
 
+  /// Unsets the timer, so that it doesn't trigger anymore. Returns the previously
+  /// set timer delays.
   @discardableResult
   public func unset() throws -> (initial: TimeInterval, interval: TimeInterval) {
     return try set(initial: 0)
   }
 
+  /// Returns the currently set timer delays.
   public func get() throws -> (initial: TimeInterval, interval: TimeInterval) {
     var currValue = itimerspec()
     let ret = timerfd_gettime(fileDescriptor, &currValue)
@@ -58,6 +68,7 @@ public class Timer: FileDescriptorRepresentable {
     return (t1, t2)
   }
 
+  /// Returns the number of times the timer expired since the last call.
   public func expirations() throws -> UInt64 {
     var n: UInt64 = 0
     let sz = MemoryLayout.size(ofValue: n)
@@ -68,6 +79,7 @@ public class Timer: FileDescriptorRepresentable {
     return n
   }
 
+  /// Releases the resources for this file descriptor.
   public func close() throws {
     let ret = cclose(fileDescriptor)
     try CError.makeAndThrow(fromReturnCode: ret)
@@ -77,6 +89,7 @@ public class Timer: FileDescriptorRepresentable {
 // MARK: - Timer+Clock
 
 extension Timer {
+  /// The type of clock to use for the timer.
   public enum Clock {
     case realTime
     case monotonic
@@ -116,6 +129,7 @@ extension Timer {
 // MARK: - Timer+Flags
 
 extension Timer {
+  /// The flags to configure the timer file descriptor.
   public struct Flags: OptionSet {
     public let rawValue: Int32
 
@@ -131,6 +145,8 @@ extension Timer {
 // MARK: - Timer+SetFlags
 
 extension Timer {
+  /// The flags to configure how the delays set for the timer should be
+  /// interpreted.
   public struct SetFlags: OptionSet {
     public let rawValue: Int32
 

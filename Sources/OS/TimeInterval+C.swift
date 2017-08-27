@@ -1,6 +1,9 @@
 import Foundation
 
+// MARK: TimeInterval extensions
+
 extension TimeInterval {
+  /// Creates a TimeInterval from a timespec C struct.
   public init(from spec: timespec) {
     let secs = Int(spec.tv_sec)
     let ns = Int(spec.tv_nsec)
@@ -8,6 +11,7 @@ extension TimeInterval {
     self = t
   }
 
+  /// Creates a TimeInterval from a timeval C struct.
   public init(from val: timeval) {
     let secs = Int(val.tv_sec)
     let us = Int(val.tv_usec)
@@ -15,6 +19,7 @@ extension TimeInterval {
     self = t
   }
 
+  /// Returns a C timespec struct corresponding to this TimeInterval.
   public func toTimeSpec() -> timespec {
     var ts = timespec()
 
@@ -24,6 +29,7 @@ extension TimeInterval {
     return ts
   }
 
+  /// Returns a C timeval struct corresponding to this TimeInterval.
   public func toTimeVal() -> timeval {
     var val = timeval()
 
