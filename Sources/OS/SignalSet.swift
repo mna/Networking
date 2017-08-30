@@ -80,12 +80,12 @@ public struct SignalSet {
 
   /// Linux only. Creates a SignalFileDescriptor for this SignalSet.
   /// See signalfd(2) for details.
-  public mutating func fileDescriptor(replacing fdr: FileDescriptorRepresentable? = nil, flags: Flags = []) throws -> SignalFileDescriptor {
-    let fd = fdr?.fileDescriptor ?? -1
-    let ret = signalfd(fd, &sigset, flags.rawValue)
+  public mutating func fileDescriptor(replacing fd: FileDescriptor? = nil, flags: Flags = []) throws -> SignalFileDescriptor {
+    let val = fd?.fileDescriptor ?? -1
+    let ret = signalfd(val, &sigset, flags.rawValue)
     try CError.makeAndThrow(fromReturnCode: ret)
 
-    if let fdr = fdr, let sfd = fdr as? SignalFileDescriptor {
+    if let fd = fd, let sfd = fd as? SignalFileDescriptor {
       return sfd
     }
     return SignalFileDescriptor(ret)

@@ -64,7 +64,7 @@ class EpollTests: XCTestCase {
   func testEpollSocket() throws {
     let path = "/tmp/test.sock"
     let addr = Address.unix(path: path)
-    let sock = try Socket(family: .unix)
+    var sock = try Socket(family: .unix)
     try sock.bind(to: addr)
     try sock.listen()
     defer {
@@ -99,7 +99,8 @@ class EpollTests: XCTestCase {
     }
 
     do {
-      let sock = try Socket(family: .unix)
+      var sock = try Socket(family: .unix)
+      defer { try? sock.close() }
       try sock.connect(to: addr)
     } catch {
       XCTFail("client socket failed with \(error)")

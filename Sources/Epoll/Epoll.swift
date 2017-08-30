@@ -26,18 +26,18 @@ public struct Epoll: FileDescriptor {
   /// Adds the file descriptor to the list of FDs watched by this epoll instance.
   /// The `event` argument defines what event types to watch for and optional
   /// user data associated with the event.
-  public func add(fd: FileDescriptorRepresentable, event: PollEvent) throws {
+  public func add(fd: FileDescriptor, event: PollEvent) throws {
     try apply(EPOLL_CTL_ADD, fd: fd.fileDescriptor, event: event)
   }
 
   /// Updates the event types and user data associated with the file descriptor
   /// for this epoll instance.
-  public func update(fd: FileDescriptorRepresentable, event: PollEvent) throws {
+  public func update(fd: FileDescriptor, event: PollEvent) throws {
     try apply(EPOLL_CTL_MOD, fd: fd.fileDescriptor, event: event)
   }
 
   /// Removes the file descriptor from the list of FDs watched by this epoll instance.
-  public func remove(fd: FileDescriptorRepresentable) throws {
+  public func remove(fd: FileDescriptor) throws {
     try apply(EPOLL_CTL_DEL, fd: fd.fileDescriptor, event: nil)
   }
 
