@@ -264,8 +264,7 @@ class SocketTests: XCTestCase {
       return
     }
 
-    XCTAssertEqual(server.sock?.boundAddress, Address.ip4(ip: IPAddress(127, 0, 0, 1), port: 0))
-    let bound = try server.sock!.loadBoundAddress()
+    let bound = try server.sock!.boundAddress()
     switch bound {
     case .ip4(let ip, let port):
       XCTAssertEqual(ip, IPAddress(127, 0, 0, 1))
@@ -273,16 +272,13 @@ class SocketTests: XCTestCase {
     default:
       XCTFail("unexpected bound address type")
     }
-
-    XCTAssertNil(server.sock?.peerAddress)
   }
 
   func testConnectTCP4() throws {
     let server = PortServer("localhost", 8899)
     try server.listen()
 
-    XCTAssertEqual(server.sock?.boundAddress, Address.ip4(ip: IPAddress(127, 0, 0, 1), port: 8899))
-    let bound = try server.sock!.loadBoundAddress()
+    let bound = try server.sock!.boundAddress()
     XCTAssertEqual(bound, Address.ip4(ip: IPAddress(127, 0, 0, 1), port: 8899))
 
     // run server in background and close it after a connection
@@ -290,11 +286,12 @@ class SocketTests: XCTestCase {
     DispatchQueue.global(qos: .background).async {
       do {
         try server.serveOne { s in
-          switch s.peerAddress {
-          case .ip4(_, let port)?:
+          let addr = try s.peerAddress()
+          switch addr {
+          case .ip4(_, let port):
             XCTAssertTrue(port > 30000, "port is \(port)")
           default:
-            XCTFail("unexpected address type \(String(describing: s.peerAddress))")
+            XCTFail("unexpected address type \(String(describing: addr))")
           }
         }
         expect.fulfill()
@@ -324,8 +321,7 @@ class SocketTests: XCTestCase {
     #else
       let wantAddr = IPAddress.ip6Loopback
     #endif
-    XCTAssertEqual(server.sock?.boundAddress, Address.ip6(ip: wantAddr, port: 8898, scopeID: 0))
-    let bound = try server.sock!.loadBoundAddress()
+    let bound = try server.sock!.boundAddress()
     XCTAssertEqual(bound, Address.ip6(ip: wantAddr, port: 8898, scopeID: 0))
 
     // run server in background and close it after a connection
@@ -333,11 +329,12 @@ class SocketTests: XCTestCase {
     DispatchQueue.global(qos: .background).async {
       do {
         try server.serveOne { s in
-          switch s.peerAddress {
-          case .ip6(_, let port, _)?:
+          let addr = try s.peerAddress()
+          switch addr {
+          case .ip6(_, let port, _):
             XCTAssertTrue(port > 30000, "port is \(port)")
           default:
-            XCTFail("unexpected address type \(String(describing: s.peerAddress))")
+            XCTFail("unexpected address type \(String(describing: addr))")
           }
         }
         expect.fulfill()
@@ -362,8 +359,7 @@ class SocketTests: XCTestCase {
     let server = UnixServer("/tmp/test.sock")
     try server.listen()
 
-    XCTAssertEqual(server.sock?.boundAddress, Address.unix(path: "/tmp/test.sock"))
-    let bound = try server.sock!.loadBoundAddress()
+    let bound = try server.sock!.boundAddress()
     XCTAssertEqual(bound, Address.unix(path: "/tmp/test.sock"))
 
     // run server in background and close it after a connection
@@ -371,12 +367,7 @@ class SocketTests: XCTestCase {
     DispatchQueue.global(qos: .background).async {
       do {
         try server.serveOne { s in
-          switch s.peerAddress {
-          case .unix?:
-            break
-          default:
-            XCTFail("unexpected address type \(String(describing: s.peerAddress))")
-          }
+          // nothing
         }
         expect.fulfill()
       } catch {
