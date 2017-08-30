@@ -7,7 +7,9 @@ import Dispatch
 
 class SocketTests: XCTestCase {
   func testDefaultSocket() throws {
-    let sock = try Socket()
+    var sock = try Socket()
+    defer { try? sock.close() }
+
     XCTAssertEqual(sock.family, Family.inet)
     XCTAssertEqual(sock.type, SocketType.stream)
     XCTAssertEqual(sock.proto, SocketProtocol.tcp)
@@ -20,7 +22,9 @@ class SocketTests: XCTestCase {
     let fd = socket(Family.inet6.value, SocketType.datagram.value, SocketProtocol.udp.value)
     try CError.makeAndThrow(fromReturnCode: fd)
 
-    let sock = try Socket(fd: fd)
+    var sock = try Socket(fd: fd)
+    defer { try? sock.close() }
+
     #if os(Linux)
       XCTAssertEqual(sock.family, Family.inet6)
     #else
@@ -32,7 +36,8 @@ class SocketTests: XCTestCase {
   }
 
   func testSetNonBlocking() throws {
-    let sock = try Socket()
+    var sock = try Socket()
+    defer { try? sock.close() }
 
     // non-blocking works
     try sock.setNonBlocking()
@@ -56,7 +61,9 @@ class SocketTests: XCTestCase {
   }
 
   func testSetLinger() throws {
-    let sock = try Socket()
+    var sock = try Socket()
+    defer { try? sock.close() }
+
     try sock.setLinger(timeout: 0)
     XCTAssertEqual(TimeInterval(0), try sock.getLinger())
     try sock.setLinger(timeout: TimeInterval(1.234))
@@ -68,7 +75,9 @@ class SocketTests: XCTestCase {
   }
 
   func testSetTimeouts() throws {
-    let sock = try Socket()
+    var sock = try Socket()
+    defer { try? sock.close() }
+
     let cases: [TimeInterval] = [
       0,
       1.234,
@@ -97,7 +106,9 @@ class SocketTests: XCTestCase {
   }
 
   func testConnectToNonMatchingAddress() throws {
-    let sock = try Socket(family: .inet)
+    var sock = try Socket(family: .inet)
+    defer { try? sock.close() }
+
     let addr = Address(path: "/tmp/test.sock")!
     do {
       try sock.connect(to: addr)
@@ -121,8 +132,13 @@ class SocketTests: XCTestCase {
     var data2 = [UInt8](repeating: 0, count: 10)
     var addrRecv: Address = addr2
     do {
-      let sock1 = try Socket(family: .unix, type: .datagram)
-      let sock2 = try Socket(family: .unix, type: .datagram)
+      var sock1 = try Socket(family: .unix, type: .datagram)
+      var sock2 = try Socket(family: .unix, type: .datagram)
+      defer {
+        try? sock1.close()
+        try? sock2.close()
+      }
+
       try sock1.bind(to: addr1)
       try sock2.bind(to: addr2)
 
@@ -176,7 +192,8 @@ class SocketTests: XCTestCase {
     }
 
     do {
-      let sock = try Socket(family: .inet)
+      var sock = try Socket(family: .inet)
+      defer { try? sock.close() }
       print(">>> call connect")
       try sock.connect(to: "localhost:8896")
       print(">>> call shutdown")
@@ -223,7 +240,9 @@ class SocketTests: XCTestCase {
     }
 
     do {
-      let sock = try Socket(family: .inet)
+      var sock = try Socket(family: .inet)
+      defer { try? sock.close() }
+
       try sock.connect(to: "localhost:8897")
 
       let bytes: [UInt8] = data.utf8.map({ UInt8($0) })
@@ -285,7 +304,9 @@ class SocketTests: XCTestCase {
     }
 
     do {
-      let sock = try Socket(family: .inet)
+      var sock = try Socket(family: .inet)
+      defer { try? sock.close() }
+
       try sock.connect(to: "localhost:8899")
     } catch {
       XCTFail("client socket failed with \(error)")
@@ -326,7 +347,9 @@ class SocketTests: XCTestCase {
     }
 
     do {
-      let sock = try Socket(family: .inet6)
+      var sock = try Socket(family: .inet6)
+      defer { try? sock.close() }
+
       try sock.connect(to: "localhost:8898")
     } catch {
       XCTFail("client socket failed with \(error)")
@@ -362,7 +385,9 @@ class SocketTests: XCTestCase {
     }
 
     do {
-      let sock = try Socket(family: .unix)
+      var sock = try Socket(family: .unix)
+      defer { try? sock.close() }
+
       try sock.connect(toPath: "/tmp/test.sock")
     } catch {
       XCTFail("client socket failed with \(error)")

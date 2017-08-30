@@ -9,7 +9,7 @@ class PortServer {
   let host: String
   let family: Family
 
-  private(set) var sock: Socket? = nil
+  var sock: Socket? = nil
 
   init(_ host: String, _ port: Int, family: Family = .inet) {
     self.family = family
@@ -22,20 +22,20 @@ class PortServer {
   }
 
   func listen() throws {
-    let sock = try Socket(family: family)
+    var sock = try Socket(family: family)
     try sock.setOption(SO_REUSEADDR, to: 1)
     try sock.setOption(SO_REUSEPORT, to: 1)
-    self.sock = sock
 
     try sock.bind(toHost: host, port: port)
     try sock.listen()
+    self.sock = sock
   }
 
   func serveOne(_ handler: (Socket) throws -> Void) throws {
     guard let sock = sock else {
       throw MessageError("no listening socket")
     }
-    let remote = try sock.accept()
+    var remote = try sock.accept()
     defer { try? remote.close() }
     try handler(remote)
   }

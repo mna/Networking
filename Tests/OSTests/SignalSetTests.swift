@@ -70,6 +70,7 @@ extension SignalSetTests {
   func testFileDescriptor() throws {
     var set = try SignalSet(insert: [.usr1])
     let sfd = try set.fileDescriptor(flags: [.nonBlock])
+    defer { try? sfd.close() }
 
     // block the signal and send it so it is sent on the fd
     var mask = set.toCStruct()

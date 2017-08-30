@@ -13,6 +13,8 @@ class TimerTests: XCTestCase {
 
   func testInitial() throws {
     let t = try Timer(flags: [.nonBlock])
+    defer { try? t.close() }
+
     let old = try t.set(initial: 0.001)
     XCTAssertEqual(old.initial, TimeInterval(0))
     XCTAssertEqual(old.interval, TimeInterval(0))
@@ -28,6 +30,8 @@ class TimerTests: XCTestCase {
 
   func testInterval() throws {
     let t = try Timer(flags: [.nonBlock])
+    defer { try? t.close() }
+
     try t.set(initial: 0.1, thenEach: 0.1)
 
     usleep(300_000)
@@ -42,6 +46,8 @@ class TimerTests: XCTestCase {
 
   func testUnset() throws {
     let t = try Timer(flags: [.nonBlock])
+    defer { try? t.close() }
+
     try t.set(initial: 0.001, thenEach: 0.01)
 
     usleep(10_000)
@@ -73,6 +79,8 @@ class TimerTests: XCTestCase {
 
   func testGet() throws {
     let t = try Timer()
+    defer { try? t.close() }
+
     try t.set(initial: 0.001, thenEach: 0.01)
     let old = try t.get()
     XCTAssertEqualWithAccuracy(old.initial, TimeInterval(0.001), accuracy: 0.001)
