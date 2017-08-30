@@ -178,7 +178,7 @@ class KqueueTests: XCTestCase {
     }
 
     do {
-      var sock = try Socket(family: .unix)
+      let sock = try Socket(family: .unix)
       defer { try? sock.close() }
 
       try sock.connect(to: addr)

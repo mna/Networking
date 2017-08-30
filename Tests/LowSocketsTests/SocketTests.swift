@@ -7,7 +7,7 @@ import Dispatch
 
 class SocketTests: XCTestCase {
   func testDefaultSocket() throws {
-    var sock = try Socket()
+    let sock = try Socket()
     defer { try? sock.close() }
 
     XCTAssertEqual(sock.family, Family.inet)
@@ -22,7 +22,7 @@ class SocketTests: XCTestCase {
     let fd = socket(Family.inet6.value, SocketType.datagram.value, SocketProtocol.udp.value)
     try CError.makeAndThrow(fromReturnCode: fd)
 
-    var sock = try Socket(fd: fd)
+    let sock = try Socket(fd: fd)
     defer { try? sock.close() }
 
     #if os(Linux)
@@ -36,7 +36,7 @@ class SocketTests: XCTestCase {
   }
 
   func testSetNonBlocking() throws {
-    var sock = try Socket()
+    let sock = try Socket()
     defer { try? sock.close() }
 
     // non-blocking works
@@ -61,7 +61,7 @@ class SocketTests: XCTestCase {
   }
 
   func testSetLinger() throws {
-    var sock = try Socket()
+    let sock = try Socket()
     defer { try? sock.close() }
 
     try sock.setLinger(timeout: 0)
@@ -75,7 +75,7 @@ class SocketTests: XCTestCase {
   }
 
   func testSetTimeouts() throws {
-    var sock = try Socket()
+    let sock = try Socket()
     defer { try? sock.close() }
 
     let cases: [TimeInterval] = [
@@ -106,7 +106,7 @@ class SocketTests: XCTestCase {
   }
 
   func testConnectToNonMatchingAddress() throws {
-    var sock = try Socket(family: .inet)
+    let sock = try Socket(family: .inet)
     defer { try? sock.close() }
 
     let addr = Address(path: "/tmp/test.sock")!
@@ -132,8 +132,8 @@ class SocketTests: XCTestCase {
     var data2 = [UInt8](repeating: 0, count: 10)
     var addrRecv: Address = addr2
     do {
-      var sock1 = try Socket(family: .unix, type: .datagram)
-      var sock2 = try Socket(family: .unix, type: .datagram)
+      let sock1 = try Socket(family: .unix, type: .datagram)
+      let sock2 = try Socket(family: .unix, type: .datagram)
       defer {
         try? sock1.close()
         try? sock2.close()
@@ -192,7 +192,7 @@ class SocketTests: XCTestCase {
     }
 
     do {
-      var sock = try Socket(family: .inet)
+      let sock = try Socket(family: .inet)
       defer { try? sock.close() }
       print(">>> call connect")
       try sock.connect(to: "localhost:8896")
@@ -240,7 +240,7 @@ class SocketTests: XCTestCase {
     }
 
     do {
-      var sock = try Socket(family: .inet)
+      let sock = try Socket(family: .inet)
       defer { try? sock.close() }
 
       try sock.connect(to: "localhost:8897")
@@ -301,7 +301,7 @@ class SocketTests: XCTestCase {
     }
 
     do {
-      var sock = try Socket(family: .inet)
+      let sock = try Socket(family: .inet)
       defer { try? sock.close() }
 
       try sock.connect(to: "localhost:8899")
@@ -344,7 +344,7 @@ class SocketTests: XCTestCase {
     }
 
     do {
-      var sock = try Socket(family: .inet6)
+      let sock = try Socket(family: .inet6)
       defer { try? sock.close() }
 
       try sock.connect(to: "localhost:8898")
@@ -376,7 +376,7 @@ class SocketTests: XCTestCase {
     }
 
     do {
-      var sock = try Socket(family: .unix)
+      let sock = try Socket(family: .unix)
       defer { try? sock.close() }
 
       try sock.connect(toPath: "/tmp/test.sock")
