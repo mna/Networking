@@ -49,47 +49,6 @@ class KqueueTests: XCTestCase {
     XCTAssertEqual(ev0.identifier, Int(fd))
   }
 
-  func testKqueueFileRead() throws {
-    let (fd, fn) = try tempFile("filetest.txt")
-    defer { fn() }
-
-    let expect = expectation(description: "kqueue notifies file read")
-    expect.expectedFulfillmentCount = 2
-
-    DispatchQueue.global(qos: .background).async {
-      do {
-        // watch for read availability on fd
-        var events = Array(repeating: Kevent(), count: 1)
-        let ev = Kevent(fd: fd)
-        let kq = try Kqueue()
-        defer { try? kq.close() }
-
-        let ret = try kq.poll(with: [ev], into: &events, timeout: 2)
-        XCTAssertEqual(1, ret)
-        let ev0 = events[0]
-        XCTAssertEqual(ev0.identifier, Int(fd))
-        XCTAssertEqual(ev0.data, 3)
-
-        expect.fulfill()
-      } catch {
-        XCTFail("kqueue failed with \(error)")
-      }
-    }
-
-    DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .milliseconds(100)) {
-      let b: [UInt8] = [1, 2, 3]
-      do {
-        try CError.makeAndThrow(fromReturnCode: Int32(write(fd, b, b.count)))
-        try CError.makeAndThrow(fromReturnCode: fsync(fd))
-        expect.fulfill()
-      } catch {
-        XCTFail("write or fsync failed: \(error)")
-      }
-    }
-
-    waitForExpectations(timeout: 10)
-  }
-
   func testKqueueTimeout() throws {
     let (fd, fn) = try tempFile("filetest.txt")
     defer { fn() }
