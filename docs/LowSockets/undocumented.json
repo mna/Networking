@@ -156,56 +156,56 @@
     },
     {
       "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Socket.swift",
-      "line": 365,
+      "line": 334,
       "symbol": "Socket.SendFlags.oob",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Socket.swift",
-      "line": 366,
+      "line": 335,
       "symbol": "Socket.SendFlags.dontRoute",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Socket.swift",
-      "line": 380,
+      "line": 349,
       "symbol": "Socket.ReceiveFlags.oob",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Socket.swift",
-      "line": 381,
+      "line": 350,
       "symbol": "Socket.ReceiveFlags.peek",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Socket.swift",
-      "line": 382,
+      "line": 351,
       "symbol": "Socket.ReceiveFlags.waitAll",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Socket.swift",
-      "line": 391,
+      "line": 360,
       "symbol": "Socket.ShutdownMode.read",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Socket.swift",
-      "line": 392,
+      "line": 361,
       "symbol": "Socket.ShutdownMode.write",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/m/src/github.com/mna/Networking/Sources/LowSockets/Socket.swift",
-      "line": 393,
+      "line": 362,
       "symbol": "Socket.ShutdownMode.readWrite",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"

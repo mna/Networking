@@ -13,7 +13,7 @@
     <a title="OS  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">OS Docs</a> (49% documented)</p>
+        <p><a href="index.html">OS Docs</a> (56% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -27,36 +27,13 @@
       <nav class="sidebar">
         <ul class="nav-groups">
           <li class="nav-group-name">
-            <a href="Classes.html">Classes</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="Classes/Event.html">Event</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/Event/Flags.html">– Flags</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/SignalFileDescriptor.html">SignalFileDescriptor</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/Timer.html">Timer</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/Timer/Clock.html">– Clock</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/Timer/Flags.html">– Flags</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/Timer/SetFlags.html">– SetFlags</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
             <a href="Enums.html">Enums</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Enums/Signal.html">Signal</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/UserData.html">UserData</a>
               </li>
             </ul>
           </li>
@@ -81,7 +58,10 @@
             <a href="Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Protocols/FileDescriptorRepresentable.html">FileDescriptorRepresentable</a>
+                <a href="Protocols/Closable.html">Closable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/FileDescriptor.html">FileDescriptor</a>
               </li>
             </ul>
           </li>
@@ -92,13 +72,34 @@
                 <a href="Structs/CError.html">CError</a>
               </li>
               <li class="nav-group-task">
+                <a href="Structs/Event.html">Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Event/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Structs/MessageError.html">MessageError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/SignalFileDescriptor.html">SignalFileDescriptor</a>
               </li>
               <li class="nav-group-task">
                 <a href="Structs/SignalSet.html">SignalSet</a>
               </li>
               <li class="nav-group-task">
                 <a href="Structs/SignalSet/BlockMode.html">– BlockMode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Timer.html">Timer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Timer/Clock.html">– Clock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Timer/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Timer/SetFlags.html">– SetFlags</a>
               </li>
             </ul>
           </li>
@@ -136,7 +137,7 @@
 <li>Host and service resolution (<code>getaddrinfo</code> exposed as <code>Address.resolve</code>)</li>
 <li>Client and server support (<code>connect</code>, <code>bind</code>, <code>listen</code>, <code>accept</code>)</li>
 <li>Blocking and non-blocking support</li>
-<li>Polling mechanisms (<code>epoll</code> on Linux, <code>kqueue</code> on Darwin)</li>
+<li>Efficient polling mechanisms (<code>epoll</code> on Linux, <code>kqueue</code> on Darwin)</li>
 <li><code>signalfd</code>, <code>timerfd</code> and <code>eventfd</code> support on Linux for use with <code>epoll</code> (natively supported by <code>kqueue</code> on Darwin)</li>
 </ul>
 
@@ -156,6 +157,21 @@
 <li>No API sugar - this belongs in higher-level packages built on top of Networking;</li>
 <li>Every idiomatic use of the underlying C API should be supported (if it can be done in C and is not a hack, it should be doable);</li>
 <li>As efficient as possible, as little allocations as possible - this is a low-level building block;</li>
+</ul>
+
+<p>An early implementation of this package used classes for file descriptor-based types (e.g. <code>LowSockets.Socket</code>, <code>OS.Timer</code>, etc.). The rationale was that file descriptors need to be closed, and classes have a <code>deinit</code> that can ensure the resource is released with the last reference to the class.</p>
+
+<p>However, this had a number of downsides that, in retrospect, outweigh the benefits:</p>
+
+<ul>
+<li>The server needs to hold on to each connected sockets. While this may make sense in a traditional multi-threaded, blocking sockets server, it is an inconvenience in event-loop based servers, where the connected sockets&rsquo; FD is simply added to the polling queue.</li>
+<li>The same applies to signals, timers and events on Linux where a FD must be created so that it can be added to <code>Epoll</code>. The server unnecessarily needs to hold on to each class.</li>
+<li>When the close-on-deinit is required, it is easy to wrap the struct in a class and use that class&rsquo; instance instead.</li>
+<li>Uses more memory, more allocations than the value-based structs.</li>
+<li>Most FD wrappers only have a single property, the FD, so it ended up creating classes for what is essentially a very space-efficient integer (<code>LowSockets.Socket</code> is slightly bigger, but still small enough to pass around by value).</li>
+<li>The benefit of automatically closing the resource (helping with forgetting to call close for a given FD) was arguably lost by the downside of accidentally closing the resource by forgetting to hold on to the class.</li>
+<li>Most server uses of a socket will be notified automatically by kqueue/epoll when the client end closes the socket, triggering the close of the server side.</li>
+<li>For clients, and in general with Swift, it is very easy to defer the call to close immediately after having acquired the FD, if this is the intended flow.</li>
 </ul>
 <h2 id='installation' class='heading'>Installation</h2>
 
@@ -183,7 +199,7 @@ $ make test-cov
 <p>Full API documentation is available <a href="http://mna.github.io/Networking">here</a>. Note that in order to generate the jazzy documentation, the following requirements must be met:</p>
 
 <ol>
-<li>Install a Swift version that includes SourceKit (on Ubuntu, the official version 3.1.1 on the swift.org does not include it, but 4.0 does).</li>
+<li>Install a Swift version that includes SourceKit (on Ubuntu, the official version 3.1.1 on swift.org does not include it, but 4.0 does).</li>
 <li>Install SourceKitten (<a href="https://github.com/jpsim/SourceKitten">https://github.com/jpsim/SourceKitten</a>).</li>
 <li>On Ubuntu, SourceKitten must be able to find <code>libsourcekitdInProc.so</code>, which means setting the <code>LINUX_SOURCEKIT_LIB_PATH</code> environment variable to its directory.</li>
 <li>On Ubuntu, <code>libsourcekitdInProc.so</code> must be able to find <code>libBlocksRuntime.so.0</code>, which may not be installed. It can be installed with <code>apt install libblocksruntime0</code>.</li>
@@ -196,7 +212,7 @@ $ make test-cov
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2017-08-27)</p>
+          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2017-08-30)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

@@ -13,7 +13,7 @@
     <a title="Protocols  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">OS Docs</a> (49% documented)</p>
+        <p><a href="index.html">OS Docs</a> (56% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -27,36 +27,13 @@
       <nav class="sidebar">
         <ul class="nav-groups">
           <li class="nav-group-name">
-            <a href="Classes.html">Classes</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="Classes/Event.html">Event</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/Event/Flags.html">– Flags</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/SignalFileDescriptor.html">SignalFileDescriptor</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/Timer.html">Timer</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/Timer/Clock.html">– Clock</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/Timer/Flags.html">– Flags</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/Timer/SetFlags.html">– SetFlags</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
             <a href="Enums.html">Enums</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Enums/Signal.html">Signal</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/UserData.html">UserData</a>
               </li>
             </ul>
           </li>
@@ -81,7 +58,10 @@
             <a href="Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Protocols/FileDescriptorRepresentable.html">FileDescriptorRepresentable</a>
+                <a href="Protocols/Closable.html">Closable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/FileDescriptor.html">FileDescriptor</a>
               </li>
             </ul>
           </li>
@@ -92,13 +72,34 @@
                 <a href="Structs/CError.html">CError</a>
               </li>
               <li class="nav-group-task">
+                <a href="Structs/Event.html">Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Event/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Structs/MessageError.html">MessageError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/SignalFileDescriptor.html">SignalFileDescriptor</a>
               </li>
               <li class="nav-group-task">
                 <a href="Structs/SignalSet.html">SignalSet</a>
               </li>
               <li class="nav-group-task">
                 <a href="Structs/SignalSet/BlockMode.html">– BlockMode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Timer.html">Timer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Timer/Clock.html">– Clock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Timer/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Timer/SetFlags.html">– SetFlags</a>
               </li>
             </ul>
           </li>
@@ -114,19 +115,19 @@
           <section class="section task-group-section">
             <div class="task-group">
               <div class="task-name-container">
-                <a name="/FileDescriptorRepresentable"></a>
-                <a name="//apple_ref/swift/Section/FileDescriptorRepresentable" class="dashAnchor"></a>
-                <a href="#/FileDescriptorRepresentable">
-                  <h3 class="section-name">FileDescriptorRepresentable</h3>
+                <a name="/Closable"></a>
+                <a name="//apple_ref/swift/Section/Closable" class="dashAnchor"></a>
+                <a href="#/Closable">
+                  <h3 class="section-name">Closable</h3>
                 </a>
               </div>
               <ul>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:P2OS27FileDescriptorRepresentable"></a>
-                    <a name="//apple_ref/swift/Protocol/FileDescriptorRepresentable" class="dashAnchor"></a>
-                    <a class="token" href="#/s:P2OS27FileDescriptorRepresentable">FileDescriptorRepresentable</a>
+                    <a name="/s:P2OS8Closable"></a>
+                    <a name="//apple_ref/swift/Protocol/Closable" class="dashAnchor"></a>
+                    <a class="token" href="#/s:P2OS8Closable">Closable</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -134,15 +135,55 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Any resource that can be represented with a file descriptor.</p>
+                        <p>Any type that can (and typically must) be closed.</p>
 
-                        <a href="Protocols/FileDescriptorRepresentable.html" class="slightly-smaller">See more</a>
+                        <a href="Protocols/Closable.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">FileDescriptorRepresentable</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">Closable</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/FileDescriptor"></a>
+                <a name="//apple_ref/swift/Section/FileDescriptor" class="dashAnchor"></a>
+                <a href="#/FileDescriptor">
+                  <h3 class="section-name">FileDescriptor</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:P2OS14FileDescriptor"></a>
+                    <a name="//apple_ref/swift/Protocol/FileDescriptor" class="dashAnchor"></a>
+                    <a class="token" href="#/s:P2OS14FileDescriptor">FileDescriptor</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Any resource that can be represented with a file descriptor. A file
+descriptor is also Closable.</p>
+
+                        <a href="Protocols/FileDescriptor.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">FileDescriptor</span><span class="p">:</span> <span class="kt"><a href="Protocols/Closable.html">Closable</a></span></code></pre>
 
                         </div>
                       </div>
@@ -154,7 +195,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2017-08-27)</p>
+          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2017-08-30)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

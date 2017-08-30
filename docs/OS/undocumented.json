@@ -2,8 +2,15 @@
   "warnings": [
     {
       "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Protocols.swift",
-      "line": 5,
-      "symbol": "FileDescriptorRepresentable.fileDescriptor",
+      "line": 7,
+      "symbol": "Closable.close()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Protocols.swift",
+      "line": 15,
+      "symbol": "FileDescriptor.fileDescriptor",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },

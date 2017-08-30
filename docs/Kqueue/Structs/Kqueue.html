@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Kqueue Struct Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Struct/Kqueue" class="dashAnchor"></a>
+    <a title="Kqueue Struct Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Kqueue Docs</a> (36% documented)</p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">Kqueue Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        Kqueue Struct Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/Kevent.html">Kevent</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Kevent/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Kevent/FilterFlags.html">– FilterFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Kevent/Filter.html">– Filter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Kqueue.html">Kqueue</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Kqueue</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Kqueue</span><span class="p">:</span> <span class="kt">FileDescriptor</span></code></pre>
+
+                </div>
+              </div>
+            <p>Darwin only. Kqueue implements the Darwin kqueue mechanism. See kqueue(2).</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Properties"></a>
+                <a name="//apple_ref/swift/Section/Properties" class="dashAnchor"></a>
+                <a href="#/Properties">
+                  <h3 class="section-name">Properties</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vV6Kqueue6Kqueue14fileDescriptorVs5Int32"></a>
+                    <a name="//apple_ref/swift/Property/fileDescriptor" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vV6Kqueue6Kqueue14fileDescriptorVs5Int32">fileDescriptor</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The file descriptor of this kqueue instance.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">fileDescriptor</span><span class="p">:</span> <span class="kt">Int32</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Constructors"></a>
+                <a name="//apple_ref/swift/Section/Constructors" class="dashAnchor"></a>
+                <a href="#/Constructors">
+                  <h3 class="section-name">Constructors</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FV6Kqueue6KqueuecFzT_S0_"></a>
+                    <a name="//apple_ref/swift/Method/init()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FV6Kqueue6KqueuecFzT_S0_">init()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates a kqueue instance.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">()</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Methods"></a>
+                <a name="//apple_ref/swift/Section/Methods" class="dashAnchor"></a>
+                <a href="#/Methods">
+                  <h3 class="section-name">Methods</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FV6Kqueue6Kqueue4pollFzT4withGSaVS_6Kevent_4intoRGSaS1__7timeoutGSqSd__Si"></a>
+                    <a name="//apple_ref/swift/Method/poll(with:into:timeout:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FV6Kqueue6Kqueue4pollFzT4withGSaVS_6Kevent_4intoRGSaS1__7timeoutGSqSd__Si">poll(with:into:timeout:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Polls for and returns available events in <code>events</code>. Events in <code>changes</code> are first added,
+updated or removed as requested by the event&rsquo;s flags. The call blocks if no events
+are immediately available. If timeout is set, unblocks after this delay if no events are
+available. Returns the number of events available. No more than <code>events.count</code> events
+will be returned.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">poll</span><span class="p">(</span><span class="n">with</span> <span class="nv">changes</span><span class="p">:</span> <span class="p">[</span><span class="kt"><a href="../Structs/Kevent.html">Kevent</a></span><span class="p">],</span> <span class="n">into</span> <span class="nv">events</span><span class="p">:</span> <span class="k">inout</span> <span class="p">[</span><span class="kt"><a href="../Structs/Kevent.html">Kevent</a></span><span class="p">],</span> <span class="nv">timeout</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FV6Kqueue6Kqueue5closeFzT_T_"></a>
+                    <a name="//apple_ref/swift/Method/close()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FV6Kqueue6Kqueue5closeFzT_T_">close()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Releases the resources for this file descriptor.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">close</span><span class="p">()</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2017-08-30)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

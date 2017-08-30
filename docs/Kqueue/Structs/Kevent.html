@@ -14,7 +14,7 @@
     <a title="Kevent Struct Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">Kqueue Docs</a> (35% documented)</p>
+        <p><a href="../index.html">Kqueue Docs</a> (36% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -27,14 +27,6 @@
     <div class="content-wrapper">
       <nav class="sidebar">
         <ul class="nav-groups">
-          <li class="nav-group-name">
-            <a href="../Classes.html">Classes</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="../Classes/Kqueue.html">Kqueue</a>
-              </li>
-            </ul>
-          </li>
           <li class="nav-group-name">
             <a href="../Structs.html">Structs</a>
             <ul class="nav-group-tasks">
@@ -49,6 +41,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/Kevent/Filter.html">– Filter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Kqueue.html">Kqueue</a>
               </li>
             </ul>
           </li>
@@ -200,14 +195,41 @@ can be other things (e.g. signal number).</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>User data associated with the event.</p>
+                        <p>Filter-specific data associated with the event.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Int</span> <span class="c1">// TODO: use the same approach as Epoll?</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:vV6Kqueue6Kevent8userDataO2OS8UserData"></a>
+                    <a name="//apple_ref/swift/Property/userData" class="dashAnchor"></a>
+                    <a class="token" href="#/s:vV6Kqueue6Kevent8userDataO2OS8UserData">userData</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>User-data associated with the event.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">userData</span><span class="p">:</span> <span class="kt">UserData</span></code></pre>
 
                         </div>
                       </div>
@@ -257,9 +279,9 @@ to pass to Kqueue.poll.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FV6Kqueue6KeventcFT2fdP2OS27FileDescriptorRepresentable_6filterOS0_6Filter5flagsVS0_5Flags11filterFlagsVS0_11FilterFlags4dataSi_S0_"></a>
-                    <a name="//apple_ref/swift/Method/init(fd:filter:flags:filterFlags:data:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FV6Kqueue6KeventcFT2fdP2OS27FileDescriptorRepresentable_6filterOS0_6Filter5flagsVS0_5Flags11filterFlagsVS0_11FilterFlags4dataSi_S0_">init(fd:filter:flags:filterFlags:data:)</a>
+                    <a name="/s:FV6Kqueue6KeventcFT2fdP2OS14FileDescriptor_6filterOS0_6Filter5flagsVS0_5Flags11filterFlagsVS0_11FilterFlags4dataSi8userDataOS1_8UserData_S0_"></a>
+                    <a name="//apple_ref/swift/Method/init(fd:filter:flags:filterFlags:data:userData:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FV6Kqueue6KeventcFT2fdP2OS14FileDescriptor_6filterOS0_6Filter5flagsVS0_5Flags11filterFlagsVS0_11FilterFlags4dataSi8userDataOS1_8UserData_S0_">init(fd:filter:flags:filterFlags:data:userData:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -274,7 +296,7 @@ to pass to Kqueue.poll.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">fd</span><span class="p">:</span> <span class="kt">FileDescriptorRepresentable</span><span class="p">,</span> <span class="nv">filter</span><span class="p">:</span> <span class="kt"><a href="../Structs/Kevent/Filter.html">Filter</a></span> <span class="o">=</span> <span class="o">.</span><span class="n">read</span><span class="p">,</span> <span class="nv">flags</span><span class="p">:</span> <span class="kt"><a href="../Structs/Kevent/Flags.html">Flags</a></span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="n">add</span><span class="p">],</span> <span class="nv">filterFlags</span><span class="p">:</span> <span class="kt"><a href="../Structs/Kevent/FilterFlags.html">FilterFlags</a></span> <span class="o">=</span> <span class="p">[],</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">fd</span><span class="p">:</span> <span class="kt">FileDescriptor</span><span class="p">,</span> <span class="nv">filter</span><span class="p">:</span> <span class="kt"><a href="../Structs/Kevent/Filter.html">Filter</a></span> <span class="o">=</span> <span class="o">.</span><span class="n">read</span><span class="p">,</span> <span class="nv">flags</span><span class="p">:</span> <span class="kt"><a href="../Structs/Kevent/Flags.html">Flags</a></span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="n">add</span><span class="p">],</span> <span class="nv">filterFlags</span><span class="p">:</span> <span class="kt"><a href="../Structs/Kevent/FilterFlags.html">FilterFlags</a></span> <span class="o">=</span> <span class="p">[],</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">userData</span><span class="p">:</span> <span class="kt">UserData</span> <span class="o">=</span> <span class="o">.</span><span class="nf">u64</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span></code></pre>
 
                         </div>
                       </div>
@@ -284,9 +306,9 @@ to pass to Kqueue.poll.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FV6Kqueue6KeventcFT10identifierSi6filterOS0_6Filter5flagsVS0_5Flags11filterFlagsVS0_11FilterFlags4dataSi_S0_"></a>
-                    <a name="//apple_ref/swift/Method/init(identifier:filter:flags:filterFlags:data:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FV6Kqueue6KeventcFT10identifierSi6filterOS0_6Filter5flagsVS0_5Flags11filterFlagsVS0_11FilterFlags4dataSi_S0_">init(identifier:filter:flags:filterFlags:data:)</a>
+                    <a name="/s:FV6Kqueue6KeventcFT10identifierSi6filterOS0_6Filter5flagsVS0_5Flags11filterFlagsVS0_11FilterFlags4dataSi8userDataO2OS8UserData_S0_"></a>
+                    <a name="//apple_ref/swift/Method/init(identifier:filter:flags:filterFlags:data:userData:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FV6Kqueue6KeventcFT10identifierSi6filterOS0_6Filter5flagsVS0_5Flags11filterFlagsVS0_11FilterFlags4dataSi8userDataO2OS8UserData_S0_">init(identifier:filter:flags:filterFlags:data:userData:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -301,7 +323,7 @@ to pass to Kqueue.poll.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">identifier</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">filter</span><span class="p">:</span> <span class="kt"><a href="../Structs/Kevent/Filter.html">Filter</a></span> <span class="o">=</span> <span class="o">.</span><span class="n">read</span><span class="p">,</span> <span class="nv">flags</span><span class="p">:</span> <span class="kt"><a href="../Structs/Kevent/Flags.html">Flags</a></span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="n">add</span><span class="p">],</span> <span class="nv">filterFlags</span><span class="p">:</span> <span class="kt"><a href="../Structs/Kevent/FilterFlags.html">FilterFlags</a></span> <span class="o">=</span> <span class="p">[],</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">identifier</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">filter</span><span class="p">:</span> <span class="kt"><a href="../Structs/Kevent/Filter.html">Filter</a></span> <span class="o">=</span> <span class="o">.</span><span class="n">read</span><span class="p">,</span> <span class="nv">flags</span><span class="p">:</span> <span class="kt"><a href="../Structs/Kevent/Flags.html">Flags</a></span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="n">add</span><span class="p">],</span> <span class="nv">filterFlags</span><span class="p">:</span> <span class="kt"><a href="../Structs/Kevent/FilterFlags.html">FilterFlags</a></span> <span class="o">=</span> <span class="p">[],</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">userData</span><span class="p">:</span> <span class="kt">UserData</span> <span class="o">=</span> <span class="o">.</span><span class="nf">u64</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span></code></pre>
 
                         </div>
                       </div>
@@ -311,9 +333,9 @@ to pass to Kqueue.poll.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FV6Kqueue6KeventcFT6signalO2OS6Signal5flagsVS0_5Flags_S0_"></a>
-                    <a name="//apple_ref/swift/Method/init(signal:flags:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FV6Kqueue6KeventcFT6signalO2OS6Signal5flagsVS0_5Flags_S0_">init(signal:flags:)</a>
+                    <a name="/s:FV6Kqueue6KeventcFT6signalO2OS6Signal5flagsVS0_5Flags8userDataOS1_8UserData_S0_"></a>
+                    <a name="//apple_ref/swift/Method/init(signal:flags:userData:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FV6Kqueue6KeventcFT6signalO2OS6Signal5flagsVS0_5Flags8userDataOS1_8UserData_S0_">init(signal:flags:userData:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -328,7 +350,7 @@ to pass to Kqueue.poll.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">signal</span><span class="p">:</span> <span class="kt">Signal</span><span class="p">,</span> <span class="nv">flags</span><span class="p">:</span> <span class="kt"><a href="../Structs/Kevent/Flags.html">Flags</a></span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="n">add</span><span class="p">])</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">signal</span><span class="p">:</span> <span class="kt">Signal</span><span class="p">,</span> <span class="nv">flags</span><span class="p">:</span> <span class="kt"><a href="../Structs/Kevent/Flags.html">Flags</a></span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="n">add</span><span class="p">],</span> <span class="nv">userData</span><span class="p">:</span> <span class="kt">UserData</span> <span class="o">=</span> <span class="o">.</span><span class="nf">u64</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span></code></pre>
 
                         </div>
                       </div>
@@ -436,7 +458,7 @@ to pass to Kqueue.poll.</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2017-08-27)</p>
+          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2017-08-30)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

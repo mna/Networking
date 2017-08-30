@@ -13,7 +13,7 @@
     <a title="Structs  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">OS Docs</a> (49% documented)</p>
+        <p><a href="index.html">OS Docs</a> (56% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -27,36 +27,13 @@
       <nav class="sidebar">
         <ul class="nav-groups">
           <li class="nav-group-name">
-            <a href="Classes.html">Classes</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="Classes/Event.html">Event</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/Event/Flags.html">– Flags</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/SignalFileDescriptor.html">SignalFileDescriptor</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/Timer.html">Timer</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/Timer/Clock.html">– Clock</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/Timer/Flags.html">– Flags</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/Timer/SetFlags.html">– SetFlags</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
             <a href="Enums.html">Enums</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Enums/Signal.html">Signal</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/UserData.html">UserData</a>
               </li>
             </ul>
           </li>
@@ -81,7 +58,10 @@
             <a href="Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Protocols/FileDescriptorRepresentable.html">FileDescriptorRepresentable</a>
+                <a href="Protocols/Closable.html">Closable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/FileDescriptor.html">FileDescriptor</a>
               </li>
             </ul>
           </li>
@@ -92,13 +72,34 @@
                 <a href="Structs/CError.html">CError</a>
               </li>
               <li class="nav-group-task">
+                <a href="Structs/Event.html">Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Event/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Structs/MessageError.html">MessageError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/SignalFileDescriptor.html">SignalFileDescriptor</a>
               </li>
               <li class="nav-group-task">
                 <a href="Structs/SignalSet.html">SignalSet</a>
               </li>
               <li class="nav-group-task">
                 <a href="Structs/SignalSet/BlockMode.html">– BlockMode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Timer.html">Timer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Timer/Clock.html">– Clock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Timer/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Timer/SetFlags.html">– SetFlags</a>
               </li>
             </ul>
           </li>
@@ -155,6 +156,38 @@ or directly from an <code>errno</code>.</p>
             </div>
             <div class="task-group">
               <div class="task-name-container">
+                <a name="/Event"></a>
+                <a name="//apple_ref/swift/Section/Event" class="dashAnchor"></a>
+                <a href="#/Event">
+                  <h3 class="section-name">Event</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/Event" class="dashAnchor"></a>
+                    <a class="token" href="#/">Event</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Event represents an event file descriptor as described in
+eventfd(2).</p>
+
+                        <a href="Structs/Event.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
                 <a name="/MessageError"></a>
                 <a name="//apple_ref/swift/Section/MessageError" class="dashAnchor"></a>
                 <a href="#/MessageError">
@@ -187,6 +220,38 @@ contextual key-value pairs.</p>
                           <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">MessageError</span><span class="p">:</span> <span class="kt">Swift</span><span class="o">.</span><span class="kt">Error</span></code></pre>
 
                         </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/SignalFileDescriptor"></a>
+                <a name="//apple_ref/swift/Section/SignalFileDescriptor" class="dashAnchor"></a>
+                <a href="#/SignalFileDescriptor">
+                  <h3 class="section-name">SignalFileDescriptor</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/SignalFileDescriptor" class="dashAnchor"></a>
+                    <a class="token" href="#/">SignalFileDescriptor</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>SignalFileDescriptor is a file descriptor for a signal(s) as described in
+signalfd(2).</p>
+
+                        <a href="Structs/SignalFileDescriptor.html" class="slightly-smaller">See more</a>
                       </div>
                     </section>
                   </div>
@@ -232,10 +297,42 @@ contextual key-value pairs.</p>
                 </li>
               </ul>
             </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Timer"></a>
+                <a name="//apple_ref/swift/Section/Timer" class="dashAnchor"></a>
+                <a href="#/Timer">
+                  <h3 class="section-name">Timer</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Struct/Timer" class="dashAnchor"></a>
+                    <a class="token" href="#/">Timer</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Timer is a file descriptor associated with a timer. See
+timerfd_create(2) for details.</p>
+
+                        <a href="Structs/Timer.html" class="slightly-smaller">See more</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2017-08-27)</p>
+          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2017-08-30)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
