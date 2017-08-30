@@ -26,7 +26,7 @@ Note that this project follows [semver 2.0][semver], so for the major version `0
 * Host and service resolution (`getaddrinfo` exposed as `Address.resolve`)
 * Client and server support (`connect`, `bind`, `listen`, `accept`)
 * Blocking and non-blocking support
-* Polling mechanisms (`epoll` on Linux, `kqueue` on Darwin)
+* Efficient polling mechanisms (`epoll` on Linux, `kqueue` on Darwin)
 * `signalfd`, `timerfd` and `eventfd` support on Linux for use with `epoll` (natively supported by `kqueue` on Darwin)
 
 The package exports the following modules:
@@ -43,6 +43,19 @@ The package exports the following modules:
 * No API sugar - this belongs in higher-level packages built on top of Networking;
 * Every idiomatic use of the underlying C API should be supported (if it can be done in C and is not a hack, it should be doable);
 * As efficient as possible, as little allocations as possible - this is a low-level building block;
+
+An early implementation of this package used classes for file descriptor-based types (e.g. `LowSockets.Socket`, `OS.Timer`, etc.). The rationale was that file descriptors need to be closed, and classes have a `deinit` that can ensure the resource is released with the last reference to the class.
+
+However, this had a number of downsides that, in retrospect, outweigh the benefits:
+
+* The server needs to hold on to each connected sockets. While this may make sense in a traditional multi-threaded, blocking sockets server, it is an inconvenience in event-loop based servers, where the connected sockets' FD is simply added to the polling queue.
+* The same applies to signals, timers and events on Linux where a FD must be created so that it can be added to `Epoll`. The server unnecessarily needs to hold on to each class.
+* When the close-on-deinit is required, it is easy to wrap the struct in a class and use that class' instance instead.
+* Uses more memory, more allocations than the value-based structs.
+* Most FD wrappers only have a single property, the FD, so it ended up creating classes for what is essentially a very space-efficient integer (`LowSockets.Socket` is slightly bigger, but still small enough to pass around by value).
+* The benefit of automatically closing the resource (helping with forgetting to call close for a given FD) was arguably lost by the downside of accidentally closing the resource by forgetting to hold on to the class.
+* Most server uses of a socket will be notified automatically by kqueue/epoll when the client end closes the socket, triggering the close of the server side.
+* For clients, and in general with Swift, it is very easy to defer the call to close immediately after having acquired the FD, if this is the intended flow.
 
 ## Installation
 

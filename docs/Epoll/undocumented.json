@@ -1,0 +1,278 @@
+{
+  "warnings": [
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Data.swift",
+      "line": null,
+      "symbol": "Data",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Data.swift",
+      "line": 3,
+      "symbol": "Data",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Data.swift",
+      "line": 4,
+      "symbol": "Data.fd",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Data.swift",
+      "line": 5,
+      "symbol": "Data.u32",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Data.swift",
+      "line": 6,
+      "symbol": "Data.u64",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Data.swift",
+      "line": 7,
+      "symbol": "Data.ptr",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Data.swift",
+      "line": 9,
+      "symbol": "Data.init(asU32:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Data.swift",
+      "line": 16,
+      "symbol": "Data.init(asFD:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Data.swift",
+      "line": 23,
+      "symbol": "Data.init(asPtr:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Epoll.swift",
+      "line": null,
+      "symbol": "Epoll",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Epoll.swift",
+      "line": 10,
+      "symbol": "Epoll",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Epoll.swift",
+      "line": 14,
+      "symbol": "Epoll.fileDescriptor",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Epoll.swift",
+      "line": 18,
+      "symbol": "Epoll.init(flags:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Epoll.swift",
+      "line": 24,
+      "symbol": "Epoll.deinit",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Epoll.swift",
+      "line": 30,
+      "symbol": "Epoll.add(fd:event:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Epoll.swift",
+      "line": 34,
+      "symbol": "Epoll.update(fd:event:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Epoll.swift",
+      "line": 38,
+      "symbol": "Epoll.remove(fd:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Epoll.swift",
+      "line": 53,
+      "symbol": "Epoll.poll(into:timeout:blockedSignals:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Epoll.swift",
+      "line": 76,
+      "symbol": "Epoll.close()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Epoll.swift",
+      "line": 85,
+      "symbol": "Epoll.Flags",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/Epoll.swift",
+      "line": 92,
+      "symbol": "Epoll.Flags.cloExec",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/PollEvent.swift",
+      "line": null,
+      "symbol": "PollEvent",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/PollEvent.swift",
+      "line": 5,
+      "symbol": "PollEvent",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/PollEvent.swift",
+      "line": 6,
+      "symbol": "PollEvent.types",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/PollEvent.swift",
+      "line": 7,
+      "symbol": "PollEvent.data",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/PollEvent.swift",
+      "line": 9,
+      "symbol": "PollEvent.init(_:data:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/PollEvent.swift",
+      "line": 14,
+      "symbol": "PollEvent.init(epollEvent:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/PollEvent.swift",
+      "line": 19,
+      "symbol": "PollEvent.toCStruct()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/PollEvent.swift",
+      "line": 41,
+      "symbol": "PollEvent.Types",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/PollEvent.swift",
+      "line": 48,
+      "symbol": "PollEvent.Types.in",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/PollEvent.swift",
+      "line": 49,
+      "symbol": "PollEvent.Types.out",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/PollEvent.swift",
+      "line": 50,
+      "symbol": "PollEvent.Types.rdhup",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/PollEvent.swift",
+      "line": 51,
+      "symbol": "PollEvent.Types.pri",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/PollEvent.swift",
+      "line": 52,
+      "symbol": "PollEvent.Types.err",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/PollEvent.swift",
+      "line": 53,
+      "symbol": "PollEvent.Types.hup",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/PollEvent.swift",
+      "line": 54,
+      "symbol": "PollEvent.Types.et",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/PollEvent.swift",
+      "line": 55,
+      "symbol": "PollEvent.Types.oneShot",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/PollEvent.swift",
+      "line": 57,
+      "symbol": "PollEvent.Types.wakeUp",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/Epoll/PollEvent.swift",
+      "line": 58,
+      "symbol": "PollEvent.Types.exclusive",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/home/m/src/bitbucket.org/___mna___/Networking"
+}

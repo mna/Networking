@@ -2,16 +2,11 @@
 
 import Libc
 
-// to avoid ambiguity between the Event methods and the system calls.
-private let cclose = close
-private let cread = read
-private let cwrite = write
-
 // MARK: - Event
 
 /// Event represents an event file descriptor as described in
 /// eventfd(2).
-public class Event: FileDescriptorRepresentable {
+public struct Event: FileDescriptor {
 
   // MARK: - Properties
 
@@ -28,10 +23,6 @@ public class Event: FileDescriptorRepresentable {
     self.fileDescriptor = ret
   }
 
-  deinit {
-    try? close()
-  }
-
   // MARK: - Methods
 
   /// Reads the current value from the file descriptor. See eventfd(2)
@@ -39,7 +30,7 @@ public class Event: FileDescriptorRepresentable {
   /// read from the event.
   public func read() throws -> UInt64 {
     var n: UInt64 = 0
-    let ret = cread(fileDescriptor, &n, MemoryLayout<UInt64>.size)
+    let ret = Libc.read(fileDescriptor, &n, MemoryLayout<UInt64>.size)
     try CError.makeAndThrow(fromReturnCode: Int32(ret))
 
     return n
@@ -49,13 +40,13 @@ public class Event: FileDescriptorRepresentable {
   /// eventfd(2) for details on the behaviour of this call.
   public func write(_ n: UInt64) throws {
     var n: UInt64 = n
-    let ret = cwrite(fileDescriptor, &n, MemoryLayout<UInt64>.size)
+    let ret = Libc.write(fileDescriptor, &n, MemoryLayout<UInt64>.size)
     try CError.makeAndThrow(fromReturnCode: Int32(ret))
   }
 
   /// Releases the resource associated with this file descriptor.
   public func close() throws {
-    let ret = cclose(fileDescriptor)
+    let ret = Libc.close(fileDescriptor)
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 }

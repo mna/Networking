@@ -46,7 +46,7 @@ public struct Kevent {
   }
 
   /// Creates a kqueue event for the provided file descriptor.
-  public init(fd: FileDescriptorRepresentable, filter: Filter = .read, flags: Flags = [.add], filterFlags: FilterFlags = [], data: Int = 0) {
+  public init(fd: FileDescriptor, filter: Filter = .read, flags: Flags = [.add], filterFlags: FilterFlags = [], data: Int = 0) {
     self.identifier = Int(fd.fileDescriptor)
     self.filter = filter
     self.flags = flags

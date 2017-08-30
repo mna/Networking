@@ -5,14 +5,11 @@
 import Libc
 import Foundation
 
-// to avoid ambiguity between the Timer methods and the system calls.
-private let cclose = close
-
 // MARK: - Timer
 
 /// Timer is a file descriptor associated with a timer. See
 /// timerfd_create(2) for details.
-public class Timer: FileDescriptorRepresentable {
+public struct Timer: FileDescriptor {
 
   // MARK: - Properties
 
@@ -27,10 +24,6 @@ public class Timer: FileDescriptorRepresentable {
     let ret = timerfd_create(clock.value, flags.rawValue)
     try CError.makeAndThrow(fromReturnCode: ret)
     self.fileDescriptor = ret
-  }
-
-  deinit {
-    try? close()
   }
 
   // MARK: - Methods
@@ -81,7 +74,7 @@ public class Timer: FileDescriptorRepresentable {
 
   /// Releases the resources for this file descriptor.
   public func close() throws {
-    let ret = cclose(fileDescriptor)
+    let ret = Libc.close(fileDescriptor)
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 }

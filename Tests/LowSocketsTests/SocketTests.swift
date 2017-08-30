@@ -8,6 +8,8 @@ import Dispatch
 class SocketTests: XCTestCase {
   func testDefaultSocket() throws {
     let sock = try Socket()
+    defer { try? sock.close() }
+
     XCTAssertEqual(sock.family, Family.inet)
     XCTAssertEqual(sock.type, SocketType.stream)
     XCTAssertEqual(sock.proto, SocketProtocol.tcp)
@@ -21,6 +23,8 @@ class SocketTests: XCTestCase {
     try CError.makeAndThrow(fromReturnCode: fd)
 
     let sock = try Socket(fd: fd)
+    defer { try? sock.close() }
+
     #if os(Linux)
       XCTAssertEqual(sock.family, Family.inet6)
     #else
@@ -33,6 +37,7 @@ class SocketTests: XCTestCase {
 
   func testSetNonBlocking() throws {
     let sock = try Socket()
+    defer { try? sock.close() }
 
     // non-blocking works
     try sock.setNonBlocking()
@@ -57,6 +62,8 @@ class SocketTests: XCTestCase {
 
   func testSetLinger() throws {
     let sock = try Socket()
+    defer { try? sock.close() }
+
     try sock.setLinger(timeout: 0)
     XCTAssertEqual(TimeInterval(0), try sock.getLinger())
     try sock.setLinger(timeout: TimeInterval(1.234))
@@ -69,6 +76,8 @@ class SocketTests: XCTestCase {
 
   func testSetTimeouts() throws {
     let sock = try Socket()
+    defer { try? sock.close() }
+
     let cases: [TimeInterval] = [
       0,
       1.234,
@@ -98,6 +107,8 @@ class SocketTests: XCTestCase {
 
   func testConnectToNonMatchingAddress() throws {
     let sock = try Socket(family: .inet)
+    defer { try? sock.close() }
+
     let addr = Address(path: "/tmp/test.sock")!
     do {
       try sock.connect(to: addr)
@@ -123,6 +134,11 @@ class SocketTests: XCTestCase {
     do {
       let sock1 = try Socket(family: .unix, type: .datagram)
       let sock2 = try Socket(family: .unix, type: .datagram)
+      defer {
+        try? sock1.close()
+        try? sock2.close()
+      }
+
       try sock1.bind(to: addr1)
       try sock2.bind(to: addr2)
 
@@ -177,6 +193,7 @@ class SocketTests: XCTestCase {
 
     do {
       let sock = try Socket(family: .inet)
+      defer { try? sock.close() }
       print(">>> call connect")
       try sock.connect(to: "localhost:8896")
       print(">>> call shutdown")
@@ -224,6 +241,8 @@ class SocketTests: XCTestCase {
 
     do {
       let sock = try Socket(family: .inet)
+      defer { try? sock.close() }
+
       try sock.connect(to: "localhost:8897")
 
       let bytes: [UInt8] = data.utf8.map({ UInt8($0) })
@@ -245,8 +264,7 @@ class SocketTests: XCTestCase {
       return
     }
 
-    XCTAssertEqual(server.sock?.boundAddress, Address.ip4(ip: IPAddress(127, 0, 0, 1), port: 0))
-    let bound = try server.sock!.loadBoundAddress()
+    let bound = try server.sock!.boundAddress()
     switch bound {
     case .ip4(let ip, let port):
       XCTAssertEqual(ip, IPAddress(127, 0, 0, 1))
@@ -254,16 +272,13 @@ class SocketTests: XCTestCase {
     default:
       XCTFail("unexpected bound address type")
     }
-
-    XCTAssertNil(server.sock?.peerAddress)
   }
 
   func testConnectTCP4() throws {
     let server = PortServer("localhost", 8899)
     try server.listen()
 
-    XCTAssertEqual(server.sock?.boundAddress, Address.ip4(ip: IPAddress(127, 0, 0, 1), port: 8899))
-    let bound = try server.sock!.loadBoundAddress()
+    let bound = try server.sock!.boundAddress()
     XCTAssertEqual(bound, Address.ip4(ip: IPAddress(127, 0, 0, 1), port: 8899))
 
     // run server in background and close it after a connection
@@ -271,11 +286,12 @@ class SocketTests: XCTestCase {
     DispatchQueue.global(qos: .background).async {
       do {
         try server.serveOne { s in
-          switch s.peerAddress {
-          case .ip4(_, let port)?:
+          let addr = try s.peerAddress()
+          switch addr {
+          case .ip4(_, let port):
             XCTAssertTrue(port > 30000, "port is \(port)")
           default:
-            XCTFail("unexpected address type \(String(describing: s.peerAddress))")
+            XCTFail("unexpected address type \(String(describing: addr))")
           }
         }
         expect.fulfill()
@@ -286,6 +302,8 @@ class SocketTests: XCTestCase {
 
     do {
       let sock = try Socket(family: .inet)
+      defer { try? sock.close() }
+
       try sock.connect(to: "localhost:8899")
     } catch {
       XCTFail("client socket failed with \(error)")
@@ -303,8 +321,7 @@ class SocketTests: XCTestCase {
     #else
       let wantAddr = IPAddress.ip6Loopback
     #endif
-    XCTAssertEqual(server.sock?.boundAddress, Address.ip6(ip: wantAddr, port: 8898, scopeID: 0))
-    let bound = try server.sock!.loadBoundAddress()
+    let bound = try server.sock!.boundAddress()
     XCTAssertEqual(bound, Address.ip6(ip: wantAddr, port: 8898, scopeID: 0))
 
     // run server in background and close it after a connection
@@ -312,11 +329,12 @@ class SocketTests: XCTestCase {
     DispatchQueue.global(qos: .background).async {
       do {
         try server.serveOne { s in
-          switch s.peerAddress {
-          case .ip6(_, let port, _)?:
+          let addr = try s.peerAddress()
+          switch addr {
+          case .ip6(_, let port, _):
             XCTAssertTrue(port > 30000, "port is \(port)")
           default:
-            XCTFail("unexpected address type \(String(describing: s.peerAddress))")
+            XCTFail("unexpected address type \(String(describing: addr))")
           }
         }
         expect.fulfill()
@@ -327,6 +345,8 @@ class SocketTests: XCTestCase {
 
     do {
       let sock = try Socket(family: .inet6)
+      defer { try? sock.close() }
+
       try sock.connect(to: "localhost:8898")
     } catch {
       XCTFail("client socket failed with \(error)")
@@ -339,8 +359,7 @@ class SocketTests: XCTestCase {
     let server = UnixServer("/tmp/test.sock")
     try server.listen()
 
-    XCTAssertEqual(server.sock?.boundAddress, Address.unix(path: "/tmp/test.sock"))
-    let bound = try server.sock!.loadBoundAddress()
+    let bound = try server.sock!.boundAddress()
     XCTAssertEqual(bound, Address.unix(path: "/tmp/test.sock"))
 
     // run server in background and close it after a connection
@@ -348,12 +367,7 @@ class SocketTests: XCTestCase {
     DispatchQueue.global(qos: .background).async {
       do {
         try server.serveOne { s in
-          switch s.peerAddress {
-          case .unix?:
-            break
-          default:
-            XCTFail("unexpected address type \(String(describing: s.peerAddress))")
-          }
+          // nothing
         }
         expect.fulfill()
       } catch {
@@ -363,6 +377,8 @@ class SocketTests: XCTestCase {
 
     do {
       let sock = try Socket(family: .unix)
+      defer { try? sock.close() }
+
       try sock.connect(toPath: "/tmp/test.sock")
     } catch {
       XCTFail("client socket failed with \(error)")

@@ -21,6 +21,8 @@ class KqueueTests: XCTestCase {
 
   func testKqueueEmpty() throws {
     let kq = try Kqueue()
+    defer { try? kq.close() }
+
     var events = Array<Kevent>()
     do {
       let ret = try kq.poll(with: [], into: &events)
@@ -38,6 +40,7 @@ class KqueueTests: XCTestCase {
     var events = Array<Kevent>(repeating: Kevent(), count: 1)
     let ev = Kevent(fd: fd, filter: .write)
     let kq = try Kqueue()
+    defer { try? kq.close() }
 
     // should be immediately available
     let ret = try kq.poll(with: [ev], into: &events)
@@ -59,6 +62,7 @@ class KqueueTests: XCTestCase {
         var events = Array(repeating: Kevent(), count: 1)
         let ev = Kevent(fd: fd)
         let kq = try Kqueue()
+        defer { try? kq.close() }
 
         let ret = try kq.poll(with: [ev], into: &events, timeout: 2)
         XCTAssertEqual(1, ret)
@@ -94,6 +98,8 @@ class KqueueTests: XCTestCase {
     var events = Array(repeating: Kevent(), count: 1)
     let ev = Kevent(fd: fd)
     let kq = try Kqueue()
+    defer { try? kq.close() }
+
     let timeout: TimeInterval = 0.1
     let start = Date()
 
@@ -106,6 +112,8 @@ class KqueueTests: XCTestCase {
 
   func testKqueueTimer() throws {
     let kq = try Kqueue()
+    defer { try? kq.close() }
+
     let ev = Kevent(identifier: 1, filter: .timer, data: 1) // 1ms
     var events = Array(repeating: Kevent(), count: 2)
 
@@ -135,7 +143,8 @@ class KqueueTests: XCTestCase {
   func testKqueueSocket() throws {
     let path = "/tmp/test.sock"
     let addr = Address.unix(path: path)
-    let sock = try Socket(family: .unix)
+
+    var sock = try Socket(family: .unix)
     try sock.bind(to: addr)
     try sock.listen()
     defer {
@@ -145,6 +154,8 @@ class KqueueTests: XCTestCase {
 
     // add the listening socket to the kqueue
     let kq = try Kqueue()
+    defer { try? kq.close() }
+
     let ev = Kevent(fd: sock)
     var events = Array(repeating: Kevent(), count: 2)
 
@@ -168,6 +179,8 @@ class KqueueTests: XCTestCase {
 
     do {
       let sock = try Socket(family: .unix)
+      defer { try? sock.close() }
+
       try sock.connect(to: addr)
     } catch {
       XCTFail("client socket failed with \(error)")
@@ -178,6 +191,8 @@ class KqueueTests: XCTestCase {
 
   func testKqueueSignal() throws {
     let kq = try Kqueue()
+    defer { try? kq.close() }
+
     let ev = Kevent(signal: .urg)
 
     let expect = expectation(description: "kqueue notifies signal")
@@ -216,6 +231,8 @@ class KqueueTests: XCTestCase {
 
   func testKqueueUser() throws {
     let kq = try Kqueue()
+    defer { try? kq.close() }
+
     let ev = Kevent(identifier: 1, filter: .user, data: 42)
 
     // wait for a trigger

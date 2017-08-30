@@ -11,12 +11,16 @@ class EventTests: XCTestCase {
 
   func testInitialRead() throws {
     let e = try Event(initialValue: 10)
+    defer { try? e.close() }
+
     let got = try e.read()
     XCTAssertEqual(got, UInt64(10))
   }
 
   func testWrite() throws {
     let e = try Event(initialValue: 10, flags: [.nonBlock])
+    defer { try? e.close() }
+
     try e.write(5)
     let got = try e.read()
     XCTAssertEqual(got, UInt64(15))
@@ -34,6 +38,7 @@ class EventTests: XCTestCase {
 
   func testSemaphore() throws {
     let e = try Event(initialValue: 2, flags: [.semaphore, .nonBlock])
+    defer { try? e.close() }
 
     let v1 = try e.read()
     XCTAssertEqual(v1, UInt64(1))

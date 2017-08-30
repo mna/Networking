@@ -100,6 +100,7 @@ class EpollTests: XCTestCase {
 
     do {
       let sock = try Socket(family: .unix)
+      defer { try? sock.close() }
       try sock.connect(to: addr)
     } catch {
       XCTFail("client socket failed with \(error)")

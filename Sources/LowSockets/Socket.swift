@@ -2,22 +2,10 @@ import Libc
 import OS
 import Foundation
 
-// to avoid ambiguity between the Socket methods and the system calls.
-private let caccept = accept
-private let cbind = bind
-private let cclose = close
-private let cconnect = connect
-private let clisten = listen
-private let crecv = recv
-private let crecvfrom = recvfrom
-private let csend = send
-private let csendto = sendto
-private let cshutdown = shutdown
-
 // MARK: - Socket
 
 /// Socket is an endpoint for network communication. See socket(2).
-public class Socket: FileDescriptorRepresentable {
+public struct Socket: FileDescriptor {
 
   // MARK: - Properties
 
@@ -31,12 +19,6 @@ public class Socket: FileDescriptorRepresentable {
   public let proto: SocketProtocol
   /// The socket type.
   public let type: SocketType
-
-  /// The address of the peer if this is the server side of an
-  /// accepted socket connection.
-  public private(set) var peerAddress: Address? = nil
-  /// The local address this socket is bound to.
-  public private(set) var boundAddress: Address? = nil
 
   // MARK: - Constructors
 
@@ -55,7 +37,7 @@ public class Socket: FileDescriptorRepresentable {
 
   /// Creates a socket using an already existing socket's file descriptor.
   /// The family can be specified if known, otherwise it will attempt
-  /// to detect it.
+  /// to detect it if supported by the platform.
   public init(fd: Int32, family: Family? = nil) throws {
     self.fileDescriptor = fd
 
@@ -75,10 +57,6 @@ public class Socket: FileDescriptorRepresentable {
       self.family = family
       self.proto = family == .unix ? .unix : (type == .stream ? .tcp : .udp)
     #endif
-  }
-
-  deinit {
-    try? close()
   }
 
   // MARK: - Methods
@@ -140,9 +118,8 @@ public class Socket: FileDescriptorRepresentable {
     return (flags & O_NONBLOCK) == 0
   }
 
-  /// Loads the bound address of the socket. This also overwrites the
-  /// boundAddress property.
-  public func loadBoundAddress() throws -> Address {
+  /// Returns the bound address of the socket.
+  public func boundAddress() throws -> Address {
     guard let family = family else {
       throw MessageError("socket has no family specified")
     }
@@ -151,13 +128,11 @@ public class Socket: FileDescriptorRepresentable {
     guard let mustBoundAddr = boundAddr else {
       throw MessageError("no bound address")
     }
-    self.boundAddress = mustBoundAddr
     return mustBoundAddr
   }
 
-  /// Loads the peer address of the socket. This also overwrites the
-  /// peerAddress property.
-  public func loadPeerAddress() throws -> Address {
+  /// Returns the peer address of the socket.
+  public func peerAddress() throws -> Address {
     guard let family = family else {
       throw MessageError("socket has no family specified")
     }
@@ -166,23 +141,21 @@ public class Socket: FileDescriptorRepresentable {
     guard let mustPeerAddr = peerAddr else {
       throw MessageError("no peer address")
     }
-    self.peerAddress = mustPeerAddr
     return mustPeerAddr
   }
 
   /// Binds the socket to the specified address.
   public func bind(to addr: Address) throws {
     let ret = addr.withUnsafeSockaddrPointer { (ptr, size) in
-      cbind(fileDescriptor, ptr, size)
+      Libc.bind(fileDescriptor, ptr, size)
     }
     try CError.makeAndThrow(fromReturnCode: ret)
-    boundAddress = addr
   }
 
   /// Connects the socket to the specified address.
   public func connect(to addr: Address) throws {
     let ret = addr.withUnsafeSockaddrPointer { (ptr, size) in
-      cconnect(fileDescriptor, ptr, size)
+      Libc.connect(fileDescriptor, ptr, size)
     }
     try CError.makeAndThrow(fromReturnCode: ret)
   }
@@ -194,7 +167,7 @@ public class Socket: FileDescriptorRepresentable {
   /// Sends data over the socket.
   public func send(_ data: Array<UInt8>, flags: SendFlags = []) throws -> Int {
     let ret = data.withUnsafeBufferPointer { buf in
-      csend(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
+      Libc.send(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
     }
     try CError.makeAndThrow(fromReturnCode: Int32(ret))
     return ret
@@ -203,7 +176,7 @@ public class Socket: FileDescriptorRepresentable {
   /// Sends data over the socket.
   public func send(_ data: ArraySlice<UInt8>, flags: SendFlags = []) throws -> Int {
     let ret = data.withUnsafeBufferPointer { buf in
-      csend(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
+      Libc.send(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
     }
     try CError.makeAndThrow(fromReturnCode: Int32(ret))
     return ret
@@ -213,7 +186,7 @@ public class Socket: FileDescriptorRepresentable {
   public func send(_ data: Array<UInt8>, to addr: Address, flags: SendFlags = []) throws -> Int {
     let ret = data.withUnsafeBufferPointer { buf in
       addr.withUnsafeSockaddrPointer { sa, len in
-        csendto(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue, sa, len)
+        Libc.sendto(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue, sa, len)
       }
     }
     try CError.makeAndThrow(fromReturnCode: Int32(ret))
@@ -224,7 +197,7 @@ public class Socket: FileDescriptorRepresentable {
   public func send(_ data: ArraySlice<UInt8>, to addr: Address, flags: SendFlags = []) throws -> Int {
     let ret = data.withUnsafeBufferPointer { buf in
       addr.withUnsafeSockaddrPointer { sa, len in
-        csendto(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue, sa, len)
+        Libc.sendto(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue, sa, len)
       }
     }
     try CError.makeAndThrow(fromReturnCode: Int32(ret))
@@ -235,7 +208,7 @@ public class Socket: FileDescriptorRepresentable {
   /// are read.
   public func receive(_ data: inout Array<UInt8>, flags: ReceiveFlags = []) throws -> Int {
     let ret = data.withUnsafeMutableBufferPointer { buf in
-      crecv(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
+      Libc.recv(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
     }
     try CError.makeAndThrow(fromReturnCode: Int32(ret))
     return Int(ret)
@@ -245,7 +218,7 @@ public class Socket: FileDescriptorRepresentable {
   /// are read.
   public func receive(_ data: inout ArraySlice<UInt8>, flags: ReceiveFlags = []) throws -> Int {
     let ret = data.withUnsafeMutableBufferPointer { buf in
-      crecv(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
+      Libc.recv(fileDescriptor, buf.baseAddress, buf.count, flags.rawValue)
     }
     try CError.makeAndThrow(fromReturnCode: Int32(ret))
     return Int(ret)
@@ -257,7 +230,7 @@ public class Socket: FileDescriptorRepresentable {
 
     let ret = withUnsafeMutablePointer(to: &storage) { ptr in
       ptr.withMemoryRebound(to: sockaddr.self, capacity: 1) { (saptr: UnsafeMutablePointer<sockaddr>) in
-        crecvfrom(fileDescriptor, data.baseAddress, data.count, flags.rawValue, saptr, &length)
+        Libc.recvfrom(fileDescriptor, data.baseAddress, data.count, flags.rawValue, saptr, &length)
       }
     }
     try CError.makeAndThrow(fromReturnCode: Int32(ret))
@@ -318,7 +291,7 @@ public class Socket: FileDescriptorRepresentable {
 
   /// Listen for incoming connections on the bound address.
   public func listen(backlog: Int = 128) throws {
-    let ret = clisten(fileDescriptor, Int32(backlog))
+    let ret = Libc.listen(fileDescriptor, Int32(backlog))
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
@@ -328,25 +301,21 @@ public class Socket: FileDescriptorRepresentable {
       throw MessageError("listening socket has no family specified")
     }
 
-    let (remoteFD, remoteAddr) = try Socket.getReturnCodeAndAddress(fd: fileDescriptor, family: family, caccept)
-
+    let (remoteFD, _) = try Socket.getReturnCodeAndAddress(fd: fileDescriptor, family: family, Libc.accept)
     let remote = try Socket(fd: remoteFD, family: family)
-    remote.peerAddress = remoteAddr
     return remote
   }
 
   /// Shutdown the read, write or both ends of the socket. The socket
   /// must still be closed to properly release all resources.
   public func shutdown(mode: ShutdownMode = .readWrite) throws {
-    let ret = cshutdown(fileDescriptor, mode.value)
+    let ret = Libc.shutdown(fileDescriptor, mode.value)
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 
   /// Releases the resources for this file descriptor.
   public func close() throws {
-    self.boundAddress = nil
-    self.peerAddress = nil
-    let ret = cclose(fileDescriptor)
+    let ret = Libc.close(fileDescriptor)
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 }

@@ -2,13 +2,10 @@ import Libc
 import OS
 import Foundation
 
-// to avoid ambiguity between the Kqueue methods and the system calls.
-private let cclose = close
-
 // MARK: - Kqueue
 
 /// Darwin only. Kqueue implements the Darwin kqueue mechanism. See kqueue(2).
-public class Kqueue: FileDescriptorRepresentable {
+public struct Kqueue: FileDescriptor {
 
   // MARK: - Properties
 
@@ -22,10 +19,6 @@ public class Kqueue: FileDescriptorRepresentable {
     let ret = kqueue()
     try CError.makeAndThrow(fromReturnCode: ret)
     self.fileDescriptor = ret
-  }
-
-  deinit {
-    try? close()
   }
 
   // MARK: - Methods
@@ -59,7 +52,7 @@ public class Kqueue: FileDescriptorRepresentable {
 
   /// Releases the resources for this file descriptor.
   public func close() throws {
-    let ret = cclose(fileDescriptor)
+    let ret = Libc.close(fileDescriptor)
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 }
