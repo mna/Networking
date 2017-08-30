@@ -53,9 +53,9 @@ However, this had a number of downsides that, in retrospect, outweigh the benefi
 * When the close-on-deinit is required, it is easy to wrap the struct in a class and use that class' instance instead.
 * Uses more memory, more allocations than the value-based structs.
 * Most FD wrappers only have a single property, the FD, so it ended up creating classes for what is essentially a very space-efficient integer (`LowSockets.Socket` is slightly bigger, but still small enough to pass around by value).
-* The benefit of automatically closing the resource (helping with forgetting to call close for a given FD) was arguably lost by the downside of accidentally closing the resource by forgetting to hold on to the class.
-* Most server uses of a socket will be notified automatically by kqueue/epoll when the client end closes the socket, triggering the close of the server side.
-* For clients, and in general with Swift, it is very easy to defer the call to close immediately after having acquired the FD, if this is the intended flow.
+* The benefit of automatically closing the resource (helping with forgetting to call close for a given FD) was arguably lost by the downside of accidentally closing the resource by forgetting to hold on to the class. (this is true of any class with a deinit, of course, but here the tradeoff is in the context of using an event-loop, where you don't need the extra work of holding on to a class reference once it is registered in the event queue).
+* Most server uses of a socket will be notified automatically by kqueue/epoll when the client end closes the socket, triggering the event where the server side should be closed.
+* For client uses, and with Swift in general, it is very easy to defer the call to close immediately after having acquired the FD, if this is the intended flow.
 
 ## Installation
 
