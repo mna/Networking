@@ -2,14 +2,11 @@
 
 import Libc
 
-// to avoid ambiguity between the SignalFileDescriptor methods and the system calls.
-private let cclose = close
-
 // MARK: - SignalFileDescriptor
 
 /// SignalFileDescriptor is a file descriptor for a signal(s) as described in
 /// signalfd(2).
-public class SignalFileDescriptor: FileDescriptorRepresentable {
+public struct SignalFileDescriptor: FileDescriptor {
   private static let siginfoSize: Int = MemoryLayout<signalfd_siginfo>.stride
 
   /// The file descriptor for the signal.
@@ -17,10 +14,6 @@ public class SignalFileDescriptor: FileDescriptorRepresentable {
 
   init(_ fd: Int32) {
     self.fileDescriptor = fd
-  }
-
-  deinit {
-    try? close()
   }
 
   /// Reads the next signal from the file descriptor. See signalfd(2) for details
@@ -38,7 +31,7 @@ public class SignalFileDescriptor: FileDescriptorRepresentable {
 
   /// Releases the resources for this file descriptor.
   public func close() throws {
-    let ret = cclose(fileDescriptor)
+    let ret = Libc.close(fileDescriptor)
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 }
