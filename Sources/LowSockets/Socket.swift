@@ -20,12 +20,6 @@ public struct Socket: FileDescriptor {
   /// The socket type.
   public let type: SocketType
 
-  /// The address of the peer if this is the server side of an
-  /// accepted socket connection.
-  public private(set) var peerAddress: Address? = nil
-  /// The local address this socket is bound to.
-  public private(set) var boundAddress: Address? = nil
-
   // MARK: - Constructors
 
   /// Creates an unconnected socket with the specified family and type,
@@ -43,7 +37,7 @@ public struct Socket: FileDescriptor {
 
   /// Creates a socket using an already existing socket's file descriptor.
   /// The family can be specified if known, otherwise it will attempt
-  /// to detect it.
+  /// to detect it if supported by the platform.
   public init(fd: Int32, family: Family? = nil) throws {
     self.fileDescriptor = fd
 
@@ -124,9 +118,8 @@ public struct Socket: FileDescriptor {
     return (flags & O_NONBLOCK) == 0
   }
 
-  /// Loads the bound address of the socket. This also overwrites the
-  /// boundAddress property.
-  public mutating func loadBoundAddress() throws -> Address {
+  /// Returns the bound address of the socket.
+  public func boundAddress() throws -> Address {
     guard let family = family else {
       throw MessageError("socket has no family specified")
     }
@@ -135,13 +128,11 @@ public struct Socket: FileDescriptor {
     guard let mustBoundAddr = boundAddr else {
       throw MessageError("no bound address")
     }
-    self.boundAddress = mustBoundAddr
     return mustBoundAddr
   }
 
-  /// Loads the peer address of the socket. This also overwrites the
-  /// peerAddress property.
-  public mutating func loadPeerAddress() throws -> Address {
+  /// Returns the peer address of the socket.
+  public func peerAddress() throws -> Address {
     guard let family = family else {
       throw MessageError("socket has no family specified")
     }
@@ -150,17 +141,15 @@ public struct Socket: FileDescriptor {
     guard let mustPeerAddr = peerAddr else {
       throw MessageError("no peer address")
     }
-    self.peerAddress = mustPeerAddr
     return mustPeerAddr
   }
 
   /// Binds the socket to the specified address.
-  public mutating func bind(to addr: Address) throws {
+  public func bind(to addr: Address) throws {
     let ret = addr.withUnsafeSockaddrPointer { (ptr, size) in
       Libc.bind(fileDescriptor, ptr, size)
     }
     try CError.makeAndThrow(fromReturnCode: ret)
-    self.boundAddress = addr
   }
 
   /// Connects the socket to the specified address.
@@ -312,10 +301,8 @@ public struct Socket: FileDescriptor {
       throw MessageError("listening socket has no family specified")
     }
 
-    let (remoteFD, remoteAddr) = try Socket.getReturnCodeAndAddress(fd: fileDescriptor, family: family, Libc.accept)
-
-    var remote = try Socket(fd: remoteFD, family: family)
-    remote.peerAddress = remoteAddr
+    let (remoteFD, _) = try Socket.getReturnCodeAndAddress(fd: fileDescriptor, family: family, Libc.accept)
+    let remote = try Socket(fd: remoteFD, family: family)
     return remote
   }
 
@@ -327,9 +314,7 @@ public struct Socket: FileDescriptor {
   }
 
   /// Releases the resources for this file descriptor.
-  public mutating func close() throws {
-    self.boundAddress = nil
-    self.peerAddress = nil
+  public func close() throws {
     let ret = Libc.close(fileDescriptor)
     try CError.makeAndThrow(fromReturnCode: ret)
   }

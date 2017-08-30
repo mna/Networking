@@ -4,7 +4,7 @@ import Libc
 
 /// Any type that can (and typically must) be closed.
 public protocol Closable {
-  mutating func close() throws
+  func close() throws
 }
 
 // MARK: - FileDescriptor
