@@ -1,4 +1,5 @@
 import Libc
+import OS
 
 // MARK: - PollEvent
 
@@ -6,10 +7,10 @@ import Libc
 /// in, and the user-data associated with the event.
 public struct PollEvent {
   public let types: Types
-  public let data: Data
+  public let data: UserData
 
   /// Creates a PollEvent with the specified event types and user data.
-  public init(_ types: Types = [], data: Data = .u64(0)) {
+  public init(_ types: Types = [], data: UserData = .u64(0)) {
     self.types = types
     self.data = data
   }
