@@ -5,7 +5,7 @@ extension Socket {
 
   // MARK: Socket.bind overloads
 
-  mutating func bind(to addr: String) throws {
+  func bind(to addr: String) throws {
     if addr.contains("/") {
       try bind(toPath: addr)
     } else {
@@ -13,19 +13,19 @@ extension Socket {
     }
   }
 
-  mutating func bind(toPath path: String) throws {
+  func bind(toPath path: String) throws {
     guard let addr = Address(path: path) else {
       throw MessageError("path too long", context: ["path": path])
     }
     try bind(to: addr)
   }
 
-  mutating func bind(toHostPort hostPort: String) throws {
+  func bind(toHostPort hostPort: String) throws {
     let (host, service) = try Address.split(hostPort: hostPort)
     try bind(toHost: host, service: service)
   }
 
-  mutating func bind(toHost host: String, service: String) throws {
+  func bind(toHost host: String, service: String) throws {
     let host = host.isEmpty ? nil : host
     let flags: Address.Flags = host == nil ? [.default, .passive] : .default
     let (_, addrs) = try Address.resolve(host: host, service: service, flags: flags, family: family, type: type, proto: proto)
@@ -36,7 +36,7 @@ extension Socket {
     try bind(to: first)
   }
 
-  mutating func bind(toHost host: String, port: Int) throws {
+  func bind(toHost host: String, port: Int) throws {
     try bind(toHost: host, service: String(port))
   }
 
