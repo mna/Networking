@@ -14,7 +14,7 @@
     <a title="SignalFileDescriptor Struct Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">OS Docs</a> (56% documented)</p>
+        <p><a href="../index.html">OS Docs</a> (63% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -43,12 +43,6 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Extensions/Int32.html">Int32</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/SignalSet.html">SignalSet</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/SignalSet/Flags.html">– Flags</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/TimeInterval.html">TimeInterval</a>
@@ -91,6 +85,9 @@
                 <a href="../Structs/SignalSet/BlockMode.html">– BlockMode</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Structs/SignalSet/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Structs/Timer.html">Timer</a>
               </li>
               <li class="nav-group-task">
@@ -110,6 +107,12 @@
         <section>
           <section class="section">
             <h1>SignalFileDescriptor</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SignalFileDescriptor</span><span class="p">:</span> <span class="kt"><a href="../Protocols/FileDescriptor.html">FileDescriptor</a></span></code></pre>
+
+                </div>
+              </div>
             <p>SignalFileDescriptor is a file descriptor for a signal(s) as described in
 signalfd(2).</p>
 
@@ -120,9 +123,9 @@ signalfd(2).</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/s:2OS20SignalFileDescriptorV04fileD0s5Int32Vv"></a>
                     <a name="//apple_ref/swift/Property/fileDescriptor" class="dashAnchor"></a>
-                    <a class="token" href="#/">fileDescriptor</a>
+                    <a class="token" href="#/s:2OS20SignalFileDescriptorV04fileD0s5Int32Vv">fileDescriptor</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -133,15 +136,23 @@ signalfd(2).</p>
                         <p>The file descriptor for the signal.</p>
 
                       </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">fileDescriptor</span><span class="p">:</span> <span class="kt">Int32</span></code></pre>
+
+                        </div>
+                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/s:2OS20SignalFileDescriptorV4nextAA0B0OyKF"></a>
                     <a name="//apple_ref/swift/Method/next()" class="dashAnchor"></a>
-                    <a class="token" href="#/">next()</a>
+                    <a class="token" href="#/s:2OS20SignalFileDescriptorV4nextAA0B0OyKF">next()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -153,15 +164,23 @@ signalfd(2).</p>
 on the behaviour of this call.</p>
 
                       </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">next</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Enums/Signal.html">Signal</a></span></code></pre>
+
+                        </div>
+                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/s:2OS20SignalFileDescriptorV5closeyyKF"></a>
                     <a name="//apple_ref/swift/Method/close()" class="dashAnchor"></a>
-                    <a class="token" href="#/">close()</a>
+                    <a class="token" href="#/s:2OS20SignalFileDescriptorV5closeyyKF">close()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -171,6 +190,14 @@ on the behaviour of this call.</p>
                       <div class="abstract">
                         <p>Releases the resources for this file descriptor.</p>
 
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">close</span><span class="p">()</span> <span class="k">throws</span></code></pre>
+
+                        </div>
                       </div>
                     </section>
                   </div>

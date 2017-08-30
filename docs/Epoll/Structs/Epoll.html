@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Event Struct Reference</title>
+    <title>Epoll Struct Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,94 +10,37 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Struct/Event" class="dashAnchor"></a>
-    <a title="Event Struct Reference"></a>
+    <a name="//apple_ref/swift/Struct/Epoll" class="dashAnchor"></a>
+    <a title="Epoll Struct Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">OS Docs</a> (63% documented)</p>
+        <p><a href="../index.html">Epoll Docs</a> (58% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
       <p id="breadcrumbs">
-        <a href="../index.html">OS Reference</a>
+        <a href="../index.html">Epoll Reference</a>
         <img id="carat" src="../img/carat.png" />
-        Event Struct Reference
+        Epoll Struct Reference
       </p>
     </div>
     <div class="content-wrapper">
       <nav class="sidebar">
         <ul class="nav-groups">
           <li class="nav-group-name">
-            <a href="../Enums.html">Enums</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="../Enums/Signal.html">Signal</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Enums/UserData.html">UserData</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a href="../Extensions.html">Extensions</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="../Extensions/Int32.html">Int32</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/TimeInterval.html">TimeInterval</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a href="../Protocols.html">Protocols</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="../Protocols/Closable.html">Closable</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Protocols/FileDescriptor.html">FileDescriptor</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
             <a href="../Structs.html">Structs</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Structs/CError.html">CError</a>
+                <a href="../Structs/Epoll.html">Epoll</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/Event.html">Event</a>
+                <a href="../Structs/Epoll/Flags.html">– Flags</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/Event/Flags.html">– Flags</a>
+                <a href="../Structs/PollEvent.html">PollEvent</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/MessageError.html">MessageError</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Structs/SignalFileDescriptor.html">SignalFileDescriptor</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Structs/SignalSet.html">SignalSet</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Structs/SignalSet/BlockMode.html">– BlockMode</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Structs/SignalSet/Flags.html">– Flags</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Structs/Timer.html">Timer</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Structs/Timer/Clock.html">– Clock</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Structs/Timer/Flags.html">– Flags</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Structs/Timer/SetFlags.html">– SetFlags</a>
+                <a href="../Structs/PollEvent/Types.html">– Types</a>
               </li>
             </ul>
           </li>
@@ -106,15 +49,14 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>Event</h1>
+            <h1>Epoll</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Event</span><span class="p">:</span> <span class="kt"><a href="../Protocols/FileDescriptor.html">FileDescriptor</a></span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Epoll</span><span class="p">:</span> <span class="kt">FileDescriptor</span></code></pre>
 
                 </div>
               </div>
-            <p>Event represents an event file descriptor as described in
-eventfd(2).</p>
+            <p>Linux only. Epoll implements the Linux epoll mechanism.</p>
 
           </section>
           <section class="section task-group-section">
@@ -130,9 +72,9 @@ eventfd(2).</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:2OS5EventV14fileDescriptors5Int32Vv"></a>
+                    <a name="/s:5EpollAAV14fileDescriptors5Int32Vv"></a>
                     <a name="//apple_ref/swift/Property/fileDescriptor" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2OS5EventV14fileDescriptors5Int32Vv">fileDescriptor</a>
+                    <a class="token" href="#/s:5EpollAAV14fileDescriptors5Int32Vv">fileDescriptor</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -140,7 +82,7 @@ eventfd(2).</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The file descriptor for this event.</p>
+                        <p>The file descriptor for this epoll instance.</p>
 
                       </div>
                       <div class="declaration">
@@ -168,9 +110,9 @@ eventfd(2).</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:2OS5EventVACs6UInt32V12initialValue_AC5FlagsV5flagstKcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(initialValue:flags:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2OS5EventVACs6UInt32V12initialValue_AC5FlagsV5flagstKcfc">init(initialValue:flags:)</a>
+                    <a name="/s:5EpollAAVA2B5FlagsV5flags_tKcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(flags:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5EpollAAVA2B5FlagsV5flags_tKcfc">init(flags:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -178,15 +120,14 @@ eventfd(2).</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Creates an event file descriptor with the provided initial value and
-flags.</p>
+                        <p>Creates an epoll instance with the specified flags.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">initialValue</span><span class="p">:</span> <span class="kt">UInt32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">flags</span><span class="p">:</span> <span class="kt"><a href="../Structs/Event/Flags.html">Flags</a></span> <span class="o">=</span>  <span class="p">[])</span> <span class="k">throws</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">flags</span><span class="p">:</span> <span class="kt"><a href="../Structs/Epoll/Flags.html">Flags</a></span> <span class="o">=</span> <span class="p">[])</span> <span class="k">throws</span></code></pre>
 
                         </div>
                       </div>
@@ -207,9 +148,9 @@ flags.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:2OS5EventV4reads6UInt64VyKF"></a>
-                    <a name="//apple_ref/swift/Method/read()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2OS5EventV4reads6UInt64VyKF">read()</a>
+                    <a name="/s:5EpollAAV3addy2OS14FileDescriptor_p2fd_AA9PollEventV5eventtKF"></a>
+                    <a name="//apple_ref/swift/Method/add(fd:event:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5EpollAAV3addy2OS14FileDescriptor_p2fd_AA9PollEventV5eventtKF">add(fd:event:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -217,16 +158,16 @@ flags.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Reads the current value from the file descriptor. See eventfd(2)
-for details on the behaviour of this call. Returns the value
-read from the event.</p>
+                        <p>Adds the file descriptor to the list of FDs watched by this epoll instance.
+The <code>event</code> argument defines what event types to watch for and optional
+user data associated with the event.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">read</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">UInt64</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nv">fd</span><span class="p">:</span> <span class="kt">FileDescriptor</span><span class="p">,</span> <span class="nv">event</span><span class="p">:</span> <span class="kt"><a href="../Structs/PollEvent.html">PollEvent</a></span><span class="p">)</span> <span class="k">throws</span></code></pre>
 
                         </div>
                       </div>
@@ -236,9 +177,9 @@ read from the event.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:2OS5EventV5writeys6UInt64VKF"></a>
-                    <a name="//apple_ref/swift/Method/write(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2OS5EventV5writeys6UInt64VKF">write(_:)</a>
+                    <a name="/s:5EpollAAV6updatey2OS14FileDescriptor_p2fd_AA9PollEventV5eventtKF"></a>
+                    <a name="//apple_ref/swift/Method/update(fd:event:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5EpollAAV6updatey2OS14FileDescriptor_p2fd_AA9PollEventV5eventtKF">update(fd:event:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -246,15 +187,15 @@ read from the event.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Adds the specified value to the event file descriptor. See
-eventfd(2) for details on the behaviour of this call.</p>
+                        <p>Updates the event types and user data associated with the file descriptor
+for this epoll instance.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">write</span><span class="p">(</span><span class="n">_</span> <span class="nv">n</span><span class="p">:</span> <span class="kt">UInt64</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">update</span><span class="p">(</span><span class="nv">fd</span><span class="p">:</span> <span class="kt">FileDescriptor</span><span class="p">,</span> <span class="nv">event</span><span class="p">:</span> <span class="kt"><a href="../Structs/PollEvent.html">PollEvent</a></span><span class="p">)</span> <span class="k">throws</span></code></pre>
 
                         </div>
                       </div>
@@ -264,9 +205,67 @@ eventfd(2) for details on the behaviour of this call.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:2OS5EventV5closeyyKF"></a>
+                    <a name="/s:5EpollAAV6removey2OS14FileDescriptor_p2fd_tKF"></a>
+                    <a name="//apple_ref/swift/Method/remove(fd:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5EpollAAV6removey2OS14FileDescriptor_p2fd_tKF">remove(fd:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Removes the file descriptor from the list of FDs watched by this epoll instance.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">remove</span><span class="p">(</span><span class="nv">fd</span><span class="p">:</span> <span class="kt">FileDescriptor</span><span class="p">)</span> <span class="k">throws</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5EpollAAV4pollSiSayAA9PollEventVGz4into_SdSg7timeout2OS9SignalSetVSg14blockedSignalstKF"></a>
+                    <a name="//apple_ref/swift/Method/poll(into:timeout:blockedSignals:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5EpollAAV4pollSiSayAA9PollEventVGz4into_SdSg7timeout2OS9SignalSetVSg14blockedSignalstKF">poll(into:timeout:blockedSignals:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Polls for and returns available events into <code>events</code>, blocking as required.
+If a timeout is set, unblocks after this delay if no events are available.
+Signals may be blocked atomically by providing a SignalSet to <code>blockedSignals</code>.
+Returns the number of events available in <code>events</code>. No more than <code>events.count</code> events
+will be returned.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">poll</span><span class="p">(</span><span class="n">into</span> <span class="nv">events</span><span class="p">:</span> <span class="k">inout</span> <span class="p">[</span><span class="kt"><a href="../Structs/PollEvent.html">PollEvent</a></span><span class="p">],</span> <span class="nv">timeout</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">,</span> <span class="n">blockedSignals</span> <span class="nv">signals</span><span class="p">:</span> <span class="kt">SignalSet</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5EpollAAV5closeyyKF"></a>
                     <a name="//apple_ref/swift/Method/close()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2OS5EventV5closeyyKF">close()</a>
+                    <a class="token" href="#/s:5EpollAAV5closeyyKF">close()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -274,7 +273,7 @@ eventfd(2) for details on the behaviour of this call.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Releases the resource associated with this file descriptor.</p>
+                        <p>Releases the resources for this file descriptor.</p>
 
                       </div>
                       <div class="declaration">
@@ -295,9 +294,9 @@ eventfd(2) for details on the behaviour of this call.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:2OS5EventV5FlagsV"></a>
+                    <a name="/s:5EpollAAV5FlagsV"></a>
                     <a name="//apple_ref/swift/Struct/Flags" class="dashAnchor"></a>
-                    <a class="token" href="#/s:2OS5EventV5FlagsV">Flags</a>
+                    <a class="token" href="#/s:5EpollAAV5FlagsV">Flags</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -305,9 +304,9 @@ eventfd(2) for details on the behaviour of this call.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Flags for the event file descriptor.</p>
+                        <p>Linux only. Flags available to configure the epoll instance.</p>
 
-                        <a href="../Structs/Event/Flags.html" class="slightly-smaller">See more</a>
+                        <a href="../Structs/Epoll/Flags.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>

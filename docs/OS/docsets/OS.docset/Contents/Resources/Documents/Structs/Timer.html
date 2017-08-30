@@ -14,7 +14,7 @@
     <a title="Timer Struct Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">OS Docs</a> (56% documented)</p>
+        <p><a href="../index.html">OS Docs</a> (63% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -43,12 +43,6 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Extensions/Int32.html">Int32</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/SignalSet.html">SignalSet</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/SignalSet/Flags.html">– Flags</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/TimeInterval.html">TimeInterval</a>
@@ -91,6 +85,9 @@
                 <a href="../Structs/SignalSet/BlockMode.html">– BlockMode</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Structs/SignalSet/Flags.html">– Flags</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Structs/Timer.html">Timer</a>
               </li>
               <li class="nav-group-task">
@@ -110,6 +107,12 @@
         <section>
           <section class="section">
             <h1>Timer</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Timer</span><span class="p">:</span> <span class="kt"><a href="../Protocols/FileDescriptor.html">FileDescriptor</a></span></code></pre>
+
+                </div>
+              </div>
             <p>Timer is a file descriptor associated with a timer. See
 timerfd_create(2) for details.</p>
 
@@ -127,9 +130,9 @@ timerfd_create(2) for details.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/s:2OS5TimerV14fileDescriptors5Int32Vv"></a>
                     <a name="//apple_ref/swift/Property/fileDescriptor" class="dashAnchor"></a>
-                    <a class="token" href="#/">fileDescriptor</a>
+                    <a class="token" href="#/s:2OS5TimerV14fileDescriptors5Int32Vv">fileDescriptor</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -139,6 +142,14 @@ timerfd_create(2) for details.</p>
                       <div class="abstract">
                         <p>The file descriptor for this timer.</p>
 
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">fileDescriptor</span><span class="p">:</span> <span class="kt">Int32</span></code></pre>
+
+                        </div>
                       </div>
                     </section>
                   </div>
@@ -157,9 +168,9 @@ timerfd_create(2) for details.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/s:2OS5TimerVA2C5ClockO5using_AC5FlagsV5flagstKcfc"></a>
                     <a name="//apple_ref/swift/Method/init(using:flags:)" class="dashAnchor"></a>
-                    <a class="token" href="#/">init(using:flags:)</a>
+                    <a class="token" href="#/s:2OS5TimerVA2C5ClockO5using_AC5FlagsV5flagstKcfc">init(using:flags:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -170,6 +181,14 @@ timerfd_create(2) for details.</p>
                         <p>Creates a timer using the specified clock and configured with
 the specified flags. See timerfd_create(2) for details.</p>
 
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">using</span> <span class="nv">clock</span><span class="p">:</span> <span class="kt"><a href="../Structs/Timer/Clock.html">Clock</a></span> <span class="o">=</span> <span class="o">.</span><span class="n">realTime</span><span class="p">,</span> <span class="nv">flags</span><span class="p">:</span> <span class="kt"><a href="../Structs/Timer/Flags.html">Flags</a></span> <span class="o">=</span> <span class="p">[])</span> <span class="k">throws</span></code></pre>
+
+                        </div>
                       </div>
                     </section>
                   </div>
@@ -188,9 +207,9 @@ the specified flags. See timerfd_create(2) for details.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/s:2OS5TimerV3setSd7initial_Sd8intervaltSdAE_Sd8thenEachAC8SetFlagsV5flagstKF"></a>
                     <a name="//apple_ref/swift/Method/set(initial:thenEach:flags:)" class="dashAnchor"></a>
-                    <a class="token" href="#/">set(initial:thenEach:flags:)</a>
+                    <a class="token" href="#/s:2OS5TimerV3setSd7initial_Sd8intervaltSdAE_Sd8thenEachAC8SetFlagsV5flagstKF">set(initial:thenEach:flags:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -202,15 +221,23 @@ the specified flags. See timerfd_create(2) for details.</p>
 interval. Returns the previously set timer delays.</p>
 
                       </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">set</span><span class="p">(</span><span class="nv">initial</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">,</span> <span class="n">thenEach</span> <span class="nv">interval</span><span class="p">:</span> <span class="kt">TimeInterval</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">flags</span><span class="p">:</span> <span class="kt"><a href="../Structs/Timer/SetFlags.html">SetFlags</a></span> <span class="o">=</span> <span class="p">[])</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nv">initial</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">,</span> <span class="nv">interval</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/s:2OS5TimerV5unsetSd7initial_Sd8intervaltyKF"></a>
                     <a name="//apple_ref/swift/Method/unset()" class="dashAnchor"></a>
-                    <a class="token" href="#/">unset()</a>
+                    <a class="token" href="#/s:2OS5TimerV5unsetSd7initial_Sd8intervaltyKF">unset()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -222,15 +249,23 @@ interval. Returns the previously set timer delays.</p>
 set timer delays.</p>
 
                       </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">unset</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nv">initial</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">,</span> <span class="nv">interval</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/s:2OS5TimerV3getSd7initial_Sd8intervaltyKF"></a>
                     <a name="//apple_ref/swift/Method/get()" class="dashAnchor"></a>
-                    <a class="token" href="#/">get()</a>
+                    <a class="token" href="#/s:2OS5TimerV3getSd7initial_Sd8intervaltyKF">get()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -241,15 +276,23 @@ set timer delays.</p>
                         <p>Returns the currently set timer delays.</p>
 
                       </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">get</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nv">initial</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">,</span> <span class="nv">interval</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/s:2OS5TimerV11expirationss6UInt64VyKF"></a>
                     <a name="//apple_ref/swift/Method/expirations()" class="dashAnchor"></a>
-                    <a class="token" href="#/">expirations()</a>
+                    <a class="token" href="#/s:2OS5TimerV11expirationss6UInt64VyKF">expirations()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -260,15 +303,23 @@ set timer delays.</p>
                         <p>Returns the number of times the timer expired since the last call.</p>
 
                       </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">expirations</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">UInt64</span></code></pre>
+
+                        </div>
+                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/s:2OS5TimerV5closeyyKF"></a>
                     <a name="//apple_ref/swift/Method/close()" class="dashAnchor"></a>
-                    <a class="token" href="#/">close()</a>
+                    <a class="token" href="#/s:2OS5TimerV5closeyyKF">close()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -278,6 +329,14 @@ set timer delays.</p>
                       <div class="abstract">
                         <p>Releases the resources for this file descriptor.</p>
 
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">close</span><span class="p">()</span> <span class="k">throws</span></code></pre>
+
+                        </div>
                       </div>
                     </section>
                   </div>
@@ -289,9 +348,9 @@ set timer delays.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/s:2OS5TimerV5ClockO"></a>
                     <a name="//apple_ref/swift/Enum/Clock" class="dashAnchor"></a>
-                    <a class="token" href="#/">Clock</a>
+                    <a class="token" href="#/s:2OS5TimerV5ClockO">Clock</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -303,29 +362,13 @@ set timer delays.</p>
 
                         <a href="../Structs/Timer/Clock.html" class="slightly-smaller">See more</a>
                       </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/"></a>
-                    <a name="//apple_ref/swift/Struct/Flags" class="dashAnchor"></a>
-                    <a class="token" href="#/">Flags</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The flags to configure the timer file descriptor.</p>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Clock</span></code></pre>
 
-                        <a href="../Structs/Timer/Flags.html" class="slightly-smaller">See more</a>
+                        </div>
                       </div>
                     </section>
                   </div>
@@ -337,9 +380,41 @@ set timer delays.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/s:2OS5TimerV5FlagsV"></a>
+                    <a name="//apple_ref/swift/Struct/Flags" class="dashAnchor"></a>
+                    <a class="token" href="#/s:2OS5TimerV5FlagsV">Flags</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The flags to configure the timer file descriptor.</p>
+
+                        <a href="../Structs/Timer/Flags.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Flags</span><span class="p">:</span> <span class="kt">OptionSet</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:2OS5TimerV8SetFlagsV"></a>
                     <a name="//apple_ref/swift/Struct/SetFlags" class="dashAnchor"></a>
-                    <a class="token" href="#/">SetFlags</a>
+                    <a class="token" href="#/s:2OS5TimerV8SetFlagsV">SetFlags</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -351,6 +426,14 @@ set timer delays.</p>
 interpreted.</p>
 
                         <a href="../Structs/Timer/SetFlags.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">SetFlags</span><span class="p">:</span> <span class="kt">OptionSet</span></code></pre>
+
+                        </div>
                       </div>
                     </section>
                   </div>

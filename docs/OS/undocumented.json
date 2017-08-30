@@ -1,243 +1,334 @@
 {
   "warnings": [
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Protocols.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Event.swift",
+      "line": 65,
+      "symbol": "Event.Flags.cloExec",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Event.swift",
+      "line": 66,
+      "symbol": "Event.Flags.nonBlock",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Event.swift",
+      "line": 67,
+      "symbol": "Event.Flags.semaphore",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Protocols.swift",
       "line": 7,
       "symbol": "Closable.close()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Protocols.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Protocols.swift",
       "line": 15,
       "symbol": "FileDescriptor.fileDescriptor",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 7,
       "symbol": "Signal.hup",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 8,
       "symbol": "Signal.int",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 9,
       "symbol": "Signal.quit",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 10,
       "symbol": "Signal.ill",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 11,
       "symbol": "Signal.trap",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 12,
       "symbol": "Signal.abrt",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 13,
       "symbol": "Signal.fpe",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 14,
       "symbol": "Signal.kill",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 15,
       "symbol": "Signal.bus",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 16,
       "symbol": "Signal.segv",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 17,
       "symbol": "Signal.sys",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 18,
       "symbol": "Signal.pipe",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 19,
       "symbol": "Signal.alrm",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 20,
       "symbol": "Signal.term",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 21,
       "symbol": "Signal.urg",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 22,
       "symbol": "Signal.stop",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 23,
       "symbol": "Signal.tstp",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 24,
       "symbol": "Signal.cont",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 25,
       "symbol": "Signal.chld",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 26,
       "symbol": "Signal.ttin",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 27,
       "symbol": "Signal.ttou",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 28,
       "symbol": "Signal.io",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 29,
       "symbol": "Signal.xcpu",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 30,
       "symbol": "Signal.xfsz",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 31,
       "symbol": "Signal.vtalrm",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 32,
       "symbol": "Signal.prof",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 33,
       "symbol": "Signal.winch",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 34,
       "symbol": "Signal.usr1",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/Signal.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Signal.swift",
       "line": 35,
       "symbol": "Signal.usr2",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/SignalSet.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/SignalSet.swift",
       "line": 103,
       "symbol": "SignalSet.BlockMode.block",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/SignalSet.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/SignalSet.swift",
       "line": 104,
       "symbol": "SignalSet.BlockMode.unblock",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/m/src/github.com/mna/Networking/Sources/OS/SignalSet.swift",
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/SignalSet.swift",
       "line": 105,
       "symbol": "SignalSet.BlockMode.setMask",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/SignalSet.swift",
+      "line": 145,
+      "symbol": "SignalSet.Flags.nonBlock",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/SignalSet.swift",
+      "line": 146,
+      "symbol": "SignalSet.Flags.cloExec",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Timer.swift",
+      "line": 87,
+      "symbol": "Timer.Clock.realTime",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Timer.swift",
+      "line": 88,
+      "symbol": "Timer.Clock.monotonic",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Timer.swift",
+      "line": 89,
+      "symbol": "Timer.Clock.bootTime",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Timer.swift",
+      "line": 90,
+      "symbol": "Timer.Clock.realTimeAlarm",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Timer.swift",
+      "line": 91,
+      "symbol": "Timer.Clock.bootTimeAlarm",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Timer.swift",
+      "line": 133,
+      "symbol": "Timer.Flags.nonBlock",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Timer.swift",
+      "line": 134,
+      "symbol": "Timer.Flags.cloExec",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/home/m/src/bitbucket.org/___mna___/Networking/Sources/OS/Timer.swift",
+      "line": 150,
+      "symbol": "Timer.SetFlags.absTime",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
     }
   ],
-  "source_directory": "/Users/m/src/github.com/mna/Networking"
+  "source_directory": "/home/m/src/bitbucket.org/___mna___/Networking"
 }

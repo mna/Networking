@@ -13,7 +13,7 @@
     <a title="Epoll  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">Epoll Docs</a> (11% documented)</p>
+        <p><a href="index.html">Epoll Docs</a> (58% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -27,27 +27,14 @@
       <nav class="sidebar">
         <ul class="nav-groups">
           <li class="nav-group-name">
-            <a href="Classes.html">Classes</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="Classes/Epoll.html">Epoll</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/Epoll/Flags.html">– Flags</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a href="Enums.html">Enums</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="Enums/Data.html">Data</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
             <a href="Structs.html">Structs</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Structs/Epoll.html">Epoll</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Epoll/Flags.html">– Flags</a>
+              </li>
               <li class="nav-group-task">
                 <a href="Structs/PollEvent.html">PollEvent</a>
               </li>
@@ -70,6 +57,8 @@
 <h1 id='networking-swift-package' class='heading'>Networking Swift Package</h1>
 
 <p>Networking is a low-level Swift package that provides a thin Swift layer over the native <strong>POSIX sockets</strong> and the kernel&rsquo;s polling mechanism (<strong>epoll</strong> for Linux, <strong>kqueue</strong> for Darwin).</p>
+
+<p>Note that this project follows <a href="http://semver.org/spec/v2.0.0.html">semver 2.0</a>, so for the major version <code>0.y.z</code> the API must be considered unstable and new versions may introduce breaking changes.</p>
 <h2 id='table-of-contents' class='heading'>Table Of Contents</h2>
 
 <ul>
@@ -77,7 +66,7 @@
 <li><a href="#guiding-principles">Guiding Principles</a></li>
 <li><a href="#installation">Installation</a></li>
 <li><a href="#usage">Usage</a></li>
-<li><a href="TODO:%20link%20to%20jazz%20doc">API Documentation</a></li>
+<li><a href="#documentation">Documentation</a></li>
 <li><a href="#license">License</a></li>
 </ul>
 <h2 id='features' class='heading'>Features</h2>
@@ -88,8 +77,17 @@
 <li>Host and service resolution (<code>getaddrinfo</code> exposed as <code>Address.resolve</code>)</li>
 <li>Client and server support (<code>connect</code>, <code>bind</code>, <code>listen</code>, <code>accept</code>)</li>
 <li>Blocking and non-blocking support</li>
-<li>Polling mechanisms (<code>epoll</code> on Linux, <code>kqueue</code> on Darwin)</li>
+<li>Efficient polling mechanisms (<code>epoll</code> on Linux, <code>kqueue</code> on Darwin)</li>
 <li><code>signalfd</code>, <code>timerfd</code> and <code>eventfd</code> support on Linux for use with <code>epoll</code> (natively supported by <code>kqueue</code> on Darwin)</li>
+</ul>
+
+<p>The package exports the following modules:</p>
+
+<ul>
+<li><a href="http://mna.github.io/Networking/OS">OS</a>: basic types used by many modules: errors, signals, and on Linux: signalfd(2), timerfd_create(2), eventfd(2).</li>
+<li><a href="http://mna.github.io/Networking/LowSockets">LowSockets</a>: cross-platform POSIX sockets, basically socket(2) and getaddrinfo(3).</li>
+<li><a href="http://mna.github.io/Networking/Epoll">Epoll</a>: Linux-only, epoll(7).</li>
+<li><a href="http://mna.github.io/Networking/Kqueue">Kqueue</a>: Darwin-only, kqueue(2).</li>
 </ul>
 <h2 id='guiding-principles' class='heading'>Guiding Principles</h2>
 
@@ -99,6 +97,21 @@
 <li>No API sugar - this belongs in higher-level packages built on top of Networking;</li>
 <li>Every idiomatic use of the underlying C API should be supported (if it can be done in C and is not a hack, it should be doable);</li>
 <li>As efficient as possible, as little allocations as possible - this is a low-level building block;</li>
+</ul>
+
+<p>An early implementation of this package used classes for file descriptor-based types (e.g. <code>LowSockets.Socket</code>, <code>OS.Timer</code>, etc.). The rationale was that file descriptors need to be closed, and classes have a <code>deinit</code> that can ensure the resource is released with the last reference to the class.</p>
+
+<p>However, this had a number of downsides that, in retrospect, outweigh the benefits:</p>
+
+<ul>
+<li>The server needs to hold on to each connected sockets. While this may make sense in a traditional multi-threaded, blocking sockets server, it is an inconvenience in event-loop based servers, where the connected sockets&rsquo; FD is simply added to the polling queue.</li>
+<li>The same applies to signals, timers and events on Linux where a FD must be created so that it can be added to <code>Epoll</code>. The server unnecessarily needs to hold on to each class.</li>
+<li>When the close-on-deinit is required, it is easy to wrap the struct in a class and use that class&rsquo; instance instead.</li>
+<li>Uses more memory, more allocations than the value-based structs.</li>
+<li>Most FD wrappers only have a single property, the FD, so it ended up creating classes for what is essentially a very space-efficient integer (<code>LowSockets.Socket</code> is slightly bigger, but still small enough to pass around by value).</li>
+<li>The benefit of automatically closing the resource (helping with forgetting to call close for a given FD) was arguably lost by the downside of accidentally closing the resource by forgetting to hold on to the class.</li>
+<li>Most server uses of a socket will be notified automatically by kqueue/epoll when the client end closes the socket, triggering the close of the server side.</li>
+<li>For clients, and in general with Swift, it is very easy to defer the call to close immediately after having acquired the FD, if this is the intended flow.</li>
 </ul>
 <h2 id='installation' class='heading'>Installation</h2>
 
@@ -121,13 +134,12 @@ $ make test-cov
   .Package(url: "https://github.com/mna/Networking.git", majorVersion: M),
 ]
 </code></pre>
+<h2 id='documentation' class='heading'>Documentation</h2>
 
-<p>See <code>TODO: link to github pages for jazzy doc?</code> for API documentation.</p>
-
-<p>Note that in order to generate the jazzy documentation, the following requirements must be met:</p>
+<p>Full API documentation is available <a href="http://mna.github.io/Networking">here</a>. Note that in order to generate the jazzy documentation, the following requirements must be met:</p>
 
 <ol>
-<li>Install a Swift version that includes SourceKit (on Ubuntu, the official version 3.1.1 on the swift.org does not include it, but 4.0 does).</li>
+<li>Install a Swift version that includes SourceKit (on Ubuntu, the official version 3.1.1 on swift.org does not include it, but 4.0 does).</li>
 <li>Install SourceKitten (<a href="https://github.com/jpsim/SourceKitten">https://github.com/jpsim/SourceKitten</a>).</li>
 <li>On Ubuntu, SourceKitten must be able to find <code>libsourcekitdInProc.so</code>, which means setting the <code>LINUX_SOURCEKIT_LIB_PATH</code> environment variable to its directory.</li>
 <li>On Ubuntu, <code>libsourcekitdInProc.so</code> must be able to find <code>libBlocksRuntime.so.0</code>, which may not be installed. It can be installed with <code>apt install libblocksruntime0</code>.</li>
@@ -140,7 +152,7 @@ $ make test-cov
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2017-08-25)</p>
+          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2017-08-30)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.8.3</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
