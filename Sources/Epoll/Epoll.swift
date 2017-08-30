@@ -2,13 +2,10 @@ import Libc
 import OS
 import Foundation
 
-// to avoid ambiguity between the Epoll methods and the system calls.
-private let cclose = close
-
 // MARK: - Epoll
 
 /// Linux only. Epoll implements the Linux epoll mechanism.
-public class Epoll: FileDescriptorRepresentable {
+public struct Epoll: FileDescriptor {
 
   // MARK: - Properties
 
@@ -22,10 +19,6 @@ public class Epoll: FileDescriptorRepresentable {
     let ret = epoll_create1(flags.rawValue)
     try CError.makeAndThrow(fromReturnCode: ret)
     self.fileDescriptor = ret
-  }
-
-  deinit {
-    try? close()
   }
 
   // MARK: - Methods
@@ -89,7 +82,7 @@ public class Epoll: FileDescriptorRepresentable {
 
   /// Releases the resources for this file descriptor.
   public func close() throws {
-    let ret = cclose(fileDescriptor)
+    let ret = Libc.close(fileDescriptor)
     try CError.makeAndThrow(fromReturnCode: ret)
   }
 }
