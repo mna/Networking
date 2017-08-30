@@ -2,7 +2,6 @@ import XCTest
 import OS
 import LowSockets
 import Dispatch
-import Foundation
 @testable import Epoll
 
 // NOTE: Epoll does not support adding regular files to watch for
@@ -57,7 +56,7 @@ class EpollTests: XCTestCase {
 
     XCTAssertEqual(n, 1)
     XCTAssertEqual(ev0.types, PollEvent.Types.in)
-    XCTAssertEqual(Data(asU32: ev0.data), Data.u32(42))
+    XCTAssertEqual(UserData(asU32: ev0.data), UserData.u32(42))
     XCTAssertEqualWithAccuracy(dur, TimeInterval(0.01), accuracy: 0.01)
   }
 
@@ -84,7 +83,7 @@ class EpollTests: XCTestCase {
         let ret = try ep.poll(into: &events)
         XCTAssertEqual(1, ret)
         let ev0 = events[0]
-        if case let .fd(fd)? = Data(asFD: ev0.data) {
+        if case let .fd(fd)? = UserData(asFD: ev0.data) {
           XCTAssertEqual(fd, sock.fileDescriptor)
         } else {
           XCTFail("data could not be read as fd")
