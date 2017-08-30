@@ -17,4 +17,5 @@ XCTMain([
     testCase(SignalSetTests.allTests),
     testCase(TimerTests.allTests),
     testCase(EventTests.allTests),
+    testCase(UserDataTests.allTests),
 ])

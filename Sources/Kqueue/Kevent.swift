@@ -18,8 +18,10 @@ public struct Kevent {
   public let flags: Flags
   /// The filter-specific flags.
   public let filterFlags: FilterFlags
-  /// User data associated with the event.
-  public let data: Int // TODO: use the same approach as Epoll?
+  /// Filter-specific data associated with the event.
+  public let data: Int
+  /// User-data associated with the event.
+  public let userData: UserData
 
   // MARK: - Constructors
 
@@ -32,6 +34,7 @@ public struct Kevent {
     self.flags = []
     self.filterFlags = []
     self.data = 0
+    self.userData = .u64(0)
   }
 
   init?(_ kev: kevent) {
@@ -43,29 +46,38 @@ public struct Kevent {
     self.flags = Flags(rawValue: Int32(kev.flags))
     self.filterFlags = FilterFlags(rawValue: kev.fflags)
     self.data = kev.data
+
+    // crazy stuff: kev.udata is `UnsafeMutableRawPointer!`, cannot be passed directly
+    // to UInt(bitPattern:), need an `UnsafeMutableRawPointer?`. Then, UInt64 does not
+    // have an init(bitPattern:) with this type, so we need to call UInt(bitPattern:)
+    // and then convert to UInt64.
+    let ptr: UnsafeMutableRawPointer? = kev.udata
+    self.userData = .u64(UInt64(UInt(bitPattern: ptr)))
   }
 
   /// Creates a kqueue event for the provided file descriptor.
-  public init(fd: FileDescriptor, filter: Filter = .read, flags: Flags = [.add], filterFlags: FilterFlags = [], data: Int = 0) {
+  public init(fd: FileDescriptor, filter: Filter = .read, flags: Flags = [.add], filterFlags: FilterFlags = [], data: Int = 0, userData: UserData = .u64(0)) {
     self.identifier = Int(fd.fileDescriptor)
     self.filter = filter
     self.flags = flags
     self.filterFlags = filterFlags
     self.data = data
+    self.userData = userData
   }
 
   /// Creates a kqueue event for the provided identifier.
-  public init(identifier: Int, filter: Filter = .read, flags: Flags = [.add], filterFlags: FilterFlags = [], data: Int = 0) {
+  public init(identifier: Int, filter: Filter = .read, flags: Flags = [.add], filterFlags: FilterFlags = [], data: Int = 0, userData: UserData = .u64(0)) {
     self.identifier = identifier
     self.filter = filter
     self.flags = flags
     self.filterFlags = filterFlags
     self.data = data
+    self.userData = userData
   }
 
   /// Creates a kqueue event for the provided signal.
-  public init(signal: Signal, flags: Flags = [.add]) {
-    self.init(identifier: Int(signal.value), filter: .signal, flags: flags)
+  public init(signal: Signal, flags: Flags = [.add], userData: UserData = .u64(0)) {
+    self.init(identifier: Int(signal.value), filter: .signal, flags: flags, userData: userData)
   }
 
   // MARK: - Methods
@@ -77,6 +89,17 @@ public struct Kevent {
     kev.flags = UInt16(flags.rawValue)
     kev.fflags = filterFlags.rawValue
     kev.data = data
+
+    switch userData {
+    case .fd(let fd):
+      kev.udata = UnsafeMutableRawPointer(bitPattern: Int(fd))
+    case .u32(let u):
+      kev.udata = UnsafeMutableRawPointer(bitPattern: UInt(u))
+    case .u64(let u):
+      kev.udata = UnsafeMutableRawPointer(bitPattern: UInt(u))
+    case .ptr(let p):
+      kev.udata = p
+    }
 
     return kev
   }
