@@ -40,7 +40,7 @@ The package exports the following modules:
 ## Guiding Principles
 
 * Just a thin layer over the system calls;
-* Provide a "swifty" API - strongly typed flags and enums, file descriptor resources exposed as classes to close on deinit, etc.;
+* Provide a "swifty" API - strongly typed flags and enums, FileDescriptor protocol, etc.;
 * No API sugar - this belongs in higher-level packages built on top of Networking;
 * Every idiomatic use of the underlying C API should be supported (if it can be done in C and is not a hack, it should be doable);
 * As efficient as possible, as little allocations as possible - this is a low-level building block;
