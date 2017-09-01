@@ -23,10 +23,11 @@ Note that this project follows [semver 2.0][semver], so for the major version `0
 
 * IPv4 and IPv6
 * TCP, UDP and Unix Domain Sockets
+* Cross-platform low-level sockets
 * Host and service resolution (`getaddrinfo` exposed as `Address.resolve`)
 * Client and server support (`connect`, `bind`, `listen`, `accept`)
 * Blocking and non-blocking support
-* Efficient polling mechanisms (`epoll` on Linux, `kqueue` on Darwin)
+* Efficient polling mechanisms (`epoll` on Linux, `kqueue` on Darwin) - though there is no cross-platform unifying abstraction for those (and no plan to make one in this package - there are too many ways to do this and this package's intent is only to provide the Swift API to those polling mechanisms)
 * `signalfd`, `timerfd` and `eventfd` support on Linux for use with `epoll` (natively supported by `kqueue` on Darwin)
 
 The package exports the following modules:
