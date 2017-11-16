@@ -150,7 +150,7 @@ class AddressTests: XCTestCase {
           }
         }))
         let wantSet = Set<IPAddress>(c.value)
-        if gotSet != wantSet {
+        if !wantSet.isSubset(of: wantSet) {
           XCTFail("want \(wantSet), got \(gotSet)")
         }
       } catch {
