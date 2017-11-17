@@ -1,6 +1,12 @@
 import Libc
 import OS
 
+extension String {
+    func lastIndex(of character: Character) -> Index? {
+        return self.indices.reversed().first(where: {self[$0] == character})
+    }
+}
+
 // MARK: - Address
 
 /// Address is a resolved network address.
@@ -259,7 +265,7 @@ extension Address {
       if firstLoop && flags.contains(.canonName) {
         if addr.pointee.ai_canonname != nil {
           cname = String(validatingUTF8: addr.pointee.ai_canonname) ?? ""
-          if let last = cname.characters.last, last != "." {
+          if cname.last != "." {
             cname.append(".")
           }
         }
@@ -304,62 +310,57 @@ extension Address {
   /// Splits a network address of the form "host:port", "[host]:port"
   /// or "[ipv6-host%zone]:port" into host or ipv6-host%zone and port.
   public static func split(hostPort: String) throws -> (String, String) {
-    let chars = [Character](hostPort.characters)
-    // get the index of the last colon
-    guard let lastColon = chars.reversed().index(of: ":") else {
+    // get the index of the port colon
+    guard let portColon = hostPort.lastIndex(of: ":") else {
       throw MessageError("missing port", context: ["hostPort": hostPort])
     }
 
-    // translate backward index to forward one
-    let portColon = lastColon.base - 1
-    var (open, close) = (0, 0)
-
     let host: String
-    if chars[0] == "[" {
+    if hostPort.first == "[" {
       // find the closing ']'
-      guard let closeBracket = chars.index(of: "]") else {
+      guard let closeBracket = hostPort.index(of: "]") else {
         throw MessageError("missing ']' in address", context: ["hostPort": hostPort])
       }
 
-      switch closeBracket + 1 {
-      case chars.count:
-        // there can't be a ":" after the "]"
-        throw MessageError("missing port", context: ["hostPort": hostPort])
-      case portColon:
-        // expected
-        break
-      default:
-        // "]" is not followed by the last colon
-        if chars[closeBracket + 1] == ":" {
-          throw MessageError("too many colons", context: ["hostPort": hostPort])
-        }
+      let afterCloseBracket = hostPort.index(after: closeBracket)
+      if afterCloseBracket == hostPort.endIndex {
         throw MessageError("missing port", context: ["hostPort": hostPort])
       }
-
-      host = String(chars[1..<closeBracket])
-      (open, close) = (1, closeBracket + 1) // can't be a '[' / ']' before those indices
+      
+      if portColon != afterCloseBracket {
+        if hostPort[afterCloseBracket] == ":" {
+          throw MessageError("too many colons", context: ["hostPort": hostPort])
+        } else {
+          throw MessageError("missing port", context: ["hostPort": hostPort])
+        }
+      }
+      host = String(hostPort[hostPort.index(after: hostPort.startIndex)..<closeBracket])
 
     } else {
 
-      let hostSlice = chars[0..<portColon]
-      if hostSlice.index(of: ":") != nil {
+      host = String(hostPort[hostPort.startIndex..<portColon])
+      if host.index(of: ":") != nil {
         throw MessageError("too many colons", context: ["hostPort": hostPort])
       }
-      if hostSlice.index(of: "%") != nil {
+      if host.index(of: "%") != nil {
         throw MessageError("missing brackets", context: ["hostPort": hostPort])
       }
-
-      host = String(hostSlice)
     }
 
-    if chars[open..<chars.count].index(of: "[") != nil {
+    if host.index(of: "[") != nil {
       throw MessageError("unexpected '['", context: ["hostPort": hostPort])
     }
-    if chars[close..<chars.count].index(of: "]") != nil {
+    if host.index(of: "]") != nil {
       throw MessageError("unexpected ']'", context: ["hostPort": hostPort])
     }
 
-    let port = String(chars[(portColon+1)..<chars.count])
+    let port = String(hostPort[hostPort.index(after:portColon)...])
+    if port.index(of: "[") != nil {
+      throw MessageError("unexpected '['", context: ["hostPort": hostPort])
+    }
+    if port.index(of: "]") != nil {
+      throw MessageError("unexpected ']'", context: ["hostPort": hostPort])
+    }
     return (host, port)
   }
 }

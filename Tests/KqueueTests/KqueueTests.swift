@@ -80,7 +80,7 @@ class KqueueTests: XCTestCase {
     XCTAssertEqual(ret, 1)
     let ev0 = events[0]
     XCTAssertGreaterThan(ev0.data, 0)
-    XCTAssertEqualWithAccuracy(1.0, Double(ev0.data), accuracy: 1.0)
+    XCTAssertEqual(1.0, Double(ev0.data), accuracy: 1.0)
 
     let expect = expectation(description: "kqueue after 10ms")
     DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + .milliseconds(10)) {
