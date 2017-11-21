@@ -3,12 +3,15 @@
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat-square)
 ![BSD](https://img.shields.io/badge/license-BSD-blue.svg?style=flat-square)
 ![Swift 3.1](https://img.shields.io/badge/Swift-version_3.1-orange.svg?style=flat-square)
+![Swift 4.x](https://img.shields.io/badge/Swift-version_4.0-orange.svg?style=flat-square)
 
 # Networking Swift Package
 
 Networking is a low-level Swift package that provides a thin Swift layer over the native **POSIX sockets** and the kernel's polling mechanism (**epoll** for Linux, **kqueue** for Darwin).
 
 Note that this project follows [semver 2.0][semver], so for the major version `0.y.z` the API must be considered unstable and new versions may introduce breaking changes.
+
+Version 0.1.x is for Swift 3.1+, while versions 0.2.x and above are for Swift 4.0+.
 
 ## Table Of Contents
 
