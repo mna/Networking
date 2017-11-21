@@ -15,9 +15,8 @@ public struct IPAddress {
       return nil
     }
 
-    let chars = [Character](s.characters)
-    let i4 = chars.index(of: ".") ?? chars.count
-    let i6 = chars.index(of: ":") ?? chars.count
+    let i4 = s.index(of: ".") ?? s.endIndex
+    let i6 = s.index(of: ":") ?? s.endIndex
     if i4 < i6 {
       // parse as IPv4 address
       var addr = in_addr()
