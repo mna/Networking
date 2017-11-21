@@ -4,7 +4,7 @@ import Libc
 
 class SignalSetTests: XCTestCase {
   func testEmptySet() throws {
-    var set = try SignalSet(fill: false)
+    let set = try SignalSet(fill: false)
     for i in 1..<100 {
       if let sig = Signal.make(Int32(i)) {
         let ret = try set.contains(signal: sig)
@@ -14,7 +14,7 @@ class SignalSetTests: XCTestCase {
   }
 
   func testFillSet() throws {
-    var set = try SignalSet(fill: true)
+    let set = try SignalSet(fill: true)
     for i in 1..<100 {
       if let sig = Signal.make(Int32(i)) {
         let ret = try set.contains(signal: sig)

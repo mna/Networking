@@ -93,7 +93,7 @@ class SocketTests: XCTestCase {
       if c < 0 {
         want = 0
       }
-      XCTAssertEqualWithAccuracy(want, try sock.getReadTimeout(), accuracy: within)
+        XCTAssertEqual(want, try sock.getReadTimeout(), accuracy: within)
     }
     for c in cases {
       try sock.setWriteTimeout(c)
@@ -101,7 +101,7 @@ class SocketTests: XCTestCase {
       if c < 0 {
         want = 0
       }
-      XCTAssertEqualWithAccuracy(want, try sock.getWriteTimeout(), accuracy: within)
+        XCTAssertEqual(want, try sock.getWriteTimeout(), accuracy: within)
     }
   }
 
